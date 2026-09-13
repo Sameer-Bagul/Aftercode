@@ -44,11 +44,11 @@ graph TD
     end
 
     subgraph Output ["Output & Storage"]
-        MetaDir["output/metadata/<slug>.json"]
+        MetaDir["output/metadata/slug.json"]
         Indexes["output/indexes/projects-index.json"]
     end
 
-    IDE <-->|Model Context Protocol (STDIO)| MCPServer
+    IDE <-->|"Model Context Protocol (STDIO)"| MCPServer
     CLI --> Discoverer
     CLI --> Workspace
     Workspace --> Collector
@@ -56,6 +56,7 @@ graph TD
     Synthesizer --> Validator
     Validator --> MetaDir
     MetaDir --> Indexes
+
 ```
 
 ---

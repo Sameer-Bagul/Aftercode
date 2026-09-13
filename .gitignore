@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 package-lock.json
+ui/node_modules/
 
 # Environment and Secrets
 .env
@@ -8,11 +9,13 @@ package-lock.json
 *.pem
 
 # Sandboxed Processing Workspace (Must stay clean)
+workspace/current/
 workspace/current/*
 !workspace/current/.gitkeep
 
-# Temporary build outputs
+# Build Outputs
 dist/
+ui/dist/
 coverage/
 
 # OS / IDE Junk
@@ -20,3 +23,5 @@ coverage/
 Thumbs.db
 .idea/
 .vscode/
+*.log
+.system_generated/

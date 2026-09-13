@@ -68,35 +68,36 @@ export function generateMermaidArchitectureDiagram(evidence: ExtractedEvidence):
 
   // Connection Flow Arrows
   if (apiEndpoints.length > 0) {
-    const epList = apiEndpoints.slice(0, 3).map((e) => `${e.method} ${e.path}`).join(' | ');
-    lines.push(`    UI -->|HTTP Requests (${epList})| Router`);
+    const epList = apiEndpoints.slice(0, 3).map((e) => `${e.method} ${e.path}`).join(', ');
+    lines.push(`    UI -->|"HTTP Requests (${epList}) "| Router`);
   } else {
-    lines.push('    UI -->|HTTP / REST API Payload| Router');
+    lines.push('    UI -->|"HTTP / REST API Payload"| Router');
   }
 
   if (techStack.backend.includes('WebSockets')) {
-    lines.push('    UI -->|WebSocket Connection (WS)| WSStream');
-    lines.push('    WSStream -->|Chunked Audio Buffer| Controller');
+    lines.push('    UI -->|"WebSocket Connection (WS)"| WSStream');
+    lines.push('    WSStream -->|"Chunked Audio Buffer"| Controller');
   }
 
-  lines.push('    Router -->|Validate & Dispatch| Controller');
+  lines.push('    Router -->|"Validate & Dispatch"| Controller');
 
   if (hasAi) {
-    lines.push('    Controller -->|Tensor Inputs & Config| InferenceEngine');
-    lines.push('    InferenceEngine -->|Synthesized Data / Audio Chunks| Controller');
+    lines.push('    Controller -->|"Tensor Inputs & Config"| InferenceEngine');
+    lines.push('    InferenceEngine -->|"Synthesized Data / Audio Chunks"| Controller');
   }
 
   if (hasDb) {
-    lines.push('    Controller -->|ORM Queries & CRUD| Database');
-    lines.push('    Database -->|Recordsets & State| Controller');
+    lines.push('    Controller -->|"ORM Queries & CRUD"| Database');
+    lines.push('    Database -->|"Recordsets & State"| Controller');
   }
 
-  lines.push('    Controller -->|JSON Response / Stream Output| UI');
+  lines.push('    Controller -->|"JSON Response / Stream Output"| UI');
 
   if (hasInfra) {
-    lines.push('    Container -.->|Encloses & Isolates| Router');
-    lines.push('    Container -.->|Encloses & Isolates| Controller');
+    lines.push('    Container -.->|"Encloses & Isolates"| Router');
+    lines.push('    Container -.->|"Encloses & Isolates"| Controller');
   }
+
 
   return lines.join('\n');
 }

@@ -1,0 +1,13 @@
+src/
+tests/
+workspace/
+output/
+processing/
+ui/
+.agents/
+.system_generated/
+.env
+.env.example
+tsconfig.json
+vitest.config.ts
+*.log
