@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProcessingStatusInventory",
+  "type": "object",
+  "required": ["owner", "totalRepositories", "lastUpdated", "repositories"],
+  "properties": {
+    "owner": { "type": "string" },
+    "totalRepositories": { "type": "integer" },
+    "lastUpdated": { "type": "string" },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "slug", "url", "status"],
+        "properties": {
+          "name": { "type": "string" },
+          "slug": { "type": "string" },
+          "url": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "processing", "completed", "failed"]
+          },
+          "classification": { "type": ["string", "null"] },
+          "lastProcessedTime": { "type": ["string", "null"] },
+          "error": { "type": ["string", "null"] }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "name": "aftercode",
+  "version": "1.0.0",
+  "description": "Aftercode - Autonomous Repository Analysis & Portfolio Intelligence Engine for AI IDEs",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "aftercode": "./dist/cli/bin.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "ui:sync": "node scripts/sync-ui-data.mjs",
+    "ui:dev": "npm run ui:sync && npm --prefix ui run dev",
+    "ui:build": "npm run ui:sync && npm --prefix ui run build",
+    "serve": "node dist/cli/bin.js serve",
+    "cli": "node dist/cli/bin.js",
+
+    "discover": "node scripts/discover.mjs",
+    "process-one": "node scripts/process-one.mjs",
+    "process-all": "node scripts/process-all.mjs",
+    "resume": "node scripts/resume.mjs",
+    "validate": "node scripts/validate.mjs",
+    "rebuild-indexes": "node scripts/rebuild-indexes.mjs",
+    "cleanup": "node scripts/cleanup.mjs",
+    "test": "vitest run",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": [
+    "aftercode",
+    "portfolio",
+    "github",
+    "metadata",
+    "mcp",
+    "antigravity",
+    "ai-ide"
+  ],
+  "author": "Sameer Bagul",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "dotenv": "^16.4.5",
+    "execa": "^9.3.0",
+    "glob": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.2",
+    "vitest": "^1.6.0"
+  }
+}
+

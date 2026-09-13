@@ -1,0 +1,242 @@
+[
+  {
+    "_id": "athena-end-to-end-ai-agent-id",
+    "title": "Athena End To End Ai Agent",
+    "slug": "athena-end-to-end-ai-agent",
+    "shortDescription": "**Production-Ready TTS Microservice (Supertonic ONNX)** **Architecture • Folder Structure • Deployment • Scaling • APIs • Best Practices** Fully tuned for",
+    "description": "athena-end-to-end-ai-agent is a production-grade software engineering system implemented primarily in TypeScript, JavaScript, Python. featuring local AI/ML acceleration via ONNX Runtime. System Architecture & Component Topology: The core application is partitioned into clear service boundaries. Backend request processing is powered by WebSockets, Express, FastAPI, managing incoming payload validation, CORS policies, and rate-limiting middleware. The user presentation layer is built using React, TailwindCSS, utilizing reactive component hierarchies and state management. The codebase is structured modularly across key functional boundaries including Services (services), Models (renderer/public/models), Src (services/TTS-supertonic/src), Components (renderer/src/components), Lib (services/TTS-supertonic/lib). Data Pipeline & Execution Lifecycle: Incoming requests follow a deterministic lifecycle. The network interface exposes 4 primary REST/WebSocket routes including GET /health, POST /tts, GET /status, POST /stt. Requests enter through designated entrypoint routes, pass through authentication and parameter validation, and execute business logic within isolated service modules. Output data frames and JSON models are serialized cleanly back to callers. Infrastructure, Reliability & Build System: Deployment is containerized and orchestrated through Docker. Environment variables are managed using isolated configuration templates. Automated linting, static analysis, and code quality checks are enforced via TypeScript, ESLint. Project Background & Documentation: **Production-Ready TTS Microservice (Supertonic ONNX)** **Architecture • Folder Structure • Deployment • Scaling • APIs • Best Practices** Fully tuned for AI agent usage. ## What This Service Does This is a high-performance, production-ready Text-to-Speech (TTS) microservice built with Supertonic ONNX models. It provides: - **Ultra-fast on-device TTS** (no external API calls) - **HTTP API** for easy integration with AI agents and LLM pipelines - **WebSocket streaming** for real-time au",
+    "category": "AI/ML",
+    "isFeatured": true,
+    "status": "Completed",
+    "role": "Sole Developer",
+    "clientOrCompany": null,
+    "duration": null,
+    "targetAudience": null,
+    "techStackBreakdown": {
+      "frontend": [
+        "React",
+        "TailwindCSS"
+      ],
+      "backend": [
+        "WebSockets",
+        "Express",
+        "FastAPI"
+      ],
+      "database": [],
+      "aiMl": [
+        "ONNX Runtime"
+      ],
+      "infrastructure": [
+        "Docker"
+      ],
+      "devops": [],
+      "testing": [],
+      "tools": [
+        "TypeScript",
+        "ESLint"
+      ],
+      "other": []
+    },
+    "myContributions": [
+      "Architected and implemented end-to-end repository structure for athena-end-to-end-ai-agent",
+      "Built responsive user interface using React, TailwindCSS with modular component hierarchy",
+      "Designed robust backend service layer using WebSockets, Express, FastAPI managing routing and request pipelines",
+      "Integrated high-performance AI/ML inference runtime using ONNX Runtime for on-device processing",
+      "Containerized application and configured multi-stage builds using Docker",
+      "Defined and exposed 4 REST/WebSocket API endpoints (/health, /tts, /status, /stt)",
+      "Developed core logic and type-safe abstractions in TypeScript",
+      "Developed core logic and type-safe abstractions in JavaScript",
+      "Developed core logic and type-safe abstractions in Python",
+      "Organized modular code structure across key components: Services, Models, Src, Components, Lib",
+      "Established automated quality assurance and linting configuration using TypeScript, ESLint"
+    ],
+    "image": null,
+    "gallery": [],
+    "architectureDiagram": "graph TD subgraph ClientTier [\"Presentation & Client Layer\"] UI[\"Frontend UI Components (React / TailwindCSS)\"] AudioPlayer[\"WebAudio / HTML5 Binary Stream Player\"] end subgraph APITier [\"API Gateway & Routing Layer\"] Router[\"Backend Service Router (WebSockets / Express / FastAPI)\"] WSStream[\"WebSocket Binary Frame Handler (WS /stream)\"] end subgraph ServiceTier [\"Service Logic & Controllers Layer\"] Controller[\"Service Controllers & Handlers (services)\"] end subgraph DataEngineTier [\"Inference Engine & Data Storage\"] InferenceEngine[\"AI/ML Model Inference Runtime (ONNX Runtime)\"] end subgraph InfraTier [\"Infrastructure & Deployment Environment\"] Container[\"Docker Container Sandbox (Docker)\"] end UI -->|HTTP Requests (GET /health | POST /tts | GET /status)| Router UI -->|WebSocket Connection (WS)| WSStream WSStream -->|Chunked Audio Buffer| Controller Router -->|Validate & Dispatch| Controller Controller -->|Tensor Inputs & Config| InferenceEngine InferenceEngine -->|Synthesized Data / Audio Chunks| Controller Controller -->|JSON Response / Stream Output| UI Container -.->|Encloses & Isolates| Router Container -.->|Encloses & Isolates| Controller",
+    "liveUrl": null,
+    "githubUrl": "https://github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+    "apiDocsUrl": null,
+    "figmaUrl": null,
+    "videoUrl": null,
+    "contributors": [
+      "Sameer-Bagul"
+    ],
+    "features": [
+      "**Ultra-fast on-device TTS** (no external API calls)",
+      "**HTTP API** for easy integration with AI agents and LLM pipelines",
+      "**WebSocket streaming** for real-time audio generation",
+      "**Multiple voice styles** (M1, F1, etc.)",
+      "**Concurrency-safe** inference pipelines",
+      "**Docker-ready** deployment",
+      "**Scalable architecture** for high-throughput applications"
+    ],
+    "challenges": [
+      "Optimizing local AI/ML model inference latency and RAM memory footprint for concurrent worker threads",
+      "Managing real-time streaming buffer pools and preventing audio/data frame stuttering over WebSocket connections",
+      "Minimizing container image size and build times for cross-platform deployment environments",
+      "Maintaining backward API compatibility while decoupling service modules and route handlers"
+    ],
+    "learnings": [
+      "Deep domain experience in design patterns and optimization with React",
+      "Deep domain experience in design patterns and optimization with TailwindCSS",
+      "Deep domain experience in design patterns and optimization with WebSockets",
+      "Deep domain experience in design patterns and optimization with Express",
+      "Inference engine quantization trade-offs between floating-point precision and model execution speed",
+      "Best practices for microservice containerization, environment variable isolation, and health monitoring",
+      "Effective clean architecture patterns for decoupling application entrypoints from business logic"
+    ],
+    "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by WebSockets, Express, FastAPI. AI/ML capabilities powered by ONNX Runtime. Deployed using Docker.",
+    "userFlow": [
+      "User accesses application user interface via browser",
+      "User triggers action invoking HTTP/WebSocket API endpoints",
+      "Payload processed through AI/ML pipeline or local inference model"
+    ],
+    "codeFlow": [
+      "Client or caller initiates request to application entrypoint",
+      "Backend router validates request parameters and applies middleware",
+      "Service layer delegates task to ML runtime or LLM API worker",
+      "Application serializes JSON/audio/data response back to client"
+    ],
+    "apiEndpoints": [
+      {
+        "method": "GET",
+        "path": "/health",
+        "description": "Endpoint defined in services/TTS-supertonic/src/routes.js"
+      },
+      {
+        "method": "POST",
+        "path": "/tts",
+        "description": "Endpoint defined in services/TTS-supertonic/src/routes.js"
+      },
+      {
+        "method": "GET",
+        "path": "/status",
+        "description": "Endpoint defined in services/whisper-fast/server.py"
+      },
+      {
+        "method": "POST",
+        "path": "/stt",
+        "description": "Endpoint defined in services/whisper-fast/server.py"
+      }
+    ],
+    "keyModules": [
+      {
+        "name": "Services",
+        "path": "services",
+        "description": "Module component managing services source logic"
+      },
+      {
+        "name": "Models",
+        "path": "renderer/public/models",
+        "description": "Module component managing models source logic"
+      },
+      {
+        "name": "Src",
+        "path": "services/TTS-supertonic/src",
+        "description": "Module component managing src source logic"
+      },
+      {
+        "name": "Components",
+        "path": "renderer/src/components",
+        "description": "Module component managing components source logic"
+      },
+      {
+        "name": "Lib",
+        "path": "services/TTS-supertonic/lib",
+        "description": "Module component managing lib source logic"
+      }
+    ],
+    "metrics": null,
+    "clientTestimonial": null,
+    "relatedBlogs": [],
+    "futureRoadmap": [
+      "Implement WebRTC streaming protocol for sub-100ms real-time audio/data transmission",
+      "Apply INT8 quantization to local ML models for 50% memory footprint reduction",
+      "Integrate Prometheus metrics exporter for HTTP endpoint latency and queue depth telemetry",
+      "Expand automated end-to-end testing coverage using Playwright and Vitest",
+      "Set up CI/CD GitHub Actions workflow for automated container build and deployment verification"
+    ],
+    "repository": {
+      "owner": "Sameer-Bagul",
+      "name": "athena-end-to-end-ai-agent",
+      "url": "https://github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+      "visibility": "public",
+      "fork": false
+    },
+    "classification": {
+      "type": "portfolio-worthy",
+      "portfolioWorthiness": "high"
+    },
+    "metadata": {
+      "generatedAt": "2026-09-13T14:06:58.003Z",
+      "lastAnalyzedAt": "2026-09-13T14:06:58.003Z",
+      "sourceCommit": null,
+      "manuallyVerified": false
+    }
+  },
+  {
+    "_id": "project-metadata-id",
+    "title": "Project Metadata",
+    "slug": "project-metadata",
+    "shortDescription": "# Projects Metadata Directory  This directory contains individual JSON files for each portfolio project.  ## Naming Conventions & Rules  1. **Filename...",
+    "description": "# Projects Metadata Directory  This directory contains individual JSON files for each portfolio project.  ## Naming Conventions & Rules  1. **Filename Format**: `<project-slug>.json`    - Example: `sold-com.json`, `noteforge-ai.json`, `portfolio-cms-admin.json`    - Must match the `slug` property inside the file.    - Must be lowercase kebab-case.  2. **Ignored Files**:    - Files starting with an underscore `_` (such as `_example-project.json`) are templates or draft examples and will be **igno",
+    "category": "Practice",
+    "isFeatured": false,
+    "status": "Completed",
+    "role": "Sole Developer",
+    "clientOrCompany": null,
+    "duration": null,
+    "targetAudience": null,
+    "techStackBreakdown": {
+      "frontend": [],
+      "backend": [],
+      "database": [],
+      "aiMl": [],
+      "infrastructure": [],
+      "devops": [],
+      "testing": [],
+      "tools": [],
+      "other": []
+    },
+    "myContributions": [
+      "Developed and configured repository project-metadata"
+    ],
+    "image": null,
+    "gallery": [],
+    "architectureDiagram": null,
+    "liveUrl": null,
+    "githubUrl": "https://github.com/Sameer-Bagul/project-metadata",
+    "apiDocsUrl": null,
+    "figmaUrl": null,
+    "videoUrl": null,
+    "contributors": [
+      "Sameer-Bagul"
+    ],
+    "features": [
+      "Core project-metadata functionality"
+    ],
+    "challenges": [],
+    "learnings": [],
+    "metrics": null,
+    "clientTestimonial": null,
+    "relatedBlogs": [],
+    "futureRoadmap": [],
+    "repository": {
+      "owner": "Sameer-Bagul",
+      "name": "project-metadata",
+      "url": "https://github.com/Sameer-Bagul/project-metadata",
+      "visibility": "public",
+      "fork": false
+    },
+    "classification": {
+      "type": "secondary",
+      "portfolioWorthiness": "medium"
+    },
+    "metadata": {
+      "generatedAt": "2026-09-13T12:37:54.459Z",
+      "lastAnalyzedAt": "2026-09-13T12:37:54.459Z",
+      "sourceCommit": null,
+      "manuallyVerified": false
+    }
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "React": 1,
+  "TailwindCSS": 1,
+  "WebSockets": 1,
+  "Express": 1,
+  "FastAPI": 1,
+  "ONNX Runtime": 1,
+  "Docker": 1,
+  "TypeScript": 1,
+  "ESLint": 1
+}

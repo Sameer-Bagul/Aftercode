@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment and Secrets
+.env
+.env.local
+*.pem
+
+# Sandboxed Processing Workspace (Must stay clean)
+workspace/current/*
+!workspace/current/.gitkeep
+
+# Temporary build outputs
+dist/
+coverage/
+
+# OS / IDE Junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

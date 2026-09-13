@@ -1,0 +1,36 @@
+[
+  {
+    "_id": "athena-end-to-end-ai-agent-id",
+    "title": "Athena End To End Ai Agent",
+    "slug": "athena-end-to-end-ai-agent",
+    "shortDescription": "**Production-Ready TTS Microservice (Supertonic ONNX)** **Architecture • Folder Structure • Deployment • Scaling • APIs • Best Practices** Fully tuned for",
+    "category": "AI/ML",
+    "isFeatured": true,
+    "githubUrl": "https://github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+    "techStackBreakdown": {
+      "frontend": [
+        "React",
+        "TailwindCSS"
+      ],
+      "backend": [
+        "WebSockets",
+        "Express",
+        "FastAPI"
+      ],
+      "database": [],
+      "aiMl": [
+        "ONNX Runtime"
+      ],
+      "infrastructure": [
+        "Docker"
+      ],
+      "devops": [],
+      "testing": [],
+      "tools": [
+        "TypeScript",
+        "ESLint"
+      ],
+      "other": []
+    }
+  }
+]

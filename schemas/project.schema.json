@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "PortfolioProjectMetadata",
+  "type": "object",
+  "required": [
+    "_id",
+    "title",
+    "slug",
+    "shortDescription",
+    "description",
+    "category",
+    "isFeatured",
+    "status",
+    "role",
+    "techStackBreakdown",
+    "myContributions",
+    "githubUrl",
+    "features",
+    "challenges",
+    "learnings",
+    "repository",
+    "classification",
+    "metadata"
+  ],
+  "properties": {
+    "_id": { "type": "string" },
+    "title": { "type": "string" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "shortDescription": { "type": "string" },
+    "description": { "type": "string" },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Web App",
+        "AI/ML",
+        "CLI Tool",
+        "Mobile App",
+        "API Service",
+        "Library",
+        "System",
+        "Practice",
+        "Unknown"
+      ]
+    },
+    "isFeatured": { "type": "boolean" },
+    "status": {
+      "type": "string",
+      "enum": ["Completed", "In Progress", "Archived", "Maintenance", "Prototype", "Unknown"]
+    },
+    "role": { "type": "string" },
+    "clientOrCompany": { "type": ["string", "null"] },
+    "duration": { "type": ["string", "null"] },
+    "targetAudience": { "type": ["string", "null"] },
+    "techStackBreakdown": {
+      "type": "object",
+      "required": ["frontend", "backend", "database", "aiMl", "infrastructure", "devops", "testing", "tools", "other"],
+      "properties": {
+        "frontend": { "type": "array", "items": { "type": "string" } },
+        "backend": { "type": "array", "items": { "type": "string" } },
+        "database": { "type": "array", "items": { "type": "string" } },
+        "aiMl": { "type": "array", "items": { "type": "string" } },
+        "infrastructure": { "type": "array", "items": { "type": "string" } },
+        "devops": { "type": "array", "items": { "type": "string" } },
+        "testing": { "type": "array", "items": { "type": "string" } },
+        "tools": { "type": "array", "items": { "type": "string" } },
+        "other": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "myContributions": { "type": "array", "items": { "type": "string" } },
+    "image": { "type": ["string", "null"] },
+    "gallery": { "type": "array", "items": { "type": "string" } },
+    "architectureDiagram": { "type": ["string", "null"] },
+    "liveUrl": { "type": ["string", "null"] },
+    "githubUrl": { "type": "string" },
+    "apiDocsUrl": { "type": ["string", "null"] },
+    "figmaUrl": { "type": ["string", "null"] },
+    "videoUrl": { "type": ["string", "null"] },
+    "contributors": { "type": "array", "items": { "type": "string" } },
+    "features": { "type": "array", "items": { "type": "string" } },
+    "challenges": { "type": "array", "items": { "type": "string" } },
+    "learnings": { "type": "array", "items": { "type": "string" } },
+    "architectureOverview": { "type": ["string", "null"] },
+    "userFlow": { "type": "array", "items": { "type": "string" } },
+    "codeFlow": { "type": "array", "items": { "type": "string" } },
+    "apiEndpoints": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["method", "path"],
+        "properties": {
+          "method": { "type": "string" },
+          "path": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "keyModules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "path"],
+        "properties": {
+          "name": { "type": "string" },
+          "path": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "metrics": { "type": ["object", "null"] },
+    "clientTestimonial": { "type": ["object", "null"] },
+    "relatedBlogs": { "type": "array", "items": { "type": "string" } },
+    "futureRoadmap": { "type": "array", "items": { "type": "string" } },
+    "repository": {
+      "type": "object",
+      "required": ["owner", "name", "url", "visibility", "fork"],
+      "properties": {
+        "owner": { "type": "string" },
+        "name": { "type": "string" },
+        "url": { "type": "string" },
+        "visibility": { "type": "string" },
+        "fork": { "type": "boolean" }
+      }
+    },
+    "classification": {
+      "type": "object",
+      "required": ["type", "portfolioWorthiness"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["portfolio-worthy", "secondary", "practice", "fork", "archived", "empty", "unknown"]
+        },
+        "portfolioWorthiness": {
+          "type": "string",
+          "enum": ["high", "medium", "low", "unknown"]
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["generatedAt", "lastAnalyzedAt", "manuallyVerified"],
+      "properties": {
+        "generatedAt": { "type": "string" },
+        "lastAnalyzedAt": { "type": "string" },
+        "sourceCommit": { "type": ["string", "null"] },
+        "manuallyVerified": { "type": "boolean" }
+      }
+    }
+  },
+  "additionalProperties": false
+}
