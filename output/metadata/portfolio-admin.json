@@ -1,0 +1,636 @@
+{
+  "_id": "portfolio-admin-id",
+  "title": "Portfolio Admin",
+  "slug": "portfolio-admin",
+  "shortDescription": "Portfolio Admin Panel - Backend Server Complete MVC backend server with MongoDB and Express. Features - Authentication: JWT-based authentication system - CRUD Operations: Comple...",
+  "description": "portfolio-admin is a production-grade software engineering system implemented primarily in JavaScript, TypeScript. and structured persistence powered by MongoDB.\n\nSystem Architecture & Component Topology: The core application is partitioned into clear service boundaries. Backend request processing is powered by Express, WebSockets, managing incoming payload validation, CORS policies, and rate-limiting middleware. The user presentation layer is built using React, TailwindCSS, utilizing reactive component hierarchies and state management. The codebase is structured modularly across key functional boundaries including Server (server), Controllers (server/controllers), Models (server/models), Routes (server/routes), Services (src/services), Utils (src/utils), Src (src), Components (src/pages/studio/tools/pdf/components), Lib (src/lib), Pages (src/pages).\n\nData Pipeline & Execution Lifecycle: Incoming requests follow a deterministic lifecycle. The network interface exposes 94 primary REST/WebSocket routes including GET /, GET /:id, POST /, PUT /:id. Requests enter through designated entrypoint routes, pass through authentication and parameter validation, and execute business logic within isolated service modules. Output data frames and JSON models are serialized cleanly back to callers.\n\nInfrastructure, Reliability & Build System: Environment variables are managed using isolated configuration templates. Automated linting, static analysis, and code quality checks are enforced via TypeScript, ESLint.\n\nProject Background & Documentation: Portfolio Admin Panel - Backend Server Complete MVC backend server with MongoDB and Express. ## Features - **Authentication**: JWT-based authentication system - **CRUD Operations**: Complete CRUD for all entities - **Image Workflow**: Store public image URLs directly in MongoDB - **RESTful API**: Clean and organized REST API endpoints - **Security**: Protected routes with JWT middleware - **MVC Architecture**: Models, Controllers, and Routes separation │ ├── db.js # Mon",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "Express",
+      "WebSockets"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected and implemented end-to-end repository structure for portfolio-admin",
+    "Built responsive user interface using React, TailwindCSS with modular component hierarchy",
+    "Designed robust backend service layer using Express, WebSockets managing routing and request pipelines",
+    "Configured database persistence and schema models using MongoDB",
+    "Defined and exposed 94 REST/WebSocket API endpoints (/, /:id, /, /:id)",
+    "Developed core logic and type-safe abstractions in JavaScript",
+    "Developed core logic and type-safe abstractions in TypeScript",
+    "Organized modular code structure across key components: Server, Controllers, Models, Routes, Services, Utils, Src, Components, Lib, Pages",
+    "Established automated quality assurance and linting configuration using TypeScript, ESLint"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n AudioPlayer[\"WebAudio / HTML5 Binary Stream Player\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express / WebSockets)\"]\n WSStream[\"WebSocket Binary Frame Handler (WS /stream)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI -->|\"HTTP Requests: GET /, GET /id, POST /\"| Router\n UI -->|\"WebSocket Connection (WS)\"| WSStream\n WSStream -->|\"Chunked Audio Buffer\"| Controller\n Router -->|\"Validate & Dispatch\"| Controller\n Controller -->|\"ORM Queries & CRUD\"| Database\n Database -->|\"Recordsets & State\"| Controller\n Controller -->|\"JSON Response / Stream Output\"| UI",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/portfolio-admin",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Core portfolio-admin functionality"
+  ],
+  "challenges": [
+    "Managing real-time streaming buffer pools and preventing audio/data frame stuttering over WebSocket connections",
+    "Ensuring atomic database transactions and connection pool scaling under high concurrent read/write loads",
+    "Maintaining backward API compatibility while decoupling service modules and route handlers"
+  ],
+  "learnings": [
+    "Deep domain experience in design patterns and optimization with React",
+    "Deep domain experience in design patterns and optimization with TailwindCSS",
+    "Deep domain experience in design patterns and optimization with Express",
+    "Deep domain experience in design patterns and optimization with WebSockets",
+    "Effective clean architecture patterns for decoupling application entrypoints from business logic"
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by Express, WebSockets. Persistence managed by MongoDB.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in server/routes/achievementRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/achievementRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "description": "Endpoint defined in server/routes/achievementRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/achievementRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/achievementRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/generate-mindmap",
+      "description": "Endpoint defined in server/routes/aiRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/generate-architecture",
+      "description": "Endpoint defined in server/routes/aiRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/register",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/bulk",
+      "description": "Endpoint defined in server/routes/blogRoutes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/reorder",
+      "description": "Endpoint defined in server/routes/blogRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/profiles",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/profiles",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/leetcode",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/codeforces",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/codechef",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/hackerrank",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/dashboard",
+      "description": "Endpoint defined in server/routes/codingPlatformRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/stats",
+      "description": "Endpoint defined in server/routes/dashboardRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/activity",
+      "description": "Endpoint defined in server/routes/dashboardRoutes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/:id/deploy",
+      "description": "Endpoint defined in server/routes/folders.js"
+    },
+    {
+      "method": "GET",
+      "path": "/profile",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/profile",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/user",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/contributions",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repositories",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/languages",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/traffic/:owner/:repo",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/repos/:owner/:repo",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/:owner/:repo",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/workflows",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/workflows/:workflow_id/runs",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/workflows/:workflow_id/dispatch",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/actions/runs/:run_id/cancel",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/actions/runs/:run_id/rerun",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/branches",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/branches",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/:owner/:repo/branches/:branch",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/pulls",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/pulls",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/:owner/:repo/pulls/:pull_number/merge",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/issues",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/issues",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/repos/:owner/:repo/issues/:issue_number",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/releases",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/releases",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/:owner/:repo/releases/:release_id",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/hooks",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/repos/:owner/:repo/hooks",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/:owner/:repo/hooks/:hook_id",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/collaborators",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/repos/:owner/:repo/collaborators/:username",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/repos/:owner/:repo/collaborators/:username",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/commits",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/contents",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/repos/:owner/:repo/stats",
+      "description": "Endpoint defined in server/routes/githubRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/public/:slug",
+      "description": "Endpoint defined in server/routes/mindmapRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/bulk",
+      "description": "Endpoint defined in server/routes/notes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "description": "Endpoint defined in server/routes/notes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/projects",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/projects",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/:id",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/:id",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/projects/:id/blockers",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id/blockers",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/projects/:id/subtasks",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id/subtasks",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/:id/subtasks",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/projects/:id/timeline",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id/timeline/:logId",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/:id/timeline/:logId",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/stakeholders",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/stakeholders",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/stakeholders/:id",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id/primary-focus",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/projects/:id/requirements",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/projects/:id/requirements/:reqId",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/:id/requirements/:reqId",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/generate-ceo-update",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/diary",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/diary/summary/heatmap",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/diary/:date",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/diary",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/diary/:date",
+      "description": "Endpoint defined in server/routes/officeRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/slug/:slug",
+      "description": "Endpoint defined in server/routes/projectRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/folders",
+      "description": "Endpoint defined in server/routes/publicNotes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/folders/:slug",
+      "description": "Endpoint defined in server/routes/publicNotes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/notes/:slug",
+      "description": "Endpoint defined in server/routes/publicNotes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/:taskId/subtasks/:subtaskId",
+      "description": "Endpoint defined in server/routes/todoRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in server/server.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Services",
+      "path": "src/services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "src/utils",
+      "description": "Module component managing utils source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "src/pages/studio/tools/pdf/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "src/pages",
+      "description": "Module component managing pages source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Implement WebRTC streaming protocol for sub-100ms real-time audio/data transmission",
+    "Apply INT8 quantization to local ML models for 50% memory footprint reduction",
+    "Integrate Prometheus metrics exporter for HTTP endpoint latency and queue depth telemetry",
+    "Expand automated end-to-end testing coverage using Playwright and Vitest",
+    "Set up CI/CD GitHub Actions workflow for automated container build and deployment verification"
+  ],
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "portfolio-admin",
+    "url": "https://github.com/Sameer-Bagul/portfolio-admin",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-13T17:30:43.244Z",
+    "lastAnalyzedAt": "2026-09-13T17:30:43.244Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

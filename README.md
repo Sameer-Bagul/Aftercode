@@ -1,22 +1,25 @@
 # ⚡ Aftercode
 
-> **Autonomous Repository Analysis & Multi-Tier Architecture Engine for AI IDEs**
+> **Autonomous Repository Analysis, Multi-Tier Architecture Engine & Visual Portfolio CMS for AI IDEs**
 
-[![npm version](https://img.shields.io/npm/v/aftercode.svg?style=flat-square&color=6366f1)](https://www.npmjs.com/package/aftercode)
+[![npm version](https://img.shields.io/npm/v/aftercode.svg?style=flat-square&color=ff7e5f)](https://www.npmjs.com/package/aftercode)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/badge/Build-Passing-emerald.svg?style=flat-square)](https://github.com/Sameer-Bagul/aftercode)
 [![Model Context Protocol](https://img.shields.io/badge/MCP-Native%20Server-3b82f6.svg?style=flat-square)](https://modelcontextprotocol.io)
 
-**Aftercode** is an open-source developer engine and native **Model Context Protocol (MCP)** server that automatically discovers, analyzes, classifies, synthesizes, and indexes GitHub repositories. 
+**Aftercode** is an open-source developer engine, native **Model Context Protocol (MCP)** server, and visual **Human Portfolio CMS Web UI Dashboard** that automatically discovers, analyzes, classifies, synthesizes, and indexes GitHub repositories.
 
-Designed specifically to power AI IDEs like **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf**, Aftercode transforms raw source code into schema-validated metadata, technical accomplishments, and **multi-tier Mermaid subgraph architecture diagrams**.
+Designed to power AI IDEs like **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf**, Aftercode transforms raw source code into schema-validated metadata, technical accomplishments, **multi-tier Mermaid subgraph architecture diagrams**, **OpenGraph thumbnails**, and **Remotion programmatic MP4 video reels**.
 
 ---
 
 ## ✨ Key Features
 
+* **🎨 Minimalist Fruity Light Theme Web UI**: Interactive dashboard built with React 18, Vite, and fresh fruity styling (🍑 Peach, 🍈 Mint, 🫐 Lavender, 🍋 Lemon, 🫐 Sky Blue).
+* **🎬 Remotion Video Preview Player**: Built-in video player modal rendering 4-scene animated video reels (Hero Intro, API Endpoint Matrix, Architecture Topologies, Tech Stack Outro).
+* **🖼️ OpenGraph Thumbnail Generator**: Dynamically renders 1200x630 visual preview cards with tech stack badges and topology metrics.
 * **⚡ Native MCP Server (`aftercode serve`)**: Connect directly to Antigravity, Cursor, or Claude Desktop via standard STDIO Model Context Protocol.
-* **🛡️ Selective Sparse Sandboxing**: Uses `git clone --depth 1 --filter=blob:none --sparse` to download source files while skipping gigabytes of binary model weights (`.onnx`, `.bin`, `.pt`), media, and archives.
+* **🛡️ Selective Sparse Sandboxing**: Uses `git clone --depth 1 --filter=blob:none --sparse` to download source files while skipping gigabytes of binary model weights (`.onnx`, `.bin`, `.pt`) and media archives.
 * **📊 Multi-Tier Mermaid Subgraph Diagrams**: Automatically generates 5-tier architecture diagrams dividing topologies into `ClientTier`, `APITier`, `ServiceTier`, `DataEngineTier`, and `InfraTier`.
 * **🔍 AST & Framework Detector**: Scans imports, route patterns (`GET /health`, `POST /tts`), package manifests, Dockerfiles, and ORM schemas to extract exact tech stacks.
 * **⚡ AI Token Safety Guard**: Enforces token safety budgets (`truncateToTokenBudget`) and 20s timeouts with seamless deep heuristic fallbacks.
@@ -32,6 +35,7 @@ graph TD
     subgraph Client ["AI IDE & Developer Tooling"]
         IDE["Antigravity / Cursor / Claude Desktop"]
         CLI["Aftercode Command Line Tool"]
+        WebUI["Human Portfolio CMS Web Dashboard"]
     end
 
     subgraph Core ["Aftercode Engine"]
@@ -41,6 +45,8 @@ graph TD
         Collector["AST & Route Evidence Collector"]
         Synthesizer["Multi-Tier Subgraph Synthesizer"]
         Validator["AJV JSON Schema Validator"]
+        VideoEngine["Remotion Video Generator Player"]
+        ThumbnailEngine["OpenGraph Thumbnail Generator"]
     end
 
     subgraph Output ["Output & Storage"]
@@ -56,25 +62,28 @@ graph TD
     Synthesizer --> Validator
     Validator --> MetaDir
     MetaDir --> Indexes
-
+    WebUI <--> MetaDir
+    WebUI <--> VideoEngine
+    WebUI <--> ThumbnailEngine
 ```
 
 ---
 
-## 🚀 Quickstart
+## ⚡ Exact Commands to Run Aftercode
 
-### 1. Install via npm
+### 1. Launch the Human Portfolio Web UI Dashboard
+
+To open the interactive visual web application in your browser:
 
 ```bash
-npm install -g aftercode
-# Or use directly via npx:
-npx aftercode help
+# Syncs output metadata and launches the Vite React Web Dashboard at http://localhost:5173
+npm run ui:dev
 ```
 
-### 2. Discover & Process Repositories
+### 2. Run CLI Commands
 
 ```bash
-# Discover all public/private repositories for a GitHub user
+# Discover all public & private GitHub repositories for a user
 npx aftercode discover Sameer-Bagul
 
 # Process single repository
@@ -83,8 +92,21 @@ npx aftercode process athena-end-to-end-ai-agent
 # Process entire repository queue
 npx aftercode process all
 
-# Validate output schema
+# Validate output JSON files against AJV schema
 npx aftercode validate
+
+# Rebuild project catalog index files
+npx aftercode rebuild
+```
+
+### 3. Build & Preview Production UI Bundle
+
+```bash
+# Build production bundle for the Web UI
+npm run ui:build
+
+# Preview compiled production build
+npm --prefix ui run preview
 ```
 
 ---
@@ -97,19 +119,19 @@ Add **Aftercode** to your IDE's MCP configuration file (e.g. `.agents/mcp_config
 {
   "mcpServers": {
     "aftercode": {
-      "command": "npx",
-      "args": ["-y", "aftercode", "serve"],
+      "command": "node",
+      "args": ["./dist/cli/bin.js", "serve"],
       "env": {
-        "GITHUB_TOKEN": "ghp_your_github_token_optional"
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
       }
     }
   }
 }
 ```
 
+
 ### Available MCP Tools
 
-Once connected, your AI IDE agent can invoke:
 * `aftercode_discover_repositories`: Discover repos for any username.
 * `aftercode_analyze_repository`: Perform deep AST analysis and generate multi-tier Mermaid architecture diagrams.
 * `aftercode_validate_metadata`: Validate metadata against official AJV schema.

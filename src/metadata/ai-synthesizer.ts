@@ -68,8 +68,8 @@ export function generateMermaidArchitectureDiagram(evidence: ExtractedEvidence):
 
   // Connection Flow Arrows
   if (apiEndpoints.length > 0) {
-    const epList = apiEndpoints.slice(0, 3).map((e) => `${e.method} ${e.path}`).join(', ');
-    lines.push(`    UI -->|"HTTP Requests (${epList}) "| Router`);
+    const epList = apiEndpoints.slice(0, 3).map((e) => `${e.method} ${e.path.replace(/[:"()]/g, '')}`).join(', ');
+    lines.push(`    UI -->|"HTTP Requests: ${epList}"| Router`);
   } else {
     lines.push('    UI -->|"HTTP / REST API Payload"| Router');
   }

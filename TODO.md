@@ -156,3 +156,25 @@
 - [x] Verify no secrets/tokens are hardcoded in repository files
 - [x] Push clean codebase to `Sameer-Bagul/portfolio-intelligence`
 - [x] Output clean JSON corpus to `Sameer-Bagul/project-metadata`
+
+---
+
+## ⚡ Phase 10: Aftercode Open-Source Rebranding, Fruity Light UI & Video Player
+
+- [x] **Aftercode Open-Source Rebranding & Native MCP Server**
+  - [x] Rebrand package to `aftercode` with CLI binary `npx aftercode`
+  - [x] Implement native STDIO Model Context Protocol server (`src/mcp/server.ts` & `npx aftercode serve`)
+  - [x] Create open-source files (`LICENSE`, `.env.example`, `CONTRIBUTING.md`, `README.md`, `.gitignore`, `.npmignore`)
+- [x] **Minimalist Fruity Light Theme Web UI Dashboard (`./ui`)**
+  - [x] Build React 18 + Vite + TypeScript dashboard in `./ui`
+  - [x] Implement fresh fruity styling (Peach `#ff7e5f`, Mint `#10b981`, Lavender `#8b5cf6`, Lemon `#f59e0b`, Sky Blue `#06b6d4`)
+  - [x] Build live search bar, category filter pills (`AI/ML`, `Fullstack`, `DevOps`), and dynamic summary statistics
+  - [x] Build interactive Mermaid.js diagram viewer (`MermaidViewer.tsx`) with pan/zoom controls
+  - [x] Build detail drawer (`ProjectModal.tsx`) with endpoint matrix (`GET`, `POST`), module file tree, and roadmap
+- [x] **Remotion Video Generator & OpenGraph Thumbnail Generator**
+  - [x] Add interactive action controls per project (**"⚡ Generate Metadata"**, **"🖼️ Generate Thumbnail"**, **"🎬 Generate Video"**, **"▶️ Preview Video"**)
+  - [x] Build interactive **Remotion Video Preview Player Modal** (`VideoPreviewModal.tsx`) with animated 4-scene timeline
+  - [x] Build **OpenGraph Thumbnail Preview Generator** (`ThumbnailPreview.tsx`) rendering 1200x630 visual cards
+- [x] **21st.dev MCP Configuration Setup**
+  - [x] Configure `@21st-dev/mcp-server` in `.agents/mcp_config.json` and `AGENTS.md`
+

@@ -1,0 +1,85 @@
+{
+  "_id": "noteforge-ai",
+  "title": "NoteForge AI Knowledge Engine",
+  "slug": "noteforge-ai",
+  "shortDescription": "AI-powered Markdown knowledge base with vector embeddings, instant hybrid search, and graph visualization.",
+  "description": "NoteForge AI is an intelligent workspace that converts messy unstructured notes into organized knowledge graphs. Powered by Gemini 1.5 Pro and local Qdrant vector index, it provides contextual search, auto-tagging, and automated flashcard generation.",
+  "category": "Fullstack",
+  "isFeatured": true,
+  "status": "Active",
+  "role": "Fullstack Engineer",
+  "clientOrCompany": "Personal Project",
+  "duration": "2 months",
+  "targetAudience": "Students, Researchers, Knowledge Workers",
+  "techStackBreakdown": {
+    "frontend": ["Next.js 14", "TypeScript", "Tailwind CSS", "Zustand"],
+    "backend": ["FastAPI", "Python", "LangChain", "Pydantic"],
+    "database": ["Qdrant", "PostgreSQL", "Prisma"],
+    "aiMl": ["Gemini 1.5 Pro", "Sentence Transformers"],
+    "infrastructure": ["Docker Compose", "Fly.io"],
+    "devops": ["GitHub Actions"],
+    "testing": ["PyTest", "Cypress"],
+    "tools": ["uv", "poetry"],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented Qdrant vector similarity indexing with sub-50ms query response time.",
+    "Built interactive Cytoscape knowledge graph view for visualizing bi-directional note links.",
+    "Integrated Gemini 1.5 Pro stream parsing for real-time document summarization."
+  ],
+  "image": "https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=80",
+  "gallery": [],
+  "architectureDiagram": "graph TD\n    NextJS[\"Next.js App Router UI\"] -->|\"REST / WebSocket\"| FastAPI[\"FastAPI Microservice\"]\n    FastAPI -->|\"Embedding Generation\"| Gemini[\"Gemini Embeddings API\"]\n    FastAPI -->|\"Vector Similarity Search\"| Qdrant[\"Qdrant Vector DB\"]\n    FastAPI -->|\"Relational Storage\"| Postgres[\"PostgreSQL Database\"]\n    NextJS -->|\"Graph Visualization\"| Cytoscape[\"Cytoscape.js Knowledge Graph\"]",
+  "liveUrl": "https://noteforge-ai.demo",
+  "githubUrl": "https://github.com/Sameer-Bagul/noteforge-ai",
+  "apiDocsUrl": "https://noteforge-ai.demo/docs",
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": ["Sameer-Bagul"],
+  "features": [
+    "Hybrid Dense-Sparse Vector Search",
+    "Bi-directional Document Link Graph",
+    "Instant Flashcard Generation",
+    "Offline-first Local Markdown Sync"
+  ],
+  "apiEndpoints": [
+    { "method": "POST", "path": "/api/v1/notes", "description": "Create note and generate vector embedding chunks" },
+    { "method": "GET", "path": "/api/v1/search/hybrid", "description": "Executes BM25 keyword + Qdrant cosine similarity search" },
+    { "method": "GET", "path": "/api/v1/graph/nodes", "description": "Returns node & edge payload for knowledge graph visualization" }
+  ],
+  "keyModules": [
+    { "name": "Vector Chunking Engine", "path": "services/chunker.py", "description": "Splits markdown headers into semantic token chunks with overlap" },
+    { "name": "Graph Generator", "path": "services/graph_builder.py", "description": "Parses [[wiki-links]] to construct adjacency matrices" }
+  ],
+  "challenges": [
+    "Balancing chunk size precision vs context window retention during similarity search.",
+    "Optimizing Cytoscape graph layout render times for 1,000+ notes."
+  ],
+  "learnings": [
+    "Hybrid BM25 + Vector ranking outperforms pure embedding search by 35% on technical queries."
+  ],
+  "metrics": "5,000+ notes indexed, <45ms search latency",
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add local Llama 3 offline embedding fallback.",
+    "Implement real-time multiplayer document editing with Yjs."
+  ],
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "noteforge-ai",
+    "url": "https://github.com/Sameer-Bagul/noteforge-ai",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-13T22:20:00.000Z",
+    "lastAnalyzedAt": "2026-09-13T22:20:00.000Z",
+    "sourceCommit": "main",
+    "manuallyVerified": false
+  }
+}

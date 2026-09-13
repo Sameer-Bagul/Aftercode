@@ -30,11 +30,21 @@ export async function generateMetadataPayload(
   const mermaidDiagram = generateMermaidArchitectureDiagram(evidence);
   const exhaustiveDescription = generateExhaustiveTechnicalDescription(evidence);
 
-  const cleanShortDesc = stripEmojis(
-    evidence.readmeSummary
-      ? evidence.readmeSummary.replace(/^#+\s*/g, '').substring(0, 160)
-      : `Repository ${repoName} owned by ${owner}.`
-  );
+  // Clean markdown tags and extract first 180 chars of clean prose
+  let cleanShortDesc = (evidence.readmeSummary || '')
+    .replace(/#+\s*/g, '')
+    .replace(/\*\*|__|\*|_/g, '')
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/`([^`]+)`/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (!cleanShortDesc || cleanShortDesc.length < 10) {
+    cleanShortDesc = `Production-grade ${category} repository implementing ${evidence.detectedLanguages.slice(0, 3).join(', ')}.`;
+  } else if (cleanShortDesc.length > 180) {
+    cleanShortDesc = cleanShortDesc.substring(0, 180) + '...';
+  }
+  cleanShortDesc = stripEmojis(cleanShortDesc);
 
   const rawPayload = {
     _id: `${slug}-id`,
