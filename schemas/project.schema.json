@@ -110,6 +110,42 @@
     "clientTestimonial": { "type": ["object", "null"] },
     "relatedBlogs": { "type": "array", "items": { "type": "string" } },
     "futureRoadmap": { "type": "array", "items": { "type": "string" } },
+    "remotionVideoScript": {
+      "type": ["object", "null"],
+      "properties": {
+        "videoTitle": { "type": "string" },
+        "totalDurationSeconds": { "type": "number" },
+        "totalDurationFrames": { "type": "number" },
+        "fps": { "type": "number" },
+        "resolution": {
+          "type": "object",
+          "properties": {
+            "width": { "type": "number" },
+            "height": { "type": "number" }
+          }
+        },
+        "voiceoverScript": { "type": "string" },
+        "scenes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "sceneNumber": { "type": "number" },
+              "name": { "type": "string" },
+              "heading": { "type": "string" },
+              "subheading": { "type": "string" },
+              "narration": { "type": "string" },
+              "durationFrames": { "type": "number" },
+              "startFrame": { "type": "number" },
+              "endFrame": { "type": "number" },
+              "bgGradient": { "type": "string" },
+              "badges": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "remotionReactCode": { "type": "string" }
+      }
+    },
     "repository": {
       "type": "object",
       "required": ["owner", "name", "url", "visibility", "fork"],

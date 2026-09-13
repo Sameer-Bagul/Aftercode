@@ -15,7 +15,9 @@ export async function fetchRepositoriesFromGitHub(owner: string, token?: string)
     'User-Agent': 'Portfolio-Intelligence-Engine',
   };
 
-  if (token) {
+  const hasValidToken = Boolean(token && !token.includes('your_') && !token.includes('YOUR_'));
+
+  if (hasValidToken) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
@@ -23,11 +25,27 @@ export async function fetchRepositoriesFromGitHub(owner: string, token?: string)
   let page = 1;
   const perPage = 100;
 
-  while (true) {
-    const url = `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+  while (page <= 10) {
+    const url = hasValidToken
+      ? `https://api.github.com/user/repos?per_page=${perPage}&page=${page}&sort=updated&type=all`
+      : `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+
     const response = await fetch(url, { headers });
 
     if (!response.ok) {
+      if (response.status === 401 && hasValidToken) {
+        // Fallback to public endpoint if token is unauthorized
+        const publicUrl = `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+        const pubRes = await fetch(publicUrl, { headers: { 'User-Agent': 'Portfolio-Intelligence-Engine' } });
+        if (pubRes.ok) {
+          const pubRepos = (await pubRes.json()) as GitHubRepository[];
+          if (pubRepos.length === 0) break;
+          allRepos.push(...pubRepos);
+          if (pubRepos.length < perPage) break;
+          page++;
+          continue;
+        }
+      }
       if (response.status === 404) {
         throw new Error(`GitHub user or organization '${owner}' not found.`);
       }

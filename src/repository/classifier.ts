@@ -12,9 +12,11 @@ export function classifyRepository(
   isFork: boolean,
   isArchived: boolean
 ): ClassificationResult {
+  console.log(` 🔍 [Step 2/7] Classifying repository structural complexity and portfolio worthiness...`);
   const reasons: string[] = [];
 
   if (isArchived) {
+    console.log(` ⚠️ [Step 2/7] Repository classified as 'archived'`);
     return {
       type: 'archived',
       portfolioWorthiness: 'low',
@@ -23,6 +25,7 @@ export function classifyRepository(
   }
 
   if (isFork) {
+    console.log(` ⚠️ [Step 2/7] Repository classified as 'fork'`);
     return {
       type: 'fork',
       portfolioWorthiness: 'low',
@@ -31,6 +34,7 @@ export function classifyRepository(
   }
 
   if (!fs.existsSync(workspaceDir)) {
+    console.log(` ⚠️ [Step 2/7] Repository classified as 'empty' (Workspace directory missing)`);
     return {
       type: 'empty',
       portfolioWorthiness: 'low',
@@ -45,11 +49,32 @@ export function classifyRepository(
   let hasAi = false;
   let hasReadme = false;
 
+  const IGNORED_DIRS = new Set([
+    '.git',
+    'node_modules',
+    'dist',
+    'build',
+    'out',
+    '.next',
+    '.nuxt',
+    'target',
+    'bin',
+    'obj',
+    'release',
+    'debug',
+    'coverage',
+    '.cache',
+    'vendor',
+    '.venv',
+    'venv',
+    '__pycache__',
+  ]);
+
   function scan(dir: string, depth = 0) {
-    if (depth > 5) return;
+    if (depth > 10) return;
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
-      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist') continue;
+      if (IGNORED_DIRS.has(entry.name)) continue;
       const fullPath = path.join(dir, entry.name);
       if (entry.isDirectory()) {
         scan(fullPath, depth + 1);
@@ -76,7 +101,10 @@ export function classifyRepository(
     reasons.push(`Scanning error: ${(err as Error).message}`);
   }
 
+  console.log(` 📊 [Step 2/7] Scanned ${fileCount} source files up to depth 10. Manifest: ${hasManifest ? 'YES' : 'NO'}, Docker/IaC: ${hasDocker ? 'YES' : 'NO'}, Database Schema: ${hasDatabase ? 'YES' : 'NO'}, README: ${hasReadme ? 'YES' : 'NO'}`);
+
   if (fileCount <= 2 && !hasManifest) {
+    console.log(` 📌 [Step 2/7] Classification: 'empty' (Low worthiness)`);
     return {
       type: 'empty',
       portfolioWorthiness: 'low',
@@ -85,6 +113,7 @@ export function classifyRepository(
   }
 
   if (hasManifest && (hasDocker || hasDatabase || fileCount > 20) && hasReadme) {
+    console.log(` 🌟 [Step 2/7] Classification: 'portfolio-worthy' (High worthiness)`);
     return {
       type: 'portfolio-worthy',
       portfolioWorthiness: 'high',
@@ -93,6 +122,7 @@ export function classifyRepository(
   }
 
   if (hasManifest || fileCount > 8) {
+    console.log(` 📌 [Step 2/7] Classification: 'secondary' (Medium worthiness)`);
     return {
       type: 'secondary',
       portfolioWorthiness: 'medium',
@@ -100,6 +130,7 @@ export function classifyRepository(
     };
   }
 
+  console.log(` 📌 [Step 2/7] Classification: 'practice' (Low worthiness)`);
   return {
     type: 'practice',
     portfolioWorthiness: 'low',

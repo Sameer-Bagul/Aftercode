@@ -3,6 +3,7 @@ import * as path from 'path';
 import { execa } from 'execa';
 
 export async function prepareWorkspace(workspaceDir: string): Promise<void> {
+  console.log(` 🧹 [Step 1/7] Wiping & preparing workspace sandbox directory at: ${workspaceDir}`);
   await wipeWorkspace(workspaceDir);
   fs.mkdirSync(workspaceDir, { recursive: true });
 }
@@ -12,70 +13,23 @@ export async function cloneRepositoryToWorkspace(repoUrl: string, workspaceDir: 
 
   let targetUrl = repoUrl;
   const token = process.env.GITHUB_TOKEN;
-  if (token && targetUrl.startsWith('https://github.com/')) {
+  if (token && !token.includes('your_') && !token.includes('YOUR_') && targetUrl.startsWith('https://github.com/')) {
     targetUrl = targetUrl.replace('https://github.com/', `https://x-access-token:${token}@github.com/`);
   }
 
   try {
-    // 1. Shallow clone with blob:none filter to skip heavy binary blobs
-    await execa('git', ['clone', '--depth', '1', '--filter=blob:none', '--sparse', targetUrl, '.'], {
+    console.log(` 📥 [Step 1/7] Executing full shallow clone (git clone --depth 1) for ${repoUrl}...`);
+    // Perform standard shallow clone to capture all repository directories and files
+    await execa('git', ['clone', '--depth', '1', targetUrl, '.'], {
       cwd: workspaceDir,
       env: {
         ...process.env,
         GIT_TERMINAL_PROMPT: '0',
       },
     });
-
-    // 2. Set sparse-checkout paths for code, documentation, and manifest files
-    await execa(
-      'git',
-      [
-        'sparse-checkout',
-        'set',
-        'src',
-        'lib',
-        'app',
-        'components',
-        'pages',
-        'server',
-        'routes',
-        'models',
-        'controllers',
-        'services',
-        'utils',
-        'scripts',
-        'tests',
-        'docs',
-        'README.md',
-        '*.json',
-        '*.toml',
-        '*.txt',
-        '*.mod',
-        '*.prisma',
-        '*.sql',
-        'Dockerfile',
-        'docker-compose.yml',
-        'vercel.json',
-      ],
-      {
-        cwd: workspaceDir,
-        env: {
-          ...process.env,
-          GIT_TERMINAL_PROMPT: '0',
-        },
-      }
-    );
+    console.log(` ✅ [Step 1/7] Shallow clone completed successfully into workspace sandbox.`);
   } catch (err) {
-    // Fallback to standard shallow clone if sparse checkout fails
-    try {
-      await prepareWorkspace(workspaceDir);
-      await execa('git', ['clone', '--depth', '1', targetUrl, '.'], {
-        cwd: workspaceDir,
-        env: { ...process.env, GIT_TERMINAL_PROMPT: '0' },
-      });
-    } catch (fallbackErr) {
-      throw new Error(`Failed to clone repository ${repoUrl}: ${(fallbackErr as Error).message}`);
-    }
+    throw new Error(`Failed to clone repository ${repoUrl}: ${(err as Error).message}`);
   }
 }
 

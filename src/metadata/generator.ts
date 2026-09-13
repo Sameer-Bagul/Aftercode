@@ -6,6 +6,8 @@ import {
   generateMermaidArchitectureDiagram,
   generateExhaustiveTechnicalDescription,
 } from './ai-synthesizer.js';
+import { generateRemotionVideoScript } from '../video/remotion-script-generator.js';
+import { RagSynthesisResult } from '../rag/rag-synthesizer.js';
 
 export async function generateMetadataPayload(
   owner: string,
@@ -13,7 +15,8 @@ export async function generateMetadataPayload(
   repoUrl: string,
   isFork: boolean,
   evidence: ExtractedEvidence,
-  classification: ClassificationResult
+  classification: ClassificationResult,
+  ragSynthesis?: RagSynthesisResult
 ): Promise<any> {
   const slug = normalizeSlug(repoName);
   const now = new Date().toISOString();
@@ -26,9 +29,10 @@ export async function generateMetadataPayload(
   else if (classification.type === 'portfolio-worthy') category = 'System';
 
   const isFeatured = classification.portfolioWorthiness === 'high';
-  const synthesis = await runMultiPassSynthesis(evidence);
+  const synthesis = ragSynthesis || (await runMultiPassSynthesis(evidence));
   const mermaidDiagram = generateMermaidArchitectureDiagram(evidence);
-  const exhaustiveDescription = generateExhaustiveTechnicalDescription(evidence);
+  const exhaustiveDescription = ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
+  const remotionVideoScript = generateRemotionVideoScript(evidence);
 
   // Clean markdown tags and extract first 180 chars of clean prose
   let cleanShortDesc = (evidence.readmeSummary || '')
@@ -82,6 +86,7 @@ export async function generateMetadataPayload(
     clientTestimonial: null,
     relatedBlogs: [],
     futureRoadmap: synthesis.futureRoadmap,
+    remotionVideoScript,
     repository: {
       owner,
       name: repoName,

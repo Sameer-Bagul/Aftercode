@@ -8,13 +8,15 @@
     "aftercode": "./dist/cli/bin.js"
   },
   "scripts": {
+    "start": "node scripts/auto-app.mjs",
+    "dev": "node scripts/auto-app.mjs",
+    "app": "node scripts/auto-app.mjs",
     "build": "tsc",
     "ui:sync": "node scripts/sync-ui-data.mjs",
     "ui:dev": "npm run ui:sync && npm --prefix ui run dev",
     "ui:build": "npm run ui:sync && npm --prefix ui run build",
     "serve": "node dist/cli/bin.js serve",
     "cli": "node dist/cli/bin.js",
-
     "discover": "node scripts/discover.mjs",
     "process-one": "node scripts/process-one.mjs",
     "process-all": "node scripts/process-all.mjs",
@@ -37,6 +39,7 @@
   "author": "Sameer Bagul",
   "license": "MIT",
   "dependencies": {
+    "@google/genai": "^2.22.0",
     "@modelcontextprotocol/sdk": "^1.0.0",
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
@@ -50,4 +53,3 @@
     "vitest": "^1.6.0"
   }
 }
-

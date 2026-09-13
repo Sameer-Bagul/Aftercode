@@ -1,14 +1,43 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Zap, Server, Sparkles, Filter, ChevronRight, Image, Play, CheckCircle2, Clock, GitBranch, Terminal, RefreshCw, Lock, Globe } from 'lucide-react';
+import { Search, Zap, Server, Sparkles, Filter, ChevronRight, Image, Play, CheckCircle2, Clock, GitBranch, Terminal, RefreshCw, Lock, Globe, Activity, ArrowRight, ShieldCheck, Trash2 } from 'lucide-react';
 import projectsData from '../data/projects.json';
 import { VideoPreviewModal } from '../components/VideoPreviewModal';
+import { ProcessLogsDrawer } from '../components/ProcessLogsDrawer';
 
 export const DashboardPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [activeViewTab, setActiveViewTab] = useState<'analyzed' | 'allGithub'>('allGithub');
   const [activeVideoProject, setActiveVideoProject] = useState<any | null>(null);
+
+  // Live Process Logs Drawer State
+  const [showLogsDrawer, setShowLogsDrawer] = useState<boolean>(false);
+  const [activeProcessingSlug, setActiveProcessingSlug] = useState<string | null>(null);
+
+  const handleDeleteMetadata = async (slug: string) => {
+    if (!confirm(`Are you sure you want to delete metadata for '${slug}'?`)) return;
+    try {
+      const res = await fetch(`http://localhost:3001/api/metadata/${slug}`, { method: 'DELETE' });
+      if (res.ok) {
+        window.location.reload();
+      }
+    } catch (err: any) {
+      alert(`Failed to delete metadata: ${err.message}`);
+    }
+  };
+
+  const handleClearAllMetadata = async () => {
+    if (!confirm('Are you sure you want to delete ALL metadata for a clean start? This cannot be undone.')) return;
+    try {
+      const res = await fetch('http://localhost:3001/api/metadata', { method: 'DELETE' });
+      if (res.ok) {
+        window.location.reload();
+      }
+    } catch (err: any) {
+      alert(`Failed to clear metadata: ${err.message}`);
+    }
+  };
 
   // Live GitHub state
   const [githubRepos, setGithubRepos] = useState<any[]>([]);
@@ -41,7 +70,6 @@ export const DashboardPage: React.FC = () => {
 
         const res = await fetch(url, { headers });
         if (!res.ok) {
-          // Fallback to public endpoint if token fails
           if (token && res.status === 401) {
             const fallbackRes = await fetch(`https://api.github.com/users/Sameer-Bagul/repos?per_page=100&page=${page}&sort=updated`);
             if (fallbackRes.ok) {
@@ -119,7 +147,7 @@ export const DashboardPage: React.FC = () => {
     });
   }, [githubRepos, searchQuery, selectedCategory]);
 
-  // Aggregate Stats
+  // Quick Metrics Stats
   const stats = useMemo(() => {
     const totalAnalyzed = projectsData.length;
     const totalGithub = githubRepos.length;
@@ -134,14 +162,30 @@ export const DashboardPage: React.FC = () => {
     };
   }, [githubRepos]);
 
+  const handleTriggerAnalysis = (slug: string) => {
+    setActiveProcessingSlug(slug);
+    setShowLogsDrawer(true);
+  };
+
+  const progressPercent = Math.round((stats.totalAnalyzed / Math.max(stats.totalGithub || 230, 1)) * 100);
+
   return (
     <div style={{ paddingBottom: '64px' }}>
       {/* HERO & STATS BANNER */}
       <section style={{ padding: '40px 40px 24px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '24px' }}>
           <div>
-            <div className="badge badge-peach" style={{ marginBottom: '12px' }}>
-              <Sparkles size={14} /> Autonomous Portfolio Intelligence & Video Engine
+            <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+              <span className="badge badge-peach">
+                <Sparkles size={14} /> Autonomous Portfolio Intelligence & Video Engine
+              </span>
+              <button
+                onClick={() => setShowLogsDrawer(true)}
+                className="badge badge-mint"
+                style={{ border: 'none', cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+              >
+                <Terminal size={12} /> View Process Console Logs
+              </button>
             </div>
             <h1 style={{ fontSize: '2.4rem', fontWeight: 800, color: '#111827', lineHeight: 1.2, letterSpacing: '-0.03em' }}>
               Developer Portfolio & Repository Catalog
@@ -172,8 +216,67 @@ export const DashboardPage: React.FC = () => {
           </div>
         </div>
 
+        {/* REAL-TIME CATALOG PROCESSING PROGRESS BAR CARD */}
+        <div style={{ marginTop: '28px', background: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '20px', padding: '20px 24px', boxShadow: '0 4px 14px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ background: 'linear-gradient(135deg, #10b981, #059669)', padding: '8px', borderRadius: '10px', color: '#ffffff', display: 'flex' }}>
+                <Activity size={18} />
+              </div>
+              <div>
+                <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#111827' }}>Catalog AST Analysis Progress</h4>
+                <p style={{ fontSize: '0.8rem', color: '#6b7280' }}>
+                  {stats.totalAnalyzed} of {stats.totalGithub || 230} repositories fully analyzed & validated with metadata schema
+                </p>
+              </div>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+              <button
+                className="btn-fruity-secondary"
+                style={{ padding: '8px 14px', fontSize: '0.8rem' }}
+                onClick={() => setShowLogsDrawer(true)}
+              >
+                <Terminal size={14} /> Open Live Process Console
+              </button>
+              <button
+                className="btn-fruity-primary"
+                style={{ padding: '8px 16px', fontSize: '0.8rem' }}
+                onClick={() => handleTriggerAnalysis('portfolio-admin')}
+              >
+                <Zap size={14} /> Trigger Repos Analysis
+              </button>
+              {stats.totalAnalyzed > 0 && (
+                <button
+                  style={{
+                    padding: '8px 14px',
+                    fontSize: '0.8rem',
+                    background: '#fef2f2',
+                    border: '1px solid #fecaca',
+                    color: '#dc2626',
+                    borderRadius: '12px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                  }}
+                  onClick={handleClearAllMetadata}
+                >
+                  <Trash2 size={14} /> Clear All Metadata
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Interactive Progress Bar */}
+          <div style={{ width: '100%', height: '10px', background: '#f3f4f6', borderRadius: '5px', overflow: 'hidden' }}>
+            <div style={{ width: `${progressPercent}%`, height: '100%', background: 'linear-gradient(90deg, #ff7e5f 0%, #10b981 100%)', transition: 'width 0.4s ease' }} />
+          </div>
+        </div>
+
         {/* CONTROLS BAR: SEARCH + VIEW TAB SWITCHER + CATEGORY PILLS */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '36px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '28px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
             {/* View Switcher (Analyzed vs Available) */}
             <div style={{ display: 'flex', background: '#e5e7eb', padding: '4px', borderRadius: '14px', gap: '4px' }}>
@@ -197,7 +300,6 @@ export const DashboardPage: React.FC = () => {
               >
                 <GitBranch size={16} color="#ff7e5f" /> All GitHub Repositories ({githubRepos.length})
               </button>
-
               <button
                 onClick={() => setActiveViewTab('analyzed')}
                 style={{
@@ -326,11 +428,29 @@ export const DashboardPage: React.FC = () => {
                         <Link to={`/project/${project.slug}`} className="btn-fruity-secondary" style={{ padding: '6px 12px', fontSize: '0.75rem', textDecoration: 'none' }}>
                           <Zap size={12} color="#ff7e5f" /> View Metadata
                         </Link>
-                        <Link to={`/project/${project.slug}?tab=thumbnail`} className="btn-fruity-secondary" style={{ padding: '6px 12px', fontSize: '0.75rem', textDecoration: 'none' }}>
-                          <Image size={12} color="#10b981" /> OpenGraph Card
-                        </Link>
                         <button className="btn-fruity-primary" style={{ padding: '6px 12px', fontSize: '0.75rem' }} onClick={() => setActiveVideoProject(project)}>
                           <Play size={12} /> Video Studio
+                        </button>
+                        <button className="btn-fruity-secondary" style={{ padding: '6px 12px', fontSize: '0.75rem' }} onClick={() => handleTriggerAnalysis(project.slug)}>
+                          <Terminal size={12} color="#10b981" /> Re-Analyze
+                        </button>
+                        <button
+                          style={{
+                            padding: '6px 12px',
+                            fontSize: '0.75rem',
+                            background: '#fef2f2',
+                            border: '1px solid #fecaca',
+                            color: '#dc2626',
+                            borderRadius: '8px',
+                            fontWeight: 600,
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                          }}
+                          onClick={() => handleDeleteMetadata(project.slug)}
+                        >
+                          <Trash2 size={12} /> Delete
                         </button>
                       </div>
 
@@ -403,7 +523,7 @@ export const DashboardPage: React.FC = () => {
                           <button
                             className="btn-fruity-primary"
                             style={{ padding: '6px 14px', fontSize: '0.8rem' }}
-                            onClick={() => alert(`Run command to analyze:\nnpm run analyze -- --repo Sameer-Bagul/${repo.name}`)}
+                            onClick={() => handleTriggerAnalysis(repo.name.toLowerCase())}
                           >
                             <Terminal size={14} /> Analyze Repo
                           </button>
@@ -433,6 +553,16 @@ export const DashboardPage: React.FC = () => {
 
       {/* REMOTION VIDEO PREVIEW MODAL */}
       {activeVideoProject && <VideoPreviewModal project={activeVideoProject} onClose={() => setActiveVideoProject(null)} />}
+
+      {/* PROCESS LOGS & PROGRESS TERMINAL DRAWER */}
+      <ProcessLogsDrawer
+        isOpen={showLogsDrawer}
+        onClose={() => setShowLogsDrawer(false)}
+        activeProcessingSlug={activeProcessingSlug}
+        onTriggerAnalysis={(slug) => handleTriggerAnalysis(slug)}
+        analyzedCount={stats.totalAnalyzed}
+        totalReposCount={stats.totalGithub || 230}
+      />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import { ExtractedEvidence } from '../repository/evidence-collector.js';
 import { stripEmojis } from './normalizer.js';
+import { GoogleGenAI } from '@google/genai';
 
 export interface SynthesisResult {
   contributions: string[];
@@ -134,17 +135,24 @@ export function generateExhaustiveTechnicalDescription(evidence: ExtractedEviden
 }
 
 export async function runMultiPassSynthesis(evidence: ExtractedEvidence): Promise<SynthesisResult> {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || process.env.GOOGLE_API_KEY;
 
-  if (apiKey && process.env.ENABLE_AI_LLM_SYNTHESIS === 'true') {
+  if (apiKey && process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
     try {
-      return await runLlmMultiPassSynthesis(evidence, apiKey);
-    } catch {
-      // Fallback to deep heuristic synthesizer if API call fails
+      console.log(` 🤖 [Step 4/7] Invoking Gemini SDK (@google/genai, gemini-3.6-flash) for multi-pass technical synthesis...`);
+      const llmResult = await runLlmMultiPassSynthesis(evidence, apiKey);
+      console.log(` ✅ [Step 4/7] Gemini LLM synthesis completed successfully (${llmResult.contributions.length} contributions, ${llmResult.features.length} features, ${llmResult.challenges.length} challenges generated).`);
+      return llmResult;
+    } catch (err: any) {
+      console.warn(` ⚠️ [Step 4/7] Gemini LLM call failed (${err.message}). Falling back to Deep Heuristic Synthesizer.`);
     }
+  } else {
+    console.log(` 💡 [Step 4/7] GEMINI_API_KEY not configured or LLM synthesis disabled. Executing Deep Heuristic Synthesis pass...`);
   }
 
-  return runDeepHeuristicSynthesis(evidence);
+  const heuristicResult = runDeepHeuristicSynthesis(evidence);
+  console.log(` ✅ [Step 4/7] Deep Heuristic Synthesis completed (${heuristicResult.contributions.length} contributions, ${heuristicResult.features.length} features, ${heuristicResult.challenges.length} challenges, ${heuristicResult.futureRoadmap.length} roadmap goals).`);
+  return heuristicResult;
 }
 
 function runDeepHeuristicSynthesis(evidence: ExtractedEvidence): SynthesisResult {
@@ -250,26 +258,32 @@ Endpoints: ${JSON.stringify(evidence.apiEndpoints)}
 
 Return strictly valid JSON with keys: "contributions" (10-15 detailed bullet points), "features" (8+ bullet points), "challenges" (5+ items), "learnings" (5+ items), "futureRoadmap" (5+ items). DO NOT include any emojis in the text.`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout guard
-
   try {
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }],
-      }),
-    });
-    clearTimeout(timeoutId);
+    const ai = new GoogleGenAI({ apiKey });
+    const modelsToTry = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-3.6-pro'];
+    let response: any = null;
+    let lastErr: any = null;
 
-    if (!response.ok) {
-      throw new Error(`LLM synthesis failed HTTP ${response.status}: ${response.statusText}`);
+    for (const model of modelsToTry) {
+      try {
+        response = await ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json',
+          },
+        });
+        if (response && response.text) break;
+      } catch (err: any) {
+        lastErr = err;
+      }
     }
 
-    const data = (await response.json()) as any;
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!response || !response.text) {
+      throw lastErr || new Error('Gemini SDK models generation failed');
+    }
+
+    const text = response.text || '';
     const jsonMatch = text.replace(/```json\s*|\s*```/g, '').match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
@@ -281,11 +295,9 @@ Return strictly valid JSON with keys: "contributions" (10-15 detailed bullet poi
         futureRoadmap: (parsed.futureRoadmap || []).map((s: string) => stripEmojis(s)),
       };
     }
-    throw new Error('Failed to parse JSON from LLM response');
+    throw new Error('Failed to parse JSON from Gemini SDK response');
   } catch (error) {
-    clearTimeout(timeoutId);
-    console.warn(`[AI Synthesizer Warning] LLM call failed (${(error as Error).message}). Falling back to deep heuristic synthesizer.`);
-    return runDeepHeuristicSynthesis(evidence);
+    throw error;
   }
 }
 

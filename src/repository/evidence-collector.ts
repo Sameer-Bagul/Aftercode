@@ -82,17 +82,117 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
     };
   }
 
+  const IGNORED_DIRS = new Set([
+    '.git',
+    'node_modules',
+    'dist',
+    'build',
+    'out',
+    '.next',
+    '.nuxt',
+    'target',
+    'bin',
+    'obj',
+    'release',
+    'debug',
+    'coverage',
+    '.cache',
+    'vendor',
+    '.venv',
+    'venv',
+    '__pycache__',
+    '.idea',
+    '.vscode',
+  ]);
+
+  const IGNORED_EXTS = new Set([
+    '.exe',
+    '.dll',
+    '.so',
+    '.dylib',
+    '.bin',
+    '.o',
+    '.a',
+    '.lib',
+    '.class',
+    '.jar',
+    '.war',
+    '.zip',
+    '.tar',
+    '.gz',
+    '.7z',
+    '.rar',
+    '.iso',
+    '.dmg',
+    '.pkg',
+    '.deb',
+    '.rpm',
+    '.pyc',
+    '.pyo',
+    '.db',
+    '.sqlite',
+    '.png',
+    '.jpg',
+    '.jpeg',
+    '.gif',
+    '.ico',
+    '.pdf',
+    '.woff',
+    '.woff2',
+    '.ttf',
+    '.eot',
+    '.mp3',
+    '.mp4',
+    '.mov',
+    '.avi',
+  ]);
+
   function scan(dir: string, depth = 0) {
-    if (depth > 5) return;
+    if (depth > 10) return;
     const entries = fs.readdirSync(dir, { withFileTypes: true });
     for (const entry of entries) {
-      if (entry.name === '.git' || entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.next') continue;
+      if (IGNORED_DIRS.has(entry.name)) continue;
       const fullPath = path.join(dir, entry.name);
       const relativePath = path.relative(workspaceDir, fullPath);
 
       if (entry.isDirectory()) {
         const lowerDir = entry.name.toLowerCase();
-        if (['src', 'lib', 'app', 'components', 'pages', 'server', 'routes', 'controllers', 'services', 'models', 'utils', 'api'].includes(lowerDir)) {
+        if (
+          [
+            'src',
+            'lib',
+            'app',
+            'components',
+            'pages',
+            'server',
+            'routes',
+            'controllers',
+            'services',
+            'models',
+            'utils',
+            'api',
+            'packages',
+            'core',
+            'backend',
+            'frontend',
+            'client',
+            'ui',
+            'apps',
+            'internal',
+            'cmd',
+            'pkg',
+            'modules',
+            'handlers',
+            'middleware',
+            'config',
+            'hooks',
+            'store',
+            'types',
+            'scripts',
+            'tests',
+            'docs',
+          ].includes(lowerDir)
+        ) {
           keyModulesMap.set(entry.name, {
             name: entry.name.charAt(0).toUpperCase() + entry.name.slice(1),
             path: relativePath,
@@ -103,6 +203,7 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
       } else if (entry.isFile()) {
         const lower = entry.name.toLowerCase();
         const ext = path.extname(entry.name).toLowerCase();
+        if (IGNORED_EXTS.has(ext)) continue;
 
         if (ext === '.ts' || ext === '.tsx') detectedLanguages.add('TypeScript');
         if (ext === '.js' || ext === '.jsx') detectedLanguages.add('JavaScript');
@@ -225,6 +326,7 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
     }
   }
 
+  console.log(` 🔬 [Step 3/7] Extracting source code evidence, AST routes, package manifests, & system architecture...`);
   try {
     scan(workspaceDir);
   } catch {
@@ -234,6 +336,17 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
   // Deduplicate techStack items
   for (const key of Object.keys(techStack) as (keyof TechStackCategorized)[]) {
     techStack[key] = Array.from(new Set(techStack[key]));
+  }
+
+  // Deduplicate endpoints by path + method
+  const uniqueEndpoints: ApiEndpoint[] = [];
+  const endpointKeys = new Set<string>();
+  for (const ep of apiEndpoints) {
+    const key = `${ep.method}:${ep.path}`;
+    if (!endpointKeys.has(key)) {
+      endpointKeys.add(key);
+      uniqueEndpoints.push(ep);
+    }
   }
 
   // Synthesize Architectural Flow Evidence
@@ -264,16 +377,11 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
     .filter(Boolean)
     .join(' ') || `Standalone system repository for ${repoName}.`;
 
-  // Deduplicate endpoints by path + method
-  const uniqueEndpoints: ApiEndpoint[] = [];
-  const endpointKeys = new Set<string>();
-  for (const ep of apiEndpoints) {
-    const key = `${ep.method}:${ep.path}`;
-    if (!endpointKeys.has(key)) {
-      endpointKeys.add(key);
-      uniqueEndpoints.push(ep);
-    }
-  }
+  console.log(` 🧬 [Step 3/7] Detected Languages (${detectedLanguages.size}): [${Array.from(detectedLanguages).join(', ')}]`);
+  console.log(` 📦 [Step 3/7] Detected Manifests (${detectedManifests.length}): [${detectedManifests.join(', ')}]`);
+  console.log(` 🔌 [Step 3/7] Extracted API Endpoints (${uniqueEndpoints.length}): ${uniqueEndpoints.slice(0, 5).map(e => `${e.method} ${e.path}`).join(', ')}${uniqueEndpoints.length > 5 ? ' ...' : ''}`);
+  console.log(` 🧩 [Step 3/7] Discovered Key Modules (${keyModulesMap.size}): [${Array.from(keyModulesMap.keys()).join(', ')}]`);
+  console.log(` 🛠️ [Step 3/7] Tech Stack Matrix: Frontend: [${techStack.frontend.join(', ')}], Backend: [${techStack.backend.join(', ')}], DB: [${techStack.database.join(', ')}], AI/ML: [${techStack.aiMl.join(', ')}]`);
 
   return {
     repoName,
