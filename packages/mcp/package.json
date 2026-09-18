@@ -1,0 +1,22 @@
+{
+  "name": "@aftercode/mcp",
+  "version": "2.0.0",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "aftercode-mcp": "./dist/server.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@aftercode/engine": "*",
+    "@aftercode/shared": "*",
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.9",
+    "typescript": "^5.5.2"
+  }
+}

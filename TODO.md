@@ -1,11 +1,10 @@
-# Portfolio Intelligence: Implementation TODO & Phase Roadmap
+# Aftercode Monorepo Roadmap & Execution TODO
 
-> **Project Goal**: Build `portfolio-intelligence` — a developer engine in TypeScript & Node.js connected to Antigravity AI IDE via MCPs to discover, analyze, classify, synthesize, validate, and index all 122+ GitHub repositories of `Sameer-Bagul`.
+> **Project Mission**: Build `aftercode` — an open-source monorepo developer engine, native Model Context Protocol (MCP) server, and full-stack Next.js 14 App Router SaaS application to discover, analyze, synthesize, validate, and showcase GitHub repositories with local offline TTS voiceovers and Remotion programmatic MP4 video rendering.
 
 ---
 
-## 🔌 Phase 0: MCP & AI IDE Integration Setup
-
+## 🔌 Phase 0: Workspace & MCP Setup
 - [x] **Configure Workspace MCPs (`.agents/mcp_config.json`)**
   - [x] Configure **GitHub MCP Server** (Read-Only via PAT/OAuth for repo discovery and file reading)
   - [x] Configure **Filesystem MCP Server** (Sandboxed to `./workspace`, `./output`, `./processing`)
@@ -20,30 +19,24 @@
 ---
 
 ## 🏗️ Phase 1: Project Skeleton & Configuration
-
 - [x] **Initialize Node.js & TypeScript Project**
-  - [x] Create `package.json` with scripts (`discover`, `process-one`, `process-all`, `resume`, `validate`, `rebuild-indexes`, `cleanup`)
+  - [x] Create `package.json` with workspace scripts (`discover`, `process-one`, `process-all`, `validate`, `rebuild-indexes`)
   - [x] Configure `tsconfig.json` with strict mode and NodeNext module resolution
   - [x] Set up ESLint & Prettier
-  - [x] Install dependencies (`ajv`, `ajv-formats`, `execa`, `glob`, `vitest`, `@types/node`)
+  - [x] Install dependencies (`ajv`, `ajv-formats`, `execa`, `glob`, `@types/node`)
 - [x] **Create Directory Structure**
   - [x] `schemas/`
   - [x] `prompts/`
   - [x] `src/github/`, `src/repository/`, `src/metadata/`, `src/validation/`, `src/processing/`
-  - [x] `scripts/`
-  - [x] `processing/`
   - [x] `workspace/current/`
   - [x] `output/metadata/`, `output/indexes/`, `output/reports/`
-  - [x] `tests/`
 - [x] **Create Root Guidance Documents**
   - [x] Write `AGENTS.md` (AI Agent behavior rules, zero-hallucination policy, evidence-first rules)
   - [x] Write `README.md` (System overview, installation, CLI usage, MCP integration guide)
-  - [x] Write `.agents/skills/portfolio-metadata/SKILL.md` (Specialized workflow instructions for repository processing)
 
 ---
 
 ## 📜 Phase 2: JSON Schemas & System Prompts
-
 - [x] **Author JSON Schemas (`schemas/`)**
   - [x] `schemas/project.schema.json` (Core 30+ field metadata schema for portfolio projects)
   - [x] `schemas/repository-analysis.schema.json` (Internal evidence and analysis payload schema)
@@ -52,129 +45,107 @@
   - [x] `prompts/repository-classification.md` (Classification into portfolio-worthy, secondary, practice, fork, archived, empty)
   - [x] `prompts/repository-analysis.md` (Deep codebase scanner for architecture, APIs, DB, auth, deployment)
   - [x] `prompts/metadata-generation.md` (Synthesizing analysis into project schema format)
-  - [x] `prompts/metadata-review.md` (Quality review & anti-hallucination verification)
-  - [x] `prompts/metadata-merge.md` (Instructions for safe merging with pre-existing metadata)
 
 ---
 
 ## 🔍 Phase 3: Discovery & Inventory Engine
-
 - [x] **GitHub Discovery Module (`src/github/`)**
-  - [x] Implement `src/github/discover-repositories.ts` to fetch all public/private repositories for `Sameer-Bagul`
+  - [x] Implement `src/github/discover-repositories.ts` to fetch public/private repositories for `Sameer-Bagul`
   - [x] Handle pagination and rate-limiting gracefully
 - [x] **Inventory & Queue Persistence (`src/processing/`)**
-  - [x] Implement `src/processing/queue.ts` to maintain `processing/repository-inventory.json`
-  - [x] Implement `src/processing/status.ts` for real-time status updates (`pending`, `processing`, `completed`, `failed`)
-  - [x] Write `scripts/discover.mjs` to run discovery CLI command
+  - [x] Maintain `processing/repository-inventory.json`
+  - [x] Track execution states (`pending`, `processing`, `completed`, `failed`)
 
 ---
 
-## 🔬 Phase 4: Sandboxed Clone & Evidence Extraction Engine
-
+## 🔬 Phase 4: Sandboxed Clone & AST Evidence Engine
 - [x] **Workspace Sandbox Manager (`src/repository/workspace-manager.ts`)**
   - [x] Implement shallow `git clone --depth 1` into isolated `workspace/current/`
   - [x] Implement safe cleanup function to completely wipe `workspace/current/` after processing each repository
 - [x] **Repository Classifier (`src/repository/classifier.ts`)**
   - [x] Implement automated classification logic based on codebase size, language breakdown, README quality, and manifest features
-  - [x] Assign classification type (`portfolio-worthy` | `secondary` | `practice` | `fork` | `archived` | `empty`) and analysis depth
+  - [x] Assign classification type (`portfolio-worthy` | `secondary` | `practice` | `fork` | `archived` | `empty`)
 - [x] **Evidence Collector (`src/repository/evidence-collector.ts`)**
   - [x] Scan package manifests (`package.json`, `Cargo.toml`, `requirements.txt`, `go.mod`, `pom.xml`, `build.gradle`)
   - [x] Scan configuration files (`Dockerfile`, `docker-compose.yml`, `vercel.json`, `prisma/schema.prisma`, `.env.example`)
-  - [x] Scan README.md, file tree structure, and Git commit logs
-  - [x] Extract tech stack breakdown (`frontend`, `backend`, `database`, `aiMl`, `infrastructure`, `devops`, `testing`, `tools`, `other`)
+  - [x] Extract tech stack breakdown (`frontend`, `backend`, `database`, `aiMl`, `infrastructure`, `devops`, `testing`, `tools`)
 
 ---
 
 ## 🧩 Phase 5: Metadata Synthesis & Safe Merge Engine
-
 - [x] **Metadata Generator (`src/metadata/generator.ts`)**
-  - [x] Synthesize raw evidence into full 30+ field `Metadata` object conforming to `schemas/project.schema.json`
+  - [x] Synthesize raw evidence into full 30+ field `Metadata` object conforming to schema
   - [x] Enforce fallback defaults (`null`, `[]`, `"Unknown"`) for missing fields
   - [x] Enforce Zero-Hallucination Policy (no fabricated metrics, revenue, or testimonials)
 - [x] **Safe Merge Engine (`src/metadata/merger.ts`)**
-  - [x] Check if `output/metadata/<slug>.json` already exists
   - [x] Lock all fields if `manuallyVerified: true`
-  - [x] Selectively preserve human-curated fields (`clientOrCompany`, `duration`, `clientTestimonial`, `metrics`, `image`, `gallery`, `architectureDiagram`)
-- [x] **Data Normalizer (`src/metadata/normalizer.ts`)**
-  - [x] Normalize slugs to lowercase kebab-case
-  - [x] Deduplicate array items (tags, contributions, features, learnings)
+  - [x] Selectively preserve human-curated fields (`clientOrCompany`, `duration`, `clientTestimonial`, `metrics`, `image`, `gallery`)
 
 ---
 
 ## 🛡️ Phase 6: AJV Validation & Indexing Engine
-
 - [x] **AJV Schema Validator (`src/validation/schema-validator.ts`)**
   - [x] Compile `schemas/project.schema.json` with AJV
   - [x] Implement strict validation for all required fields, types, enums, and URL formats
-- [x] **Business Rules Engine (`src/validation/business-rules.ts`)**
-  - [x] Validate unique slug across all project files
-  - [x] Validate unique GitHub URLs
-  - [x] Validate repository consistency
-- [x] **Index & Telemetry Generator (`scripts/rebuild-indexes.mjs`)**
+- [x] **Index & Telemetry Generator**
   - [x] Generate `output/indexes/all-projects.json`
-  - [x] Generate `output/indexes/featured-projects.json`
-  - [x] Generate `output/indexes/technologies.json`
-  - [x] Generate `output/indexes/categories.json`
   - [x] Write summary telemetry report to `output/reports/summary.json`
 
 ---
 
-## 🔄 Phase 7: CLI Runners & Resumable Loop
-
-- [x] **Single Repo Test Script (`scripts/process-one.mjs`)**
-  - [x] CLI runner to process a single target repository by slug
-- [x] **Batch Execution & Resumable Runner (`scripts/process-all.mjs` & `scripts/resume.mjs`)**
-  - [x] Implement sequential processing loop
-  - [x] Skip `completed` repositories
-  - [x] Support `npm run resume` to seamlessly pick up `pending` or `failed` repositories after interruptions
-- [x] **Batch Validation Script (`scripts/validate.mjs`)**
-  - [x] Command to batch-validate all generated JSON files in `output/metadata/*.json`
-- [x] **Emergency Cleanup Script (`scripts/cleanup.mjs`)**
-  - [x] Command to force-wipe `workspace/current/` if an error leaves orphaned files
+## ⚡ Phase 7: Remotion Video Builder & Local TTS Audio Engine
+- [x] **Local Zero-Cost Offline TTS Engine (`src/audio/local-tts.ts`)**
+  - [x] Synthesize narration WAV buffers locally via `espeak-ng` / Piper
+  - [x] Apply broadcast-grade FFmpeg `loudnorm` filter (`-af loudnorm=I=-16:TP=-1.5:LRA=11`)
+- [x] **Remotion Storyboard Builder (`src/video/remotion-builder.ts`)**
+  - [x] Synthesize 6-scene storyboard scripts (Hero Intro, Architecture Topology, API Endpoint Matrix, AST Code Structure, Key Highlights, Outro CTA)
+  - [x] Support programmatic MP4 video export
 
 ---
 
-## 🧪 Phase 8: Phased Testing & Verification POC
-
-- [x] **Test 1: 1-Repo Proof of Concept (POC)**
-  - [x] Run `npm run process-one <test-repo>`
-  - [x] Verify clone, analysis, metadata generation, AJV validation, output file creation, and complete workspace cleanup
-- [x] **Test 2: 5-Repo Batch & Resumability Check**
-  - [x] Run 5 diverse repositories (1 portfolio-worthy, 1 secondary, 1 practice, 1 fork, 1 empty)
-  - [x] Simulate interruption and run `npm run resume` to verify skipped repos
-- [x] **Test 3: 20-Repo Scalability Batch**
-  - [x] Test memory performance, queue state persistence, and index updates
-- [x] **Test 4: 122+ Full Production Batch**
-  - [x] Run complete repository inventory processing
-  - [x] Confirm Quality Gate: **134 Discovered Repositories = 134 Validated Metadata Files**
+## 🏗️ Phase 8: Monorepo Next.js 14 App Router Migration
+- [x] **Workspace Re-architecture**
+  - [x] Configure root `package.json` and `pnpm-workspace.yaml` for monorepo packages (`packages/*`, `apps/*`)
+  - [x] Extract `@aftercode/shared` (`packages/shared/`)
+  - [x] Extract `@aftercode/engine` (`packages/engine/`)
+  - [x] Extract `@aftercode/mcp` (`packages/mcp/`)
+  - [x] Create Next.js 14 App Router SaaS Application (`apps/web/`)
+- [x] **Next.js Full-Stack App Pages (`apps/web/app/`)**
+  - [x] `/` — Repositories Catalog & Search Dashboard
+  - [x] `/project/[slug]` — Dedicated Per-Project Workspace Hub (Overview, Remotion Studio, Knowledge Graph, Asset Library, JSON metadata)
+  - [x] `/video-studio` — Global Remotion Video Studio & Timeline Scrubber (`RemotionPlayer.tsx`)
+  - [x] `/knowledge-graph` — AST Knowledge Graph & Evidence Explorer with Mermaid diagrams
+  - [x] `/asset-library` — Extracted SVGs, Audio Buffers, and Video Bundles
+  - [x] `/analytics` — System Telemetry & Tech Stack Metrics
+  - [x] `/mcp-status` — Model Context Protocol Server Monitor
+- [x] **Next.js Server API Routes (`apps/web/app/api/`)**
+  - [x] `app/api/projects/route.ts` — Serves project metadata from `./output/metadata/*.json`
+  - [x] `app/api/repos/route.ts` — GitHub inventory route
+  - [x] `app/api/video/tts/[slug]/route.ts` — Local TTS voiceover API trigger
+  - [x] `app/api/video/render/[slug]/route.ts` — Remotion MP4 video render API trigger
+- [x] **Monorepo Build Verification**
+  - [x] Verify `npm run build` compiles all packages (`@aftercode/shared`, `@aftercode/engine`, `@aftercode/mcp`, `@aftercode/web`) with **0 errors**.
 
 ---
 
-## 🔌 Phase 9: AI IDE / Antigravity Integration Final Audit
-
-- [x] Verify Antigravity MCP integration can invoke filesystem and repo analysis actions cleanly
-- [x] Verify no secrets/tokens are hardcoded in repository files
-- [x] Push clean codebase to `Sameer-Bagul/portfolio-intelligence`
-- [x] Output clean JSON corpus to `Sameer-Bagul/project-metadata`
+## 🔮 Phase 9: Open-Source Documentation & Standards
+- [x] **Create Standard Open-Source Documentation**
+  - [x] Write comprehensive `README.md` with Next.js App Router architecture guidelines
+  - [x] Create `.env.example` detailing all environment variables
+  - [x] Write `CONTRIBUTING.md` developer guide
+  - [x] Verify OSI-approved `LICENSE` (MIT License)
 
 ---
 
-## ⚡ Phase 10: Aftercode Open-Source Rebranding, Fruity Light UI & Video Player
+## 🚀 Phase 10: Future Roadmap & Upcoming Features
 
-- [x] **Aftercode Open-Source Rebranding & Native MCP Server**
-  - [x] Rebrand package to `aftercode` with CLI binary `npx aftercode`
-  - [x] Implement native STDIO Model Context Protocol server (`src/mcp/server.ts` & `npx aftercode serve`)
-  - [x] Create open-source files (`LICENSE`, `.env.example`, `CONTRIBUTING.md`, `README.md`, `.gitignore`, `.npmignore`)
-- [x] **Minimalist Fruity Light Theme Web UI Dashboard (`./ui`)**
-  - [x] Build React 18 + Vite + TypeScript dashboard in `./ui`
-  - [x] Implement fresh fruity styling (Peach `#ff7e5f`, Mint `#10b981`, Lavender `#8b5cf6`, Lemon `#f59e0b`, Sky Blue `#06b6d4`)
-  - [x] Build live search bar, category filter pills (`AI/ML`, `Fullstack`, `DevOps`), and dynamic summary statistics
-  - [x] Build interactive Mermaid.js diagram viewer (`MermaidViewer.tsx`) with pan/zoom controls
-  - [x] Build detail drawer (`ProjectModal.tsx`) with endpoint matrix (`GET`, `POST`), module file tree, and roadmap
-- [x] **Remotion Video Generator & OpenGraph Thumbnail Generator**
-  - [x] Add interactive action controls per project (**"⚡ Generate Metadata"**, **"🖼️ Generate Thumbnail"**, **"🎬 Generate Video"**, **"▶️ Preview Video"**)
-  - [x] Build interactive **Remotion Video Preview Player Modal** (`VideoPreviewModal.tsx`) with animated 4-scene timeline
-  - [x] Build **OpenGraph Thumbnail Preview Generator** (`ThumbnailPreview.tsx`) rendering 1200x630 visual cards
-- [x] **21st.dev MCP Configuration Setup**
-  - [x] Configure `@21st-dev/mcp-server` in `.agents/mcp_config.json` and `AGENTS.md`
-
+- [ ] **Interactive Live Web Editor for Remotion Video Studio**
+  - [ ] Drag-and-drop scene reordering in `apps/web/app/video-studio/page.tsx`
+  - [ ] Custom background gradient picker & font customization
+- [ ] **Multi-Voice Piper TTS Model Selection**
+  - [ ] Voice selection dropdown (e.g. `en_US-lessac-medium`, `en_GB-alan-low`) in Video Studio
+- [ ] **Playwright Product Capture Integration**
+  - [ ] Automated headless browser screenshot capture of deployed web apps (`demoUrl`)
+  - [ ] Auto-embedding captured screenshots into Remotion Video scenes
+- [ ] **GitHub Webhook Sync**
+  - [ ] Automatic background re-indexing whenever a `git push` event hits a repository

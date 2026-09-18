@@ -1,159 +1,133 @@
 # ⚡ Aftercode
 
-> **Autonomous Repository Analysis, Multi-Tier Architecture Engine & Visual Portfolio CMS for AI IDEs**
+> **Autonomous Repository Analysis, Next.js App Router Workspace & Programmatic Remotion Media Engine**
 
 [![npm version](https://img.shields.io/npm/v/aftercode.svg?style=flat-square&color=ff7e5f)](https://www.npmjs.com/package/aftercode)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/badge/Build-Passing-emerald.svg?style=flat-square)](https://github.com/Sameer-Bagul/aftercode)
-[![Model Context Protocol](https://img.shields.io/badge/MCP-Native%20Server-3b82f6.svg?style=flat-square)](https://modelcontextprotocol.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg?style=flat-square)](LICENSE)
+[![Next.js 14](https://img.shields.io/badge/Next.js-14%20App%20Router-black.svg?style=flat-square&logo=next.js)](https://nextjs.org)
+[![Model Context Protocol](https://img.shields.io/badge/MCP-Native%20Server-0284c7.svg?style=flat-square)](https://modelcontextprotocol.io)
 
-**Aftercode** is an open-source developer engine, native **Model Context Protocol (MCP)** server, and visual **Human Portfolio CMS Web UI Dashboard** that automatically discovers, analyzes, classifies, synthesizes, and indexes GitHub repositories.
+**Aftercode** is an open-source monorepo developer engine, native **Model Context Protocol (MCP)** server, and full-stack **Next.js 14 App Router SaaS Workspace** that automatically discovers, analyzes, classifies, synthesizes, and showcases GitHub repositories.
 
-Designed to power AI IDEs like **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf**, Aftercode transforms raw source code into schema-validated metadata, technical accomplishments, **multi-tier Mermaid subgraph architecture diagrams**, **OpenGraph thumbnails**, and **Remotion programmatic MP4 video reels**.
-
----
-
-## ✨ Key Features
-
-* **🎨 Minimalist Fruity Light Theme Web UI**: Interactive dashboard built with React 18, Vite, and fresh fruity styling (🍑 Peach, 🍈 Mint, 🫐 Lavender, 🍋 Lemon, 🫐 Sky Blue).
-* **🎬 Remotion Video Preview Player**: Built-in video player modal rendering 4-scene animated video reels (Hero Intro, API Endpoint Matrix, Architecture Topologies, Tech Stack Outro).
-* **🖼️ OpenGraph Thumbnail Generator**: Dynamically renders 1200x630 visual preview cards with tech stack badges and topology metrics.
-* **⚡ Native MCP Server (`aftercode serve`)**: Connect directly to Antigravity, Cursor, or Claude Desktop via standard STDIO Model Context Protocol.
-* **🛡️ Selective Sparse Sandboxing**: Uses `git clone --depth 1 --filter=blob:none --sparse` to download source files while skipping gigabytes of binary model weights (`.onnx`, `.bin`, `.pt`) and media archives.
-* **📊 Multi-Tier Mermaid Subgraph Diagrams**: Automatically generates 5-tier architecture diagrams dividing topologies into `ClientTier`, `APITier`, `ServiceTier`, `DataEngineTier`, and `InfraTier`.
-* **🔍 AST & Framework Detector**: Scans imports, route patterns (`GET /health`, `POST /tts`), package manifests, Dockerfiles, and ORM schemas to extract exact tech stacks.
-* **⚡ AI Token Safety Guard**: Enforces token safety budgets (`truncateToTokenBudget`) and 20s timeouts with seamless deep heuristic fallbacks.
-* **🚫 Zero-Emoji Sanitization**: Automated recursive sanitizer ensures clean, professional output across all metadata text fields.
-* **🔒 Human Override Protection**: Preserves manually verified fields (`manuallyVerified: true`) across analysis runs.
+Designed to connect with AI IDEs (**Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf**), Aftercode transforms raw codebase AST evidence into schema-validated metadata, multi-tier topology diagrams, offline voiceovers, and **Remotion programmatic MP4 video showcases**.
 
 ---
 
-## 🏗️ System Architecture
+## 🚀 What's New in Version 2.0 (Monorepo Architecture)
 
-```mermaid
-graph TD
-    subgraph Client ["AI IDE & Developer Tooling"]
-        IDE["Antigravity / Cursor / Claude Desktop"]
-        CLI["Aftercode Command Line Tool"]
-        WebUI["Human Portfolio CMS Web Dashboard"]
-    end
+* 🏗️ **Monorepo Architecture**: Decoupled packages (`@aftercode/shared`, `@aftercode/engine`, `@aftercode/mcp`) and Next.js SaaS app (`apps/web`).
+* ⚡ **Next.js 14 App Router App (`apps/web`)**: Production-grade full-stack Web application featuring per-project workspaces (`/project/[slug]`), global video studio (`/video-studio`), AST knowledge graph explorer (`/knowledge-graph`), asset library (`/asset-library`), and telemetry analytics (`/analytics`).
+* 🎙️ **Local Offline TTS Engine**: Zero-cost, privacy-first narration audio synthesis (`espeak-ng` / Piper) normalized using broadcast-grade FFmpeg `loudnorm` filter (`-16 LUFS`).
+* 🎬 **Native Remotion Player Integration**: Frame-accurate video preview scrubber (`RemotionPlayer.tsx`) and programmatic MP4 exporter.
+* 🔌 **Model Context Protocol Server (`@aftercode/mcp`)**: Native Stdio MCP server exposing repository analysis, RAG indexing, and video rendering tools directly to AI IDE agents.
 
-    subgraph Core ["Aftercode Engine"]
-        MCPServer["STDIO MCP Server (aftercode serve)"]
-        Discoverer["GitHub Inventory Discovery"]
-        Workspace["Sparse Sandboxed Workspace Manager"]
-        Collector["AST & Route Evidence Collector"]
-        Synthesizer["Multi-Tier Subgraph Synthesizer"]
-        Validator["AJV JSON Schema Validator"]
-        VideoEngine["Remotion Video Generator Player"]
-        ThumbnailEngine["OpenGraph Thumbnail Generator"]
-    end
+---
 
-    subgraph Output ["Output & Storage"]
-        MetaDir["output/metadata/slug.json"]
-        Indexes["output/indexes/projects-index.json"]
-    end
+## 🏗️ Monorepo Workspace Structure
 
-    IDE <-->|"Model Context Protocol (STDIO)"| MCPServer
-    CLI --> Discoverer
-    CLI --> Workspace
-    Workspace --> Collector
-    Collector --> Synthesizer
-    Synthesizer --> Validator
-    Validator --> MetaDir
-    MetaDir --> Indexes
-    WebUI <--> MetaDir
-    WebUI <--> VideoEngine
-    WebUI <--> ThumbnailEngine
+```text
+aftercode (Monorepo Root)
+├── package.json                   # Monorepo workspace root configuration
+├── packages/
+│   ├── shared/                    # Shared TypeScript Types & AJV Schemas (@aftercode/shared)
+│   ├── engine/                    # AST Evidence Collector, RAG Indexer, Local TTS & Remotion Builder (@aftercode/engine)
+│   └── mcp/                       # Model Context Protocol Stdio Transport Server (@aftercode/mcp)
+└── apps/
+    └── web/                       # Next.js 14 App Router Full-Stack Application (@aftercode/web)
+        ├── app/
+        │   ├── page.tsx           # Repositories Catalog & Search Dashboard
+        │   ├── project/[slug]/    # Dedicated Per-Project Workspace Hub
+        │   ├── video-studio/      # Global Video Production Studio & Timeline Scrubber
+        │   ├── knowledge-graph/   # AST Knowledge Graph & Evidence Explorer
+        │   ├── asset-library/     # Extracted SVG Diagrams & Audio Buffers
+        │   ├── analytics/         # System Telemetry & Tech Stack Metrics
+        │   ├── mcp-status/        # MCP Server Monitor & Tool Inspector
+        │   └── api/               # Next.js Server Route Handlers
 ```
 
 ---
 
-## ⚡ Exact Commands to Run Aftercode
+## ⚡ Quick Start
 
-### 1. Launch the Human Portfolio Web UI Dashboard
-
-To open the interactive visual web application in your browser:
+### 1. Installation & Setup
 
 ```bash
-# Syncs output metadata and launches the Vite React Web Dashboard at http://localhost:5173
-npm run ui:dev
+# Clone the repository
+git clone https://github.com/Sameer-Bagul/aftercode.git
+cd aftercode
+
+# Install monorepo workspace dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env
+
+# Build all workspace packages
+npm run build
 ```
 
-### 2. Run CLI Commands
+### 2. Launch the Next.js SaaS Web Application
 
 ```bash
-# Discover all public & private GitHub repositories for a user
-npx aftercode discover Sameer-Bagul
-
-# Process single repository
-npx aftercode process athena-end-to-end-ai-agent
-
-# Process entire repository queue
-npx aftercode process all
-
-# Validate output JSON files against AJV schema
-npx aftercode validate
-
-# Rebuild project catalog index files
-npx aftercode rebuild
+# Start Next.js development server at http://localhost:3000
+npm run dev
 ```
 
-### 3. Build & Preview Production UI Bundle
+### 3. Run the MCP Server for AI IDEs
 
 ```bash
-# Build production bundle for the Web UI
-npm run ui:build
-
-# Preview compiled production build
-npm --prefix ui run preview
+# Launch Stdio MCP Server for Antigravity / Cursor / Claude Desktop
+npm run mcp
 ```
 
 ---
 
 ## 🔌 Connecting to AI IDEs (Antigravity, Cursor, Claude Desktop)
 
-Add **Aftercode** to your IDE's MCP configuration file (e.g. `.agents/mcp_config.json` or `claude_desktop_config.json`):
+Add Aftercode to your IDE's MCP configuration (`.agents/mcp_config.json` or `claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "aftercode": {
       "command": "node",
-      "args": ["./dist/cli/bin.js", "serve"],
+      "args": ["/absolute/path/to/aftercode/packages/mcp/dist/server.js"],
       "env": {
-        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}",
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}"
       }
     }
   }
 }
 ```
 
+---
 
-### Available MCP Tools
+## 🛠️ Environment Configuration (`.env`)
 
-* `aftercode_discover_repositories`: Discover repos for any username.
-* `aftercode_analyze_repository`: Perform deep AST analysis and generate multi-tier Mermaid architecture diagrams.
-* `aftercode_validate_metadata`: Validate metadata against official AJV schema.
-* `aftercode_get_catalog_summary`: Get catalog overview across output metadata.
+See [.env.example](.env.example) for all available options:
+
+```bash
+# GitHub PAT for 5,000 req/hr rate limits
+GITHUB_TOKEN=ghp_your_personal_access_token
+
+# Optional LLM Synthesis Key
+GEMINI_API_KEY=your_gemini_api_key
+ENABLE_AI_LLM_SYNTHESIS=true
+
+# Local Audio Engine Settings
+LOCAL_TTS_ENGINE=espeak
+PIPER_TTS_PATH=/usr/bin/piper
+```
 
 ---
 
-## 🛠️ Environment Variables
+## 🤝 Contributing
 
-Copy `.env.example` to `.env`:
-
-```bash
-# Optional: GitHub PAT for 5,000 requests/hr rate limits & private repo access
-GITHUB_TOKEN=ghp_your_personal_access_token
-
-# Optional: Gemini / OpenAI API Key for LLM multi-pass synthesis
-GEMINI_API_KEY=your_api_key
-ENABLE_AI_LLM_SYNTHESIS=true
-```
+We welcome community contributions! Please review our [CONTRIBUTING.md](CONTRIBUTING.md) guide for environment setup, coding standards, and PR workflows.
 
 ---
 
 ## 📄 License
 
-[MIT License](LICENSE) © 2026 Sameer Bagul & Aftercode Contributors.
+This project is licensed under the [MIT License](LICENSE) © 2026 Sameer Bagul & Aftercode Contributors.

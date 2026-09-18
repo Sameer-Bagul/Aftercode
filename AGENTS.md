@@ -64,14 +64,8 @@ This document defines strict operational constraints, execution policies, and be
 
 ---
 
-## 🎨 6. 21st.dev MCP Integration & UI Design Guidelines
+## 🎨 6. UI Design Guidelines
 
-1. **21st.dev MCP Configuration**:
-   - Configure `@21st-dev/mcp-server` in `.agents/mcp_config.json` to enable automated component search and UI design inspiration for AI IDE agents.
-   - Pass API key via environment variable: `"TWENTY_FIRST_API_KEY": "${TWENTY_FIRST_API_KEY}"`.
-
-2. **Minimalist Fruity Light Theme Standards**:
+1. **Minimalist Fruity Light Theme Standards**:
    - All UI components MUST adhere to the minimalist light theme with fresh fruity accents (`#ff7e5f` Peach, `#10b981` Mint, `#8b5cf6` Lavender, `#f59e0b` Lemon, `#06b6d4` Sky Blue).
    - Card surfaces MUST use `#ffffff` with subtle borders and soft drop shadows (`box-shadow: 0 4px 12px rgba(0,0,0,0.03)`).
-
-

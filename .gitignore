@@ -16,6 +16,9 @@ workspace/current/*
 # Build Outputs
 dist/
 ui/dist/
+.next/
+apps/web/.next/
+.video/
 coverage/
 
 # OS / IDE Junk

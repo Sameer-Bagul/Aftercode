@@ -1,31 +1,21 @@
 {
-  "name": "aftercode",
-  "version": "1.0.0",
-  "description": "Aftercode - Autonomous Repository Analysis & Portfolio Intelligence Engine for AI IDEs",
-  "main": "dist/index.js",
+  "name": "aftercode-monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Aftercode - Autonomous Repository Analysis & SaaS Video Intelligence Platform (Monorepo)",
   "type": "module",
-  "bin": {
-    "aftercode": "./dist/cli/bin.js"
-  },
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
-    "start": "node scripts/auto-app.mjs",
-    "dev": "node scripts/auto-app.mjs",
-    "app": "node scripts/auto-app.mjs",
-    "build": "tsc",
-    "ui:sync": "node scripts/sync-ui-data.mjs",
-    "ui:dev": "npm run ui:sync && npm --prefix ui run dev",
-    "ui:build": "npm run ui:sync && npm --prefix ui run build",
-    "serve": "node dist/cli/bin.js serve",
-    "cli": "node dist/cli/bin.js",
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspaces --if-present",
+    "mcp": "node packages/mcp/dist/server.js",
+    "test": "vitest run",
     "discover": "node scripts/discover.mjs",
     "process-one": "node scripts/process-one.mjs",
-    "process-all": "node scripts/process-all.mjs",
-    "resume": "node scripts/resume.mjs",
-    "validate": "node scripts/validate.mjs",
-    "rebuild-indexes": "node scripts/rebuild-indexes.mjs",
-    "cleanup": "node scripts/cleanup.mjs",
-    "test": "vitest run",
-    "lint": "eslint src/**/*.ts"
+    "process-all": "node scripts/process-all.mjs"
   },
   "keywords": [
     "aftercode",
@@ -33,8 +23,9 @@
     "github",
     "metadata",
     "mcp",
-    "antigravity",
-    "ai-ide"
+    "video-studio",
+    "remotion",
+    "antigravity"
   ],
   "author": "Sameer Bagul",
   "license": "MIT",
