@@ -2,13 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Video, Mic, Film, Play, Download, Sparkles, FolderGit2, ArrowRight } from 'lucide-react';
+import { Video, Mic, Film, Play, Download, Sparkles, FolderGit2, ArrowRight, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { RemotionPlayer } from '../../components/RemotionPlayer';
 
 export default function VideoStudioPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [selectedProject, setSelectedProject] = useState<any>(null);
   const [activeSceneIndex, setActiveSceneIndex] = useState<number>(0);
+  const [selectedVoiceStyle, setSelectedVoiceStyle] = useState<'M1' | 'M2' | 'F1' | 'F2'>('M1');
+  const [audioStatus, setAudioStatus] = useState<'pending' | 'ready' | 'failed'>('pending');
+  const [audioError, setAudioError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [isRendering, setIsRendering] = useState<boolean>(false);
 
@@ -21,6 +24,9 @@ export default function VideoStudioPage() {
           setProjects(data);
           if (data.length > 0) {
             setSelectedProject(data[0]);
+            const status = data[0]?.remotionVideoScript?.audioSynthesisStatus || 'pending';
+            setAudioStatus(status);
+            setAudioError(data[0]?.remotionVideoScript?.audioSynthesisError || null);
           }
         }
       } catch (err) {
@@ -30,18 +36,76 @@ export default function VideoStudioPage() {
     loadProjects();
   }, []);
 
+  const scenes = selectedProject?.remotionVideoScript?.scenes || [
+    {
+      sceneNumber: 1,
+      name: 'Hero Architecture Introduction',
+      heading: selectedProject?.title || 'Aftercode Video Engine',
+      subheading: selectedProject?.shortDescription || 'Automated Remotion Video Generation for Repositories',
+      narration: `Welcome to the technical showcase of ${selectedProject?.title || 'the repository'}. <breath>`,
+      bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+      badges: selectedProject?.techStackBreakdown?.frontend || ['TypeScript', 'Next.js'],
+    },
+    {
+      sceneNumber: 2,
+      name: 'AST Code Evidence & RAG Synthesis',
+      heading: 'Static Code & RAG Indexing',
+      subheading: 'Parsing AST trees and semantic code symbols',
+      narration: 'Deep static analysis extracting verified tech stack claims.',
+      bgGradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+      badges: ['AST Evidence', 'BM25 + RAG'],
+    },
+    {
+      sceneNumber: 3,
+      name: 'Supertonic 3 Local Voiceover',
+      heading: 'Supertonic 3 ONNX Synthesis',
+      subheading: '99M Parameter local TTS model with expression tags',
+      narration: 'Generates narration WAV buffers locally with broadcast-grade FFmpeg normalization. <laugh>',
+      bgGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+      badges: ['Supertonic 3', 'FFmpeg loudnorm'],
+    },
+    {
+      sceneNumber: 4,
+      name: 'Remotion MP4 Export',
+      heading: 'Programmatic Video Production',
+      subheading: 'Frame-accurate rendering via Chromium & Remotion',
+      narration: 'Render production MP4 videos directly to disk.',
+      bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
+      badges: ['Remotion 4.x', 'Chromium Renderer'],
+    },
+  ];
+
   const handleSynthesizeTTS = async () => {
     if (!selectedProject) return;
     setIsSynthesizing(true);
+    setAudioError(null);
+
     try {
-      const res = await fetch(`/api/video/tts/${selectedProject.slug}`, { method: 'POST' });
-      if (res.ok) {
-        alert(`🎙️ Local TTS synthesized WAV voiceover for ${selectedProject.title}! Audio normalized via FFmpeg.`);
+      const res = await fetch(`/api/video/tts/${selectedProject.slug}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          voiceStyle: selectedVoiceStyle,
+          language: 'en',
+          scenes,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setAudioStatus('ready');
+        alert(`🎙️ Supertonic 3 TTS synthesized voiceover for ${selectedProject.title}! Audio normalized via FFmpeg.`);
       } else {
-        alert(`Local TTS synthesis completed for ${selectedProject.slug}.`);
+        setAudioStatus('failed');
+        const err = data.error || 'Supertonic 3 ONNX engine unavailable locally.';
+        setAudioError(err);
+        alert(`⚠️ Voiceover synthesis failed: ${err}\n\nYou can retry synthesizing voiceover later via Supertonic 3.`);
       }
-    } catch {
-      alert(`Local TTS synthesis completed for ${selectedProject.slug}.`);
+    } catch (err: any) {
+      setAudioStatus('failed');
+      const errStr = err?.message || 'Failed to connect to Supertonic 3 synthesizer.';
+      setAudioError(errStr);
+      alert(`⚠️ Voiceover synthesis failed: ${errStr}`);
     } finally {
       setIsSynthesizing(false);
     }
@@ -64,45 +128,6 @@ export default function VideoStudioPage() {
     }
   };
 
-  const scenes = selectedProject?.remotionVideoScript?.scenes || [
-    {
-      sceneNumber: 1,
-      name: 'Hero Architecture Introduction',
-      heading: selectedProject?.title || 'Aftercode Video Engine',
-      subheading: selectedProject?.shortDescription || 'Automated Remotion Video Generation for Repositories',
-      narration: `Overview of ${selectedProject?.title || 'the repository'}.`,
-      bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-      badges: selectedProject?.techStackBreakdown?.frontend || ['TypeScript', 'Next.js'],
-    },
-    {
-      sceneNumber: 2,
-      name: 'AST Code Evidence & RAG Synthesis',
-      heading: 'Static Code & RAG Indexing',
-      subheading: 'Parsing AST trees and semantic code symbols',
-      narration: 'Deep static analysis extracting verified tech stack claims.',
-      bgGradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-      badges: ['AST Evidence', 'BM25 + RAG'],
-    },
-    {
-      sceneNumber: 3,
-      name: 'Local Offline Voiceover (TTS)',
-      heading: 'Zero-Cloud Audio Synthesis',
-      subheading: 'Local Piper/eSpeak synthesis with FFmpeg loudnorm',
-      narration: 'Generates narration WAV buffers locally with broadcast-grade normalization.',
-      bgGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-      badges: ['Local TTS', 'FFmpeg loudnorm'],
-    },
-    {
-      sceneNumber: 4,
-      name: 'Remotion MP4 Export',
-      heading: 'Programmatic Video Production',
-      subheading: 'Frame-accurate rendering via Chromium & Remotion',
-      narration: 'Render production MP4 videos directly to disk.',
-      bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-      badges: ['Remotion 4.x', 'Chromium Renderer'],
-    }
-  ];
-
   return (
     <div style={{ minHeight: '100vh', background: '#f8fafc', padding: '32px' }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -119,11 +144,26 @@ export default function VideoStudioPage() {
               Automated Remotion Video Suite
             </h1>
             <p style={{ color: '#64748b', fontSize: '0.95rem', marginTop: '4px' }}>
-              Synthesize local TTS voiceovers and render frame-accurate showcase videos directly from repository AST metadata.
+              Synthesize local Supertonic 3 TTS voiceovers and render showcase videos directly from repository AST metadata.
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {/* Supertonic Voice Style Selector */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '10px' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>Voice:</span>
+              <select
+                value={selectedVoiceStyle}
+                onChange={(e: any) => setSelectedVoiceStyle(e.target.value)}
+                style={{ border: 'none', background: 'transparent', fontWeight: 700, fontSize: '0.85rem', color: '#0f172a', outline: 'none', cursor: 'pointer' }}
+              >
+                <option value="M1">Male (M1)</option>
+                <option value="F1">Female (F1)</option>
+                <option value="M2">Male Expressive (M2)</option>
+                <option value="F2">Female Expressive (F2)</option>
+              </select>
+            </div>
+
             <button
               onClick={handleSynthesizeTTS}
               disabled={isSynthesizing || !selectedProject}
@@ -133,17 +173,17 @@ export default function VideoStudioPage() {
                 gap: '8px',
                 padding: '10px 18px',
                 borderRadius: '10px',
-                background: '#ffffff',
-                border: '1px solid #cbd5e1',
-                color: '#334155',
+                background: audioStatus === 'ready' ? '#ffffff' : '#fff7ed',
+                border: audioStatus === 'ready' ? '1px solid #cbd5e1' : '1px solid #fdba74',
+                color: audioStatus === 'ready' ? '#334155' : '#c2410c',
                 fontSize: '0.875rem',
                 fontWeight: 700,
                 cursor: selectedProject ? 'pointer' : 'not-allowed',
                 boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
               }}
             >
-              <Mic size={16} color="#0284c7" />
-              {isSynthesizing ? 'Synthesizing...' : 'Synthesize Local TTS'}
+              {isSynthesizing ? <RefreshCw size={16} /> : <Mic size={16} color="#0284c7" />}
+              {isSynthesizing ? 'Synthesizing...' : audioStatus === 'ready' ? 'Re-synthesize Supertonic 3' : 'Synthesize Supertonic 3'}
             </button>
 
             <button
@@ -170,6 +210,63 @@ export default function VideoStudioPage() {
           </div>
         </div>
 
+        {/* Voiceover Synthesis Status Banner */}
+        {selectedProject && (
+          <div
+            style={{
+              marginBottom: '24px',
+              padding: '14px 20px',
+              borderRadius: '12px',
+              background: audioStatus === 'ready' ? '#ecfdf5' : '#fff7ed',
+              border: audioStatus === 'ready' ? '1px solid #a7f3d0' : '1px solid #fed7aa',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {audioStatus === 'ready' ? (
+                <CheckCircle2 size={18} color="#047857" />
+              ) : (
+                <AlertTriangle size={18} color="#c2410c" />
+              )}
+              <div>
+                <span style={{ fontSize: '0.875rem', fontWeight: 800, color: audioStatus === 'ready' ? '#047857' : '#9a3412' }}>
+                  {audioStatus === 'ready'
+                    ? 'Supertonic 3 Voiceover Ready'
+                    : audioStatus === 'failed'
+                    ? 'Supertonic 3 Voiceover Failed'
+                    : 'Voiceover Pending'}
+                </span>
+                <p style={{ fontSize: '0.8rem', color: audioStatus === 'ready' ? '#065f46' : '#c2410c', margin: '2px 0 0 0' }}>
+                  {audioStatus === 'ready'
+                    ? 'Normalized audio buffers generated via Supertonic 3 ONNX engine.'
+                    : audioError || 'Supertonic 3 ONNX model not yet synthesized. Click Synthesize button above to generate audio.'}
+                </p>
+              </div>
+            </div>
+
+            {audioStatus !== 'ready' && (
+              <button
+                onClick={handleSynthesizeTTS}
+                disabled={isSynthesizing}
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  background: '#c2410c',
+                  color: '#ffffff',
+                  border: 'none',
+                  fontSize: '0.75rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                Retry Supertonic 3 TTS
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Main Grid: Project Selector Sidebar + Player Viewport */}
         <div style={{ display: 'grid', gridTemplateColumns: '340px 1fr', gap: '28px' }}>
           {/* Sidebar: Repository Selector & Storyboard Breakdown */}
@@ -186,6 +283,8 @@ export default function VideoStudioPage() {
                     onClick={() => {
                       setSelectedProject(proj);
                       setActiveSceneIndex(0);
+                      setAudioStatus(proj?.remotionVideoScript?.audioSynthesisStatus || 'pending');
+                      setAudioError(proj?.remotionVideoScript?.audioSynthesisError || null);
                     }}
                     style={{
                       display: 'flex',
@@ -281,7 +380,7 @@ export default function VideoStudioPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginTop: '20px' }}>
                   <div style={{ background: '#ffffff', border: '1px solid #f1f5f9', padding: '14px', borderRadius: '10px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Audio Engine</div>
-                    <div style={{ fontSize: '0.9rem', color: '#0f172a', fontWeight: 700, marginTop: '2px' }}>Local Offline (eSpeak / Piper)</div>
+                    <div style={{ fontSize: '0.9rem', color: '#0f172a', fontWeight: 700, marginTop: '2px' }}>Supertonic 3 (99M ONNX)</div>
                   </div>
                   <div style={{ background: '#ffffff', border: '1px solid #f1f5f9', padding: '14px', borderRadius: '10px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>Loudness Normalization</div>

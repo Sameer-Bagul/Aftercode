@@ -60,6 +60,9 @@ export interface RemotionScene {
   badges: string[];
 }
 
+export type SupertonicVoiceStyle = 'M1' | 'M2' | 'F1' | 'F2';
+export type AudioSynthesisStatus = 'pending' | 'ready' | 'failed';
+
 export interface RemotionScriptConfig {
   videoTitle: string;
   totalDurationSeconds: number;
@@ -67,6 +70,10 @@ export interface RemotionScriptConfig {
   fps: number;
   resolution: { width: number; height: number };
   voiceoverScript: string;
+  audioSynthesisStatus?: AudioSynthesisStatus;
+  audioSynthesisError?: string | null;
+  supertonicVoiceStyle?: SupertonicVoiceStyle;
+  language?: string;
   scenes: RemotionScene[];
   remotionReactCode: string;
 }

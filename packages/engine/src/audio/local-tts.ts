@@ -2,6 +2,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { execa } from 'execa';
 import { VideoWorkspacePaths } from '../workspace/video-workspace.js';
+import { supertonicSynthesizer } from './supertonic-tts.js';
+import { SupertonicVoiceStyle, AudioSynthesisStatus } from '@aftercode/shared';
 
 export interface LocalTtsSceneAudio {
   sceneNumber: number;
@@ -13,27 +15,34 @@ export interface LocalTtsSceneAudio {
 
 export interface LocalTtsSynthesisResult {
   slug: string;
+  status: AudioSynthesisStatus;
   voiceProvider: string;
   sceneAudios: LocalTtsSceneAudio[];
   combinedAudioPath: string;
   totalDurationSeconds: number;
+  error?: string | null;
 }
 
 /**
- * Synthesizes voice narration offline using local TTS engine (eSpeak-NG / Local Command / Fallback WAV Generator)
+ * Synthesizes voice narration offline using dedicated Supertonic 3 TTS engine
  * and normalizes audio levels using FFmpeg loudnorm filter.
  */
 export async function synthesizeLocalTtsVoiceover(
   paths: VideoWorkspacePaths,
   slug: string,
-  scenes: { sceneNumber: number; narration: string }[]
+  scenes: { sceneNumber: number; narration: string }[],
+  options?: { voiceStyle?: SupertonicVoiceStyle; language?: string }
 ): Promise<LocalTtsSynthesisResult> {
   const narrationDir = paths.narrationAudioDir;
   if (!fs.existsSync(narrationDir)) {
     fs.mkdirSync(narrationDir, { recursive: true });
   }
 
+  const voiceStyle = options?.voiceStyle || 'M1';
+  const language = options?.language || 'en';
   const sceneAudios: LocalTtsSceneAudio[] = [];
+  let hasFailure = false;
+  let lastError: string | undefined = undefined;
 
   for (const scene of scenes) {
     const rawFileName = `scene-${scene.sceneNumber}-raw.wav`;
@@ -41,49 +50,44 @@ export async function synthesizeLocalTtsVoiceover(
     const rawFilePath = path.join(narrationDir, rawFileName);
     const normFilePath = path.join(narrationDir, normFileName);
 
-    console.log(` 🎙️ [Local TTS Engine] Synthesizing Scene ${scene.sceneNumber} narration...`);
+    console.log(` 🎙️ [Supertonic 3 TTS Engine] Synthesizing Scene ${scene.sceneNumber} (${voiceStyle}, ${language})...`);
 
-    let synthesized = false;
+    // Dedicated Supertonic 3 synthesis execution
+    const res = await supertonicSynthesizer.synthesize({
+      text: scene.narration,
+      outputPath: rawFilePath,
+      voiceStyle,
+      language,
+    });
 
-    // 1. Try espeak-ng or espeak if installed locally
-    try {
-      await execa('espeak-ng', ['-w', rawFilePath, '-v', 'en-us', '-s', '150', scene.narration]);
-      synthesized = true;
-    } catch {
-      try {
-        await execa('espeak', ['-w', rawFilePath, '-v', 'en-us', '-s', '150', scene.narration]);
-        synthesized = true;
-      } catch {
-        // Local espeak unavailable, generate a valid silent/tone WAV fallback buffer deterministically
-        synthesized = await createDeterministicFallbackWav(rawFilePath, scene.narration);
-      }
+    if (!res.success) {
+      hasFailure = true;
+      lastError = res.error || 'Supertonic 3 synthesis failed.';
+      console.warn(` ⚠️ [Supertonic 3 TTS Engine] Scene ${scene.sceneNumber} failed: ${lastError}`);
+      break;
     }
 
-    // 2. Normalize audio levels via FFmpeg loudnorm filter
+    // Normalize audio levels via FFmpeg loudnorm filter
     let finalPath = rawFilePath;
     let normalized = false;
-    if (synthesized) {
-      try {
-        await execa('ffmpeg', [
-          '-y',
-          '-i',
-          rawFilePath,
-          '-af',
-          'loudnorm=I=-16:TP=-1.5:LRA=11',
-          '-ar',
-          '44100',
-          normFilePath,
-        ]);
-        finalPath = normFilePath;
-        normalized = true;
-      } catch {
-        finalPath = rawFilePath;
-      }
+    try {
+      await execa('ffmpeg', [
+        '-y',
+        '-i',
+        rawFilePath,
+        '-af',
+        'loudnorm=I=-16:TP=-1.5:LRA=11',
+        '-ar',
+        '44100',
+        normFilePath,
+      ]);
+      finalPath = normFilePath;
+      normalized = true;
+    } catch {
+      finalPath = rawFilePath;
     }
 
-    // Estimate duration based on word count (~150 words per minute = 2.5 words per sec)
-    const wordCount = scene.narration.split(/\s+/).filter(Boolean).length;
-    const durationSeconds = Math.max(3, Math.ceil(wordCount / 2.5));
+    const durationSeconds = res.durationSeconds || Math.max(3, Math.ceil(scene.narration.split(/\s+/).length / 2.5));
 
     sceneAudios.push({
       sceneNumber: scene.sceneNumber,
@@ -94,51 +98,28 @@ export async function synthesizeLocalTtsVoiceover(
     });
   }
 
-  // Combine scene audio files into full-narration.wav
   const combinedAudioPath = path.join(paths.audioDir, 'full-narration.wav');
   const totalDuration = sceneAudios.reduce((acc, s) => acc + s.durationSeconds, 0);
 
+  if (hasFailure || sceneAudios.length === 0) {
+    return {
+      slug,
+      status: 'failed',
+      voiceProvider: 'Supertonic 3 ONNX Engine',
+      sceneAudios: [],
+      combinedAudioPath: '',
+      totalDurationSeconds: 0,
+      error: lastError || 'Supertonic 3 engine unavailable or model uninitialized.',
+    };
+  }
+
   return {
     slug,
-    voiceProvider: 'local-tts-piper-offline',
+    status: 'ready',
+    voiceProvider: 'Supertonic 3 ONNX Engine',
     sceneAudios,
     combinedAudioPath,
     totalDurationSeconds: totalDuration,
+    error: null,
   };
-}
-
-async function createDeterministicFallbackWav(outputPath: string, text: string): Promise<boolean> {
-  try {
-    const sampleRate = 44100;
-    const durationSec = Math.max(3, Math.ceil(text.split(/\s+/).length / 2.5));
-    const numSamples = sampleRate * durationSec;
-    const dataSize = numSamples * 2;
-    const buffer = Buffer.alloc(44 + dataSize);
-
-    // RIFF header
-    buffer.write('RIFF', 0);
-    buffer.writeUInt32LE(36 + dataSize, 4);
-    buffer.write('WAVE', 8);
-    buffer.write('fmt ', 12);
-    buffer.writeUInt32LE(16, 16); // Subchunk1Size
-    buffer.writeUInt16LE(1, 20); // AudioFormat (PCM)
-    buffer.writeUInt16LE(1, 22); // NumChannels (Mono)
-    buffer.writeUInt32LE(sampleRate, 24); // SampleRate
-    buffer.writeUInt32LE(sampleRate * 2, 28); // ByteRate
-    buffer.writeUInt16LE(2, 32); // BlockAlign
-    buffer.writeUInt16LE(16, 34); // BitsPerSample
-    buffer.write('data', 36);
-    buffer.writeUInt32LE(dataSize, 40);
-
-    // Write a subtle 440Hz sine wave tone
-    for (let i = 0; i < numSamples; i++) {
-      const sample = Math.sin((2 * Math.PI * 440 * i) / sampleRate) * 3000;
-      buffer.writeInt16LE(Math.floor(sample), 44 + i * 2);
-    }
-
-    fs.writeFileSync(outputPath, buffer);
-    return true;
-  } catch {
-    return false;
-  }
 }

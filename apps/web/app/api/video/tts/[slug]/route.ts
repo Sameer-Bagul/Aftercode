@@ -5,11 +5,21 @@ import { initVideoWorkspace, synthesizeLocalTtsVoiceover } from '@aftercode/engi
 export async function POST(request: Request, { params }: { params: { slug: string } }) {
   try {
     const slug = params.slug;
+    let body: any = {};
+    try {
+      body = await request.json();
+    } catch {
+      // Body is optional
+    }
+
+    const voiceStyle = body?.voiceStyle || 'M1';
+    const language = body?.language || 'en';
+
     const projectRoot = process.cwd();
     const workspaceDir = path.join(projectRoot, 'workspace', 'current');
     const paths = initVideoWorkspace(workspaceDir, slug);
 
-    const scenes = [
+    const scenes = body?.scenes || [
       { sceneNumber: 1, narration: `Welcome to the technical showcase of ${slug}.` },
       { sceneNumber: 2, narration: `Decoupled architecture powered by clean API gateways.` },
       { sceneNumber: 3, narration: `Exposing validated API endpoints and schemas.` },
@@ -18,9 +28,23 @@ export async function POST(request: Request, { params }: { params: { slug: strin
       { sceneNumber: 6, narration: `Explore the full open-source repository on GitHub.` },
     ];
 
-    const ttsResult = await synthesizeLocalTtsVoiceover(paths, slug, scenes);
-    return NextResponse.json({ success: true, slug, ttsResult });
+    const ttsResult = await synthesizeLocalTtsVoiceover(paths, slug, scenes, { voiceStyle, language });
+
+    const isSuccess = ttsResult.status === 'ready';
+    return NextResponse.json({
+      success: isSuccess,
+      status: ttsResult.status,
+      slug,
+      ttsResult,
+    });
   } catch (err: any) {
-    return NextResponse.json({ success: false, error: err.message }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        status: 'failed',
+        error: err.message || 'Supertonic 3 voiceover synthesis error.',
+      },
+      { status: 500 }
+    );
   }
 }

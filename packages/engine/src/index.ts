@@ -13,6 +13,7 @@ export * from './processing/queue.js';
 export * from './processing/runner.js';
 export * from './workspace/video-workspace.js';
 export * from './audio/local-tts.js';
+export * from './audio/supertonic-tts.js';
 export * from './assets/normalizer.js';
 export * from './video/remotion-builder.js';
 export * from './video/remotion-script-generator.js';
