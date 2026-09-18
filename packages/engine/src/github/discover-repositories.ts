@@ -1,6 +1,5 @@
 import { GitHubRepository, InventoryState, InventoryItem } from './github-types.js';
 import * as fs from 'fs';
-import * as path from 'path';
 
 export function formatSlug(repoName: string): string {
   return repoName
@@ -9,9 +8,13 @@ export function formatSlug(repoName: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+/**
+ * Fetches all public, private, source, and fork repositories for a given user or PAT.
+ * Combines authenticated user repos and user-owned repos across all pages, deduplicating by ID.
+ */
 export async function fetchRepositoriesFromGitHub(owner: string, token?: string): Promise<GitHubRepository[]> {
   const headers: Record<string, string> = {
-    'Accept': 'application/vnd.github.v3+json',
+    Accept: 'application/vnd.github.v3+json',
     'User-Agent': 'Portfolio-Intelligence-Engine',
   };
 
@@ -21,50 +24,62 @@ export async function fetchRepositoriesFromGitHub(owner: string, token?: string)
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const allRepos: GitHubRepository[] = [];
-  let page = 1;
+  const reposMap = new Map<number | string, GitHubRepository>();
   const perPage = 100;
 
-  while (page <= 10) {
-    const url = hasValidToken
-      ? `https://api.github.com/user/repos?per_page=${perPage}&page=${page}&sort=updated&visibility=all&affiliation=owner,collaborator,organization_member`
-      : `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&sort=updated`;
+  // 1. Fetch authenticated user repos across all pages (covers private, public, sources, forks)
+  if (hasValidToken) {
+    let page = 1;
+    while (page <= 20) {
+      try {
+        const url = `https://api.github.com/user/repos?per_page=${perPage}&page=${page}&type=all&sort=updated`;
+        const res = await fetch(url, { headers });
+        if (!res.ok) break;
 
-    const response = await fetch(url, { headers });
+        const items = (await res.json()) as GitHubRepository[];
+        if (!Array.isArray(items) || items.length === 0) break;
 
-    if (!response.ok) {
-      if (response.status === 401 && hasValidToken) {
-        // Fallback to public endpoint if token is unauthorized
-        const publicUrl = `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&sort=updated`;
-        const pubRes = await fetch(publicUrl, { headers: { 'User-Agent': 'Portfolio-Intelligence-Engine' } });
-        if (pubRes.ok) {
-          const pubRepos = (await pubRes.json()) as GitHubRepository[];
-          if (pubRepos.length === 0) break;
-          allRepos.push(...pubRepos);
-          if (pubRepos.length < perPage) break;
-          page++;
-          continue;
+        for (const repo of items) {
+          const key = repo.id || repo.full_name || repo.name;
+          reposMap.set(key, repo);
         }
-      }
-      if (response.status === 404) {
-        throw new Error(`GitHub user or organization '${owner}' not found.`);
-      }
-      throw new Error(`Failed to fetch repositories from GitHub API: ${response.status} ${response.statusText}`);
-    }
 
-    const repos = (await response.json()) as GitHubRepository[];
-    if (repos.length === 0) {
-      break;
+        if (items.length < perPage) break;
+        page++;
+      } catch (err) {
+        console.warn(`Error fetching user repos page ${page}:`, err);
+        break;
+      }
     }
-
-    allRepos.push(...repos);
-    if (repos.length < perPage) {
-      break;
-    }
-    page++;
   }
 
-  return allRepos;
+  // 2. Fetch user-specific public/org repos across all pages
+  let page = 1;
+  while (page <= 20) {
+    try {
+      const url = `https://api.github.com/users/${owner}/repos?per_page=${perPage}&page=${page}&type=all&sort=updated`;
+      const res = await fetch(url, { headers });
+      if (!res.ok) break;
+
+      const items = (await res.json()) as GitHubRepository[];
+      if (!Array.isArray(items) || items.length === 0) break;
+
+      for (const repo of items) {
+        const key = repo.id || repo.full_name || repo.name;
+        if (!reposMap.has(key)) {
+          reposMap.set(key, repo);
+        }
+      }
+
+      if (items.length < perPage) break;
+      page++;
+    } catch (err) {
+      console.warn(`Error fetching public user repos page ${page}:`, err);
+      break;
+    }
+  }
+
+  return Array.from(reposMap.values());
 }
 
 export function buildInventoryState(owner: string, repos: GitHubRepository[], existingInventoryPath?: string): InventoryState {
@@ -94,8 +109,8 @@ export function buildInventoryState(owner: string, repos: GitHubRepository[], ex
       classification: existing ? existing.classification : null,
       lastProcessedTime: existing ? existing.lastProcessedTime : null,
       error: existing ? existing.error : null,
-      fork: repo.fork,
-      archived: repo.archived,
+      fork: Boolean(repo.fork),
+      archived: Boolean(repo.archived),
     };
   });
 

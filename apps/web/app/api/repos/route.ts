@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 import { fetchRepositoriesFromGitHub } from '@aftercode/engine';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Ensure root .env is loaded if token is missing
+if (!process.env.GITHUB_TOKEN) {
+  dotenv.config({ path: path.resolve(process.cwd(), '../../.env') });
+  dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+}
 
 export async function GET() {
   try {
