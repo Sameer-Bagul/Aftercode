@@ -149,7 +149,7 @@ export class NapkinSvgGenerator {
     nodes.push({
       id: `node_${nodes.length + 1}`,
       label: 'Synthesis & RAG Engine',
-      sublabel: techList.find((t) => /ai|gemini|openai|torch/i.test(t)) || 'AST Knowledge Index',
+      sublabel: techList.find((t: string) => /ai|gemini|openai|torch/i.test(t)) || 'AST Knowledge Index',
       category: 'ai',
       badge: `Step ${nodes.length + 1}`,
     });
@@ -175,7 +175,7 @@ export class NapkinSvgGenerator {
    * Programmatically calls Napkin AI API if bearer token is present
    */
   private static async callNapkinApi(spec: FlowchartDiagramSpec, apiKey: string): Promise<string | null> {
-    const promptText = `Flowchart titled "${spec.title}". Nodes: ${spec.nodes.map((n) => n.label).join(' -> ')}`;
+    const promptText = `Flowchart titled "${spec.title}". Nodes: ${spec.nodes.map((n: FlowchartNode) => n.label).join(' -> ')}`;
     const response = await fetch('https://api.napkin.ai/v1/visuals/generate', {
       method: 'POST',
       headers: {
@@ -210,7 +210,7 @@ export class NapkinSvgGenerator {
     const nodeHeight = 115;
 
     // Calculate node coordinates along a dynamic staggered layout
-    const positionedNodes = nodes.map((node, index) => {
+    const positionedNodes = nodes.map((node: FlowchartNode, index: number) => {
       const spacingX = (width - 120) / Math.max(count, 1);
       const x = 60 + index * spacingX + (spacingX - nodeWidth) / 2;
       const y = height / 2 - nodeHeight / 2 + (index % 2 === 0 ? -30 : 30);
@@ -219,7 +219,7 @@ export class NapkinSvgGenerator {
 
     // Generate SVG node elements
     const nodesSvg = positionedNodes
-      .map((n) => {
+      .map((n: any) => {
         const nodeColor =
           n.category === 'frontend'
             ? '#0284c7'

@@ -1,5 +1,5 @@
 import { execa } from 'execa';
-import { FlowchartDiagramSpec } from '@aftercode/shared';
+import { FlowchartDiagramSpec, FlowchartNode } from '@aftercode/shared';
 
 /**
  * NapkinMcpClient
@@ -21,7 +21,7 @@ export class NapkinMcpClient {
     }
 
     try {
-      const promptText = `Generate a ${type} titled "${spec.title}". Nodes: ${spec.nodes.map((n) => `${n.label} (${n.sublabel || ''})`).join(' -> ')}`;
+      const promptText = `Generate a ${type} titled "${spec.title}". Nodes: ${spec.nodes.map((n: FlowchartNode) => `${n.label} (${n.sublabel || ''})`).join(' -> ')}`;
 
       // Execute npx napkin-ai-mcp in dry-run / stdin JSON-RPC mode
       const { stdout } = await execa('npx', ['-y', 'napkin-ai-mcp'], {
