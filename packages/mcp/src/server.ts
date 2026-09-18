@@ -14,6 +14,7 @@ import {
   getVideoWorkspacePaths,
   synthesizeLocalTtsVoiceover,
   buildAndRenderRemotionVideo,
+  NapkinSvgGenerator,
   InventoryItem,
 } from '@aftercode/engine';
 
@@ -108,6 +109,19 @@ export function createAftercodeMcpServer(): Server {
               slug: { type: 'string', description: 'Repository slug ID' },
             },
             required: ['slug'],
+          },
+        },
+        {
+          name: 'aftercode_generate_napkin_visual',
+          description: 'Generate dynamic repo-aware SVG mindmaps, flowcharts, timelines, or hierarchies using napkin-ai-mcp / Napkin AI API with fallback.',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              title: { type: 'string', description: 'Diagram title' },
+              type: { type: 'string', enum: ['mindmap', 'flowchart', 'timeline', 'hierarchy'], description: 'Visual diagram type' },
+              techStack: { type: 'array', items: { type: 'string' }, description: 'List of tech stack technologies' },
+            },
+            required: ['title'],
           },
         },
       ],
@@ -328,6 +342,36 @@ export function createAftercodeMcpServer(): Server {
             {
               type: 'text',
               text: JSON.stringify(result, null, 2),
+            },
+          ],
+        };
+      }
+
+      if (name === 'aftercode_generate_napkin_visual') {
+        const title = String((args as any).title || 'Architecture');
+        const type = ((args as any).type || 'flowchart') as 'mindmap' | 'flowchart' | 'timeline' | 'hierarchy';
+        const techStack = (args as any).techStack || ['TypeScript', 'Node.js', 'Remotion'];
+
+        const spec = {
+          title: `${title} (${type})`,
+          subtitle: `Napkin Visual Diagram`,
+          nodes: techStack.map((tech: string, idx: number) => ({
+            id: `node_${idx + 1}`,
+            label: tech,
+            sublabel: `Module ${idx + 1}`,
+            category: (idx % 2 === 0 ? 'frontend' : 'ai') as 'frontend' | 'ai',
+            badge: `Step ${idx + 1}`,
+          })),
+          connections: [],
+        };
+
+        const svgContent = await NapkinSvgGenerator.generateFlowchart(spec, type);
+
+        return {
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ success: true, title, type, svgContent }, null, 2),
             },
           ],
         };

@@ -98,3 +98,32 @@ export interface ExtractedEvidence {
   userFlow?: string;
   codeFlow?: string;
 }
+
+export interface ImageAssetResult {
+  id: string;
+  title: string;
+  url: string;
+  thumbnailUrl: string;
+  source: 'wikimedia' | 'iconify' | 'openverse';
+  license?: string;
+  width?: number;
+  height?: number;
+  svgContent?: string;
+}
+
+export interface FlowchartNode {
+  id: string;
+  label: string;
+  sublabel?: string;
+  icon?: string;
+  category?: 'frontend' | 'backend' | 'database' | 'ai' | 'infra';
+  badge?: string;
+}
+
+export interface FlowchartDiagramSpec {
+  title: string;
+  subtitle?: string;
+  nodes: FlowchartNode[];
+  connections: Array<{ from: string; to: string; label?: string }>;
+  theme?: 'fruity' | 'dark' | 'cyberpunk';
+}

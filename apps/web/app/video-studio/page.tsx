@@ -14,6 +14,7 @@ export default function VideoStudioPage() {
   const [audioError, setAudioError] = useState<string | null>(null);
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [isRendering, setIsRendering] = useState<boolean>(false);
+  const [useGsapEngine, setUseGsapEngine] = useState<boolean>(true);
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -149,6 +150,27 @@ export default function VideoStudioPage() {
           </div>
 
           <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {/* GSAP Motion Engine Toggle */}
+            <button
+              onClick={() => setUseGsapEngine(!useGsapEngine)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: useGsapEngine ? '#f3e8ff' : '#ffffff',
+                border: useGsapEngine ? '1px solid #c084fc' : '1px solid #cbd5e1',
+                padding: '6px 12px',
+                borderRadius: '10px',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                color: useGsapEngine ? '#7e22ce' : '#64748b',
+                cursor: 'pointer',
+              }}
+            >
+              <Sparkles size={14} color={useGsapEngine ? '#7e22ce' : '#64748b'} />
+              {useGsapEngine ? 'GSAP Motion Enabled' : 'Standard Motion'}
+            </button>
+
             {/* Supertonic Voice Style Selector */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#ffffff', border: '1px solid #cbd5e1', padding: '6px 12px', borderRadius: '10px' }}>
               <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b' }}>Voice:</span>
