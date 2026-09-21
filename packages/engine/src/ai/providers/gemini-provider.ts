@@ -32,8 +32,8 @@ export class GeminiProvider implements AiProvider {
 
     const ai = new GoogleGenAI({ apiKey });
 
-    // Single target model (default: gemini-3.8-flash, configurable via GEMINI_MODEL)
-    const targetModel = process.env.GEMINI_MODEL || (options.modelsToTry && options.modelsToTry[0]) || 'gemini-3.8-flash';
+    // Single target model (default: gemini-3.6-flash, configurable via GEMINI_MODEL)
+    const targetModel = process.env.GEMINI_MODEL || (options.modelsToTry && options.modelsToTry[0]) || 'gemini-3.6-flash';
 
     const maxRetries = 3;
     let lastError: any = null;

@@ -1,0 +1,78 @@
+{
+  "_id": "noteforge-ai",
+  "title": "NoteForge AI",
+  "slug": "noteforge-ai",
+  "description": "**NoteForge AI** is an autonomous **RAG (Retrieval-Augmented Generation)** knowledge extraction engine that converts YouTube videos and audio streams into interactive **study notes, quizzes, flashcards, and mind maps**. Built with a hybrid routing architecture combining `Gemini Cloud APIs` and local `Ollama` models, it delivers zero-latency transcript slicing and resilient multi-key rate limit management.",
+  "longDescription": "### 🧠 Autonomous YouTube Knowledge Synthesis Architecture\n**NoteForge AI** addresses the high cost and contextual latency of processing long video transcripts by implementing an **Enterprise Hybrid Multi-LLM Router**. High-complexity tasks—such as single-shot synthesis of flashcards, deep chapter study guides, and comprehensive quizzes—are routed to `Gemini 2.5 Flash`. Lightweight structural tasks—such as Table of Contents extraction and mind map branch reorganization—are delegated locally to `Ollama` (`qwen2.5-coder`), minimizing cloud API costs while maintaining instant responsiveness.\n\n### ⏱️ Deterministic Transcript Slicing vs. Vector Overheads\nTraditional RAG architectures rely heavily on expensive external vector databases (such as Pinecone or Weaviate) to retrieve relevant chapter context, introducing latency and risk of chunk boundary misalignment. NoteForge AI solves this through **Deterministic Timestamp Slicing**. By extracting native YouTube chapter timestamps and aligning transcript boundaries mathematically, the system isolates exact transcript segments with zero millisecond latency, zero computational overhead, and guaranteed contextual accuracy without hallucinations.\n\n### 🛡️ Enterprise Hot-Swap Key Rotation & State Persistence\nTo handle unpredictable API rate limits during batch playlist processing, NoteForge AI features a **Round-Robin Multi-Key Pool** with automated exponential backoff powered by `Bottleneck`. If Key A encounters a `429 RESOURCE_EXHAUSTED` error, the engine marks the key with an `exhaustedUntil` timestamp and seamlessly hot-swaps to Key B without interrupting active generation. Furthermore, job state and chapter progress are persisted locally via `Prisma` and `SQLite`, allowing interrupted jobs to resume instantly at the exact missing chapter.\n\n### 🎨 Dynamic Headless PDF & Mind Map Render Engine\nNoteForge AI provides print-ready document exports through an integrated `Puppeteer` headless rendering pipeline. The system dynamically injects customizable runtime CSS themes (**Modern Bento**, **Academic Serif**, **Corporate Blue**, and **High-Contrast Dark Mode**) with strict `page-break-inside: avoid` layout guards for inline code blocks and Mermaid diagrams.",
+  "category": "ai-ml",
+  "status": "completed",
+  "role": "Creator & Full Stack AI Engineer",
+  "clientOrCompany": "Open Source Project",
+  "duration": "1 month",
+  "githubUrl": "https://github.com/Sameer-Bagul/NoteForge-AI",
+  "demoUrl": null,
+  "classification": "portfolio-worthy",
+  "techStackBreakdown": {
+    "frontend": ["React 18", "TailwindCSS", "Lucide React", "Mermaid.js"],
+    "backend": ["Node.js", "Express", "LangChain", "LangGraph", "Puppeteer"],
+    "database": ["Prisma ORM", "SQLite"],
+    "aiMl": ["Google Gemini 2.5 Flash", "Ollama (qwen2.5-coder)", "Hybrid RAG Pipeline"],
+    "devops": ["Docker", "Bottleneck Rate Limiter"]
+  },
+  "features": [
+    {
+      "title": "Autonomous YouTube RAG Processing",
+      "description": "Extracts video transcripts and metadata to synthesize deep study guides, key takeaways, and flashcards in parallel.",
+      "icon": "Video"
+    },
+    {
+      "title": "Hybrid Cloud & Local Model Routing",
+      "description": "Intelligently balances workloads between Gemini Cloud API for heavy synthesis and local Ollama models for structural indexing.",
+      "icon": "Cpu"
+    },
+    {
+      "title": "Deterministic Timestamp Slicing",
+      "description": "Slices transcript chunks precisely matching chapter timestamps without requiring vector database indexing overhead.",
+      "icon": "Clock"
+    },
+    {
+      "title": "Multi-Key Hot-Swap API Pool",
+      "description": "Manages round-robin rotation across multiple API keys with automated backoff cooldowns on rate limits.",
+      "icon": "Key"
+    },
+    {
+      "title": "Dynamic Headless PDF Styling",
+      "description": "Renders publication-ready PDF notes with custom glassmorphic, academic, and dark themes using Puppeteer.",
+      "icon": "FileText"
+    }
+  ],
+  "challenges": [
+    {
+      "title": "Handling API Quota Exhaustion During Long Video Processing",
+      "description": "Synthesizing 2-hour video transcripts frequently exceeded single API key rate limits midway through generation.",
+      "solution": "Built a Bottleneck queue coupled with Prisma state persistence and round-robin key hot-swapping to guarantee uninterrupted resume capability."
+    },
+    {
+      "title": "Eliminating RAG Chunk Misalignment",
+      "description": "Semantic chunking often split code examples and key concepts across arbitrary token boundaries.",
+      "solution": "Replaced vector chunking with deterministic timestamp slicing using YouTube chapter markers to isolate complete logical sections."
+    }
+  ],
+  "learnings": [
+    "Optimized cost-performance efficiency by orchestrating local Ollama models alongside cloud LLM providers.",
+    "Mastered headless PDF generation and page-break optimization using Puppeteer and dynamic CSS injection.",
+    "Implemented state machine resilience using LangGraph and SQLite workflow persistence."
+  ],
+  "architectureDiagram": "graph TD\n  Client[React SPA Dashboard] -->|HTTP REST| API[Express API Server]\n  API -->|Fetch Transcript| YT[YouTube API / yt-dlp]\n  API -->|Deterministic Slicing| Slicer[Transcript Slicer]\n  Slicer -->|Context Chunks| Router[Provider Router]\n  Router -->|Heavy Synthesis| Gemini[Google Gemini API]\n  Router -->|TOC & MindMap| Ollama[Local Ollama LLM]\n  API -->|Persist Job State| DB[(Prisma / SQLite)]\n  API -->|Render PDF| Puppeteer[Headless Puppeteer]",
+  "dataFlowDiagram": "flowchart LR\n  VideoURL[YouTube Video URL] --> Ingestion[Transcript Ingestion]\n  Ingestion --> TimestampSlicer[Timestamp Slicing]\n  TimestampSlicer -->|Chapter Chunks| MultiKeyPool[Round-Robin API Pool]\n  MultiKeyPool -->|Gemini Synthesis| LangGraphFlow[LangGraph Critic Workflow]\n  LangGraphFlow -->|Structured Output| UI[React Study Interface]\n  LangGraphFlow -->|CSS Theme Injection| PDF[Puppeteer PDF Generator]",
+  "sequenceDiagram": "sequenceDiagram\n  autonumber\n  User->>React App: Input YouTube Video URL & Target Theme\n  React App->>Express API: POST /api/generate\n  Express API->>YouTube: Download Transcript & Chapters\n  Express API->>Slicer: Slice Transcript by Chapter Timestamps\n  loop For Each Chapter\n    Express API->>KeyPool: Request Active Gemini API Key\n    KeyPool-->>Express API: Provide Available Key\n    Express API->>Gemini API: Synthesize Chapter Notes & Flashcards\n    alt 429 Rate Limit\n      KeyPool->>KeyPool: Flag Key Exhausted & Hot-Swap to Key B\n    end\n  end\n  Express API->>Puppeteer: Render Themed PDF\n  Express API-->>React App: Return Complete Notes JSON & PDF Download Link",
+  "metadata": {
+    "stars": 0,
+    "forks": 0,
+    "openIssues": 0,
+    "license": "MIT",
+    "language": "TypeScript",
+    "sizeKb": 2450,
+    "lastAnalyzedAt": "2026-09-21T18:31:00.000Z"
+  }
+}

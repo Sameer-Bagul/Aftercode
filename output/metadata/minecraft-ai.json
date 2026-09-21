@@ -3,8 +3,8 @@
   "title": "Minecraft Ai",
   "slug": "minecraft-ai",
   "shortDescription": "This is a Next.js project bootstrapped with create-next-app. Getting Started First, run the development server: ``bash npm run dev or yarn dev or pnpm dev or bun dev ` Open http://...",
-  "description": "**minecraft-ai** is a production-grade software engineering system implemented primarily in **Python**, **TypeScript**. The backend service layer is built on `FastAPI` exposing **4 REST API routes**, managing incoming payload validation, CORS security, and rate-limiting middleware. The presentation tier is engineered using `React`, `Next.js`, featuring reactive component hierarchies and modular state synchronization. The entire application adopts a clean, decoupled architecture optimized for containerized deployment and automated AST inspection.",
-  "longDescription": "System Architecture for minecraft-ai: Built with Python, TypeScript.\n\nBackend service layer powered by FastAPI, managing incoming payload validation, CORS policies, and rate-limiting middleware.\n\nPresentation and data storage layers integrate React, Next.js.",
+  "description": "The **minecraft-ai** repository is an AI-powered support agent and procedural 3D asset generation engine built for Craftify Gaming Productions. Featuring a decoupled architecture with a **FastAPI** Python backend and a **Next.js** TypeScript frontend, the platform integrates a hybrid Retrieval-Augmented Generation (**RAG**) engine utilizing **BM25** and **TF-IDF** cosine search across domain documentation. The system features an Agent Intent Router with safety guardrails that processes queries via `POST /ask`, generates custom 3D Minecraft blocks and 16x16 pixel-art PNG textures via `POST /generate_block`, and renders live 3D models using an interactive WebGL viewport. System health metrics are provided via `GET /health`, with full containerization orchestrated using **Docker Compose**.",
+  "longDescription": "The **minecraft-ai** system provides a unified solution for automated support Q&A and dynamic 3D Minecraft block asset synthesis. The decoupled frontend layer is constructed with **Next.js 14** and **TypeScript**, presenting a dark console interface complete with response type badges and an interactive WebGL viewer featuring 360-degree orbit controls. The backend API is powered by **FastAPI** on Python, orchestrating query intent routing, document search indexing, and procedural texture/mesh generation.\n\nThe core intelligence relies on a dynamic hybrid RAG pipeline that pairs *BM25 keyword search* with *TF-IDF vector cosine similarity* to retrieve grounded citations from Craftify documentation. When a user requests novel blocks—such as a Lava Crystal or Void Portal block—the procedural engine generates custom 16x16 pixel-art PNG textures and Blockbench Java JSON assets, which are rendered client-side in real-time.\n\nAn Agent Intent Router governs input processing, determining whether to execute documentation retrieval, run dynamic asset creation tools, or enforce safety guardrails. Execution steps and tool invocations are logged into `tool_calls.json` for auditability. Backend operations are exposed through HTTP endpoints, including `GET /health` for monitoring indexed corpus chunks, `POST /ask` for conversational RAG queries, and `POST /generate_block` for dynamic asset generation.\n\nThe deployment topology is fully containerized using **Docker Compose**, coordinating service execution across backend, frontend, and vector database environments. The repository includes an automated evaluation harness (`eval/run_eval.py`) that executes 15 benchmark test queries against golden datasets, ensuring 100% system pass rate verification and safety compliance.",
   "category": "Web App",
   "isFeatured": true,
   "status": "Completed",
@@ -52,7 +52,19 @@
     "Constructed an automated evaluation harness in eval/run_eval.py benchmarking 15 golden dataset queries with a 100% pass rate.",
     "Configured containerized multi-service deployment via Docker and Docker Compose orchestrating the FastAPI backend and Next.js frontend.",
     "Structured data indexing across Craftify support tickets and documentation to provide grounded citations with relevance scores.",
-    "Configured CORS middleware on FastAPI to support secure local and containerized frontend-to-backend communication."
+    "Configured CORS middleware on FastAPI to support secure local and containerized frontend-to-backend communication.",
+    "Architected a decoupled application combining a Next.js frontend and FastAPI backend for AI support and dynamic asset generation.",
+    "Engineered a hybrid RAG retrieval pipeline combining BM25 lexical search and TF-IDF vector cosine similarity.",
+    "Implemented an Agent Intent Router to direct inputs between documentation search, dynamic tool calls, and guardrail abstentions.",
+    "Built a dynamic 3D asset engine generating Blockbench Java JSON structures and 16x16 pixel-art PNG textures.",
+    "Integrated an interactive WebGL viewport with 360-degree orbit controls into the Next.js console interface.",
+    "Developed the `POST /ask` endpoint to stream grounded RAG answers alongside response type classifications.",
+    "Created the `POST /generate_block` endpoint for dynamic block model and texture generation based on text prompts.",
+    "Implemented the `GET /health` system monitoring endpoint reporting active RAG indexed document metrics.",
+    "Designed safety guardrail policies to handle out-of-scope or unsafe user requests reliably.",
+    "Established structured logging for tool calls and intent router decisions in `tool_calls.json`.",
+    "Configured container orchestration using `docker-compose.yml` for unified service deployments.",
+    "Constructed an automated evaluation suite (`eval/run_eval.py`) validating 15 benchmark test queries with a 100% pass rate."
   ],
   "image": null,
   "gallery": [],
@@ -79,12 +91,24 @@
     "Visual response type badges categorizing outputs as Answer, Abstention, Tool Call, or Guardrail.",
     "Structured tool execution logging capturing arguments and status in tool_calls.json.",
     "Automated evaluation benchmark running 15 evaluation queries against a golden dataset.",
-    "Multi-container Docker Compose orchestration for full-stack local deployment."
+    "Multi-container Docker Compose orchestration for full-stack local deployment.",
+    "Grounded Retrieval-Augmented Generation Q&A over Craftify support documentation.",
+    "Hybrid BM25 and TF-IDF cosine similarity vector retrieval engine.",
+    "Procedural 3D Minecraft block asset synthesis from natural language prompts.",
+    "Automated 16x16 pixel-art PNG texture generation.",
+    "Interactive WebGL 3D model viewer with full 360-degree orbit controls.",
+    "Agent Safety Guardrail engine with automated query abstention capabilities.",
+    "Real-time visual response badges (Answer, Abstention, Tool Call, Guardrail).",
+    "Structured JSON logging for tool invocations and intent routing.",
+    "Backend health check endpoint (`GET /health`) displaying chunk indexing status.",
+    "Full containerized development and deployment setup via Docker Compose."
   ],
   "challenges": [
-    "Managing state synchronization and component decoupling across 7 core modules",
-    "Optimizing data serialization and payload validation for concurrent requests",
-    "Ensuring cross-platform container stability and build isolation"
+    "Balancing precision from lexical BM25 matching with semantic context from TF-IDF vector search in real-time retrieval.",
+    "Enforcing strict intent classification guardrails to prevent unauthorized execution of procedural generation tools.",
+    "Ensuring deterministic production of valid Blockbench Java JSON geometry and 16x16 pixel-art PNG textures from freeform prompts.",
+    "Streaming complex procedural model payloads from FastAPI to the Next.js WebGL viewport without blocking UI responsiveness.",
+    "Maintaining high reliability across diverse query types to achieve a 100% pass rate in the benchmark evaluation suite."
   ],
   "learnings": [
     "Deep technical patterns in Python, TypeScript, React, Next.js",
@@ -93,7 +117,12 @@
     "Explicit agent routing states (Answer, Abstention, Tool Call, Guardrail) improve frontend UX by standardizing response badges and citation handling.",
     "Standardizing procedural asset outputs to Blockbench Java JSON ensures seamless compatibility with Minecraft modding conventions.",
     "Automated evaluation harnesses using golden datasets are essential for validating agent safety and intent routing stability during iteration.",
-    "Decoupling procedural 3D model generation into dedicated REST endpoints optimizes API throughput and prevents UI thread blocking."
+    "Decoupling procedural 3D model generation into dedicated REST endpoints optimizes API throughput and prevents UI thread blocking.",
+    "Combining BM25 keyword lookup with TF-IDF cosine similarity significantly improves citation accuracy over simple vector search alone.",
+    "Explicit intent routing before tool execution reduces agent hallucinations and enforces safety guardrails.",
+    "Generative 3D block synthesis requires synchronized generation of both JSON asset schemas and dynamic texture assets.",
+    "Containerizing full-stack agent applications via Docker Compose simplifies local cross-service networking and environment management.",
+    "Automated evaluation suites with golden datasets are critical for continuous verification of agent response accuracy."
   ],
   "architectureOverview": "Frontend built with React, Next.js. Backend API powered by FastAPI. Deployed using Docker.",
   "userFlow": [
@@ -168,9 +197,11 @@
   "clientTestimonial": null,
   "relatedBlogs": [],
   "futureRoadmap": [
-    "Implement WebRTC real-time binary stream handler",
-    "Add automated end-to-end integration test coverage",
-    "Deploy automated CI/CD container build pipeline"
+    "Integrate Qdrant vector database service directly into Docker Compose for large-scale document vector search.",
+    "Expand the dynamic asset engine to support multi-block composite structures and animated block models.",
+    "Enhance WebGL client rendering with custom shader lighting, particle emitters, and emissive glow effects.",
+    "Extend the evaluation harness with additional edge-case benchmarks and LLM evaluation metrics.",
+    "Add studio-tier rate limiting and API key management across backend API endpoints."
   ],
   "remotionVideoScript": {
     "videoTitle": "minecraft-ai - Technical Video Showcase",
@@ -295,8 +326,8 @@
     "portfolioWorthiness": "high"
   },
   "metadata": {
-    "generatedAt": "2026-09-21T17:41:41.105Z",
-    "lastAnalyzedAt": "2026-09-21T17:41:41.105Z",
+    "generatedAt": "2026-09-21T19:05:56.368Z",
+    "lastAnalyzedAt": "2026-09-21T19:05:56.368Z",
     "sourceCommit": null,
     "manuallyVerified": false
   }
