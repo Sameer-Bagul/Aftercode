@@ -1,7 +1,7 @@
 import { ExtractedEvidence } from '../repository/evidence-collector.js';
 import { EphemeralHybridIndex, RetrievalResult } from './hybrid-indexer.js';
 import { stripEmojis } from '../metadata/normalizer.js';
-import { GoogleGenAI } from '@google/genai';
+import { AiProviderRegistry } from '../ai/provider-registry.js';
 
 export interface RagSynthesisResult {
   architectureDescription: string;
@@ -17,8 +17,6 @@ export async function runRagMultiPassSynthesis(
   evidence: ExtractedEvidence,
   hybridIndex: EphemeralHybridIndex
 ): Promise<RagSynthesisResult> {
-  const apiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY || process.env.GOOGLE_API_KEY;
-
   // Perform 4 RAG Searches across the Ephemeral Hybrid Index
   console.log(` 🔍 [RAG Retriever] Querying Ephemeral Hybrid Index (${hybridIndex.getChunkCount()} total chunks)...`);
 
@@ -40,22 +38,20 @@ export async function runRagMultiPassSynthesis(
 
   console.log(` 🎯 [RAG Retriever] Retrived ${topChunks.length} top-ranked Hybrid RAG code chunks for synthesis.`);
 
-  if (apiKey && process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
+  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false' && AiProviderRegistry.getActiveProviders().length > 0) {
     try {
-      console.log(` 🤖 [RAG Synthesizer] Executing Gemini SDK (@google/genai) RAG prompt synthesis...`);
-      return await executeGeminiRagSynthesis(evidence, topChunks, apiKey);
+      return await executeMultiProviderRagSynthesis(evidence, topChunks);
     } catch (err: any) {
-      console.warn(` ⚠️ [RAG Synthesizer] Gemini SDK error (${err.message}). Switching to Deep Heuristic RAG synthesis.`);
+      console.warn(` ⚠️ [RAG Synthesizer] AI Layer error (${err.message}). Switching to Deep Heuristic RAG synthesis.`);
     }
   }
 
   return executeHeuristicRagSynthesis(evidence, topChunks);
 }
 
-async function executeGeminiRagSynthesis(
+async function executeMultiProviderRagSynthesis(
   evidence: ExtractedEvidence,
-  retrievedChunks: RetrievalResult[],
-  apiKey: string
+  retrievedChunks: RetrievalResult[]
 ): Promise<RagSynthesisResult> {
   const contextSnippet = retrievedChunks
     .slice(0, 10)
@@ -83,37 +79,11 @@ Return strictly valid JSON with key fields:
 
 DO NOT use emojis.`;
 
-  const ai = new GoogleGenAI({ apiKey });
-  const modelsToTry = ['gemini-3.6-flash', 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro-latest'];
-  let response: any = null;
-  let lastErr: any = null;
-
-  for (const model of modelsToTry) {
-    try {
-      response = await ai.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-        },
-      });
-      if (response && response.text) break;
-    } catch (err: any) {
-      lastErr = err;
-    }
-  }
-
-  if (!response || !response.text) {
-    throw lastErr || new Error('Gemini SDK models generation failed');
-  }
-
-  const text = response.text || '';
-  const jsonMatch = text.replace(/```json\s*|\s*```/g, '').match(/\{[\s\S]*\}/);
-
-  if (jsonMatch) {
-    const parsed = JSON.parse(jsonMatch[0]);
+  const response = await AiProviderRegistry.synthesizeJson<any>(prompt);
+  if (response && response.data) {
+    const parsed = response.data;
     return {
-      architectureDescription: stripEmojis(parsed.architectureDescription || ''),
+      architectureDescription: parsed.architectureDescription || '',
       contributions: (parsed.contributions || []).map((s: string) => stripEmojis(s)),
       features: (parsed.features || []).map((s: string) => stripEmojis(s)),
       challenges: (parsed.challenges || []).map((s: string) => stripEmojis(s)),
@@ -122,7 +92,7 @@ DO NOT use emojis.`;
       ragRetrievedChunksCount: retrievedChunks.length,
     };
   }
-  throw new Error('Failed to parse JSON from Gemini RAG SDK response');
+  throw new Error('Failed to parse JSON from multi-provider AI response');
 }
 
 function executeHeuristicRagSynthesis(evidence: ExtractedEvidence, retrievedChunks: RetrievalResult[]): RagSynthesisResult {
