@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getMonorepoRoot } from '../root-helper';
 
 export async function GET() {
   try {
-    const projectRoot = process.cwd();
+    const projectRoot = getMonorepoRoot();
     const metadataDir = path.join(projectRoot, 'output', 'metadata');
     let projects: any[] = [];
 

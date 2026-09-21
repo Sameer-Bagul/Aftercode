@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import * as path from 'path';
 import { initVideoWorkspace, synthesizeLocalTtsVoiceover } from '@aftercode/engine';
+import { getMonorepoRoot } from '../../../root-helper';
 
 export async function POST(request: Request, { params }: { params: { slug: string } }) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: Request, { params }: { params: { slug: strin
     const voiceStyle = body?.voiceStyle || 'M1';
     const language = body?.language || 'en';
 
-    const projectRoot = process.cwd();
+    const projectRoot = getMonorepoRoot();
     const workspaceDir = path.join(projectRoot, 'workspace', 'current');
     const paths = initVideoWorkspace(workspaceDir, slug);
 

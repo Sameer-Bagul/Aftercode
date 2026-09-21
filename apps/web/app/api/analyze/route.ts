@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import * as path from 'path';
 import { processSingleRepository, formatSlug } from '@aftercode/engine';
+import { getMonorepoRoot } from '../root-helper';
 
 export async function POST(request: Request) {
   try {
@@ -12,7 +13,7 @@ export async function POST(request: Request) {
     const archived = Boolean(body.archived);
 
     const slug = formatSlug(repoName);
-    const projectRoot = process.cwd();
+    const projectRoot = getMonorepoRoot();
     const inventoryPath = path.join(projectRoot, 'processing', 'repository-inventory.json');
     const workspaceDir = path.join(projectRoot, 'workspace', 'current');
     const outputMetadataDir = path.join(projectRoot, 'output', 'metadata');
@@ -61,6 +62,8 @@ export async function POST(request: Request) {
       );
     }
   } catch (err: any) {
+    console.error('❌ [API /api/analyze Error]:', err);
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
 }
+
