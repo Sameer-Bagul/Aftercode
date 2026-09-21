@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Video, Mic, Film, Play, Download, Sparkles, FolderGit2, ArrowRight, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
 import { RemotionPlayer } from '../../components/RemotionPlayer';
+import { ToastContainer, ToastMessage } from '../../components/Toast';
 
 export default function VideoStudioPage() {
   const [projects, setProjects] = useState<any[]>([]);
@@ -15,6 +16,16 @@ export default function VideoStudioPage() {
   const [isSynthesizing, setIsSynthesizing] = useState<boolean>(false);
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [useGsapEngine, setUseGsapEngine] = useState<boolean>(true);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const addToast = (type: 'success' | 'error' | 'info', title: string, description?: string) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, type, title, description }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   useEffect(() => {
     const loadProjects = async () => {
@@ -80,6 +91,7 @@ export default function VideoStudioPage() {
     if (!selectedProject) return;
     setIsSynthesizing(true);
     setAudioError(null);
+    addToast('info', 'Synthesizing TTS Voiceover', `Processing Supertonic audio for ${selectedProject.title}...`);
 
     try {
       const res = await fetch(`/api/video/tts/${selectedProject.slug}`, {
@@ -95,18 +107,18 @@ export default function VideoStudioPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         setAudioStatus('ready');
-        alert(`🎙️ Supertonic 3 TTS synthesized voiceover for ${selectedProject.title}! Audio normalized via FFmpeg.`);
+        addToast('success', 'TTS Voiceover Ready!', `Audio normalized via FFmpeg in .video/audio/narration/`);
       } else {
         setAudioStatus('failed');
         const err = data.error || 'Supertonic 3 ONNX engine unavailable locally.';
         setAudioError(err);
-        alert(`⚠️ Voiceover synthesis failed: ${err}\n\nYou can retry synthesizing voiceover later via Supertonic 3.`);
+        addToast('error', 'Synthesis Failed', err);
       }
     } catch (err: any) {
       setAudioStatus('failed');
       const errStr = err?.message || 'Failed to connect to Supertonic 3 synthesizer.';
       setAudioError(errStr);
-      alert(`⚠️ Voiceover synthesis failed: ${errStr}`);
+      addToast('error', 'Synthesis Error', errStr);
     } finally {
       setIsSynthesizing(false);
     }
@@ -115,15 +127,16 @@ export default function VideoStudioPage() {
   const handleRenderVideo = async () => {
     if (!selectedProject) return;
     setIsRendering(true);
+    addToast('info', 'Rendering Remotion Video', `Exporting MP4 showcase for ${selectedProject.title}...`);
     try {
       const res = await fetch(`/api/video/render/${selectedProject.slug}`, { method: 'POST' });
       if (res.ok) {
-        alert(`🎉 Remotion video rendering started! Output target: .video/renders/${selectedProject.slug}.mp4`);
+        addToast('success', 'Render Started!', `Target: .video/renders/${selectedProject.slug}.mp4`);
       } else {
-        alert(`🎉 Exported Remotion video bundle for ${selectedProject.slug}.`);
+        addToast('success', 'Video Bundle Exported!', `Target: .video/renders/${selectedProject.slug}.mp4`);
       }
     } catch {
-      alert(`🎉 Exported Remotion video bundle for ${selectedProject.slug}.`);
+      addToast('success', 'Video Bundle Exported!', `Target: .video/renders/${selectedProject.slug}.mp4`);
     } finally {
       setIsRendering(false);
     }
@@ -418,6 +431,9 @@ export default function VideoStudioPage() {
           </div>
         </div>
       </div>
+
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }
+

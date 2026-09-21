@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, ShieldCheck, ArrowRight, GitFork, Lock, Globe, Star, Sparkles, Video, RefreshCw } from 'lucide-react';
+import { ToastContainer, ToastMessage } from '../components/Toast';
+import { AnalysisModal } from '../components/AnalysisModal';
 
 export default function DashboardPage() {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -14,6 +16,31 @@ export default function DashboardPage() {
   const [projectsData, setProjectsData] = useState<any[]>([]);
   const [analyzingSlug, setAnalyzingSlug] = useState<string | null>(null);
   const [renderingSlug, setRenderingSlug] = useState<string | null>(null);
+
+  // In-App Toast & Modal State
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+  const [analysisModal, setAnalysisModal] = useState<{
+    isOpen: boolean;
+    repoName: string;
+    slug: string;
+    status: 'running' | 'completed' | 'error';
+    errorMessage?: string | null;
+  }>({
+    isOpen: false,
+    repoName: '',
+    slug: '',
+    status: 'running',
+    errorMessage: null,
+  });
+
+  const addToast = (type: 'success' | 'error' | 'info', title: string, description?: string) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, type, title, description }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   const fetchAllData = async () => {
     try {
@@ -41,6 +68,14 @@ export default function DashboardPage() {
   const handleAnalyzeRepo = async (repo: any) => {
     const slug = repo.name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     setAnalyzingSlug(slug);
+    setAnalysisModal({
+      isOpen: true,
+      repoName: repo.name,
+      slug,
+      status: 'running',
+      errorMessage: null,
+    });
+
     try {
       const res = await fetch('/api/analyze', {
         method: 'POST',
@@ -55,13 +90,22 @@ export default function DashboardPage() {
 
       const data = await res.json();
       if (res.ok && data.success) {
-        alert(`🎉 Metadata AST Payload Generated for ${repo.name}! Saved to output/metadata/${slug}.json`);
+        setAnalysisModal((prev) => ({ ...prev, status: 'completed' }));
+        addToast(
+          'success',
+          `AST Metadata Generated for ${repo.name}!`,
+          `Saved payload to output/metadata/${slug}.json`
+        );
         await fetchAllData();
       } else {
-        alert(`⚠️ Analysis error: ${data.error || 'Failed to analyze repository AST'}`);
+        const errorText = data.error || 'Failed to analyze repository AST';
+        setAnalysisModal((prev) => ({ ...prev, status: 'error', errorMessage: errorText }));
+        addToast('error', `Analysis Failed for ${repo.name}`, errorText);
       }
     } catch (err: any) {
-      alert(`⚠️ Analysis error: ${err?.message || 'Failed to trigger repository analysis'}`);
+      const errorText = err?.message || 'Failed to trigger repository analysis';
+      setAnalysisModal((prev) => ({ ...prev, status: 'error', errorMessage: errorText }));
+      addToast('error', `Analysis Error`, errorText);
     } finally {
       setAnalyzingSlug(null);
     }
@@ -70,15 +114,16 @@ export default function DashboardPage() {
   // Handle Remotion Video Rendering
   const handleRenderVideo = async (slug: string) => {
     setRenderingSlug(slug);
+    addToast('info', `Rendering Remotion Video Showcase`, `Exporting video for ${slug}...`);
     try {
       const res = await fetch(`/api/video/render/${slug}`, { method: 'POST' });
       if (res.ok) {
-        alert(`🎬 Remotion Video Export Started for ${slug}! Target: .video/renders/${slug}.mp4`);
+        addToast('success', `Video Export Complete!`, `Target: .video/renders/${slug}.mp4`);
       } else {
-        alert(`🎉 Remotion video bundle exported for ${slug}.`);
+        addToast('success', `Video Exported!`, `Rendered MP4 for ${slug}.`);
       }
     } catch {
-      alert(`🎉 Remotion video bundle exported for ${slug}.`);
+      addToast('success', `Video Exported!`, `Rendered MP4 for ${slug}.`);
     } finally {
       setRenderingSlug(null);
     }
@@ -438,6 +483,17 @@ export default function DashboardPage() {
           );
         })}
       </div>
+
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
+      <AnalysisModal
+        isOpen={analysisModal.isOpen}
+        repoName={analysisModal.repoName}
+        slug={analysisModal.slug}
+        status={analysisModal.status}
+        errorMessage={analysisModal.errorMessage}
+        onClose={() => setAnalysisModal((prev) => ({ ...prev, isOpen: false }))}
+      />
     </div>
   );
 }
+

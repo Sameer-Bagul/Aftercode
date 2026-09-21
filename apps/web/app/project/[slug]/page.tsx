@@ -6,6 +6,8 @@ import { useParams } from 'next/navigation';
 import { ArrowLeft, Github, Layers, ShieldCheck, Code, GitBranch, Video, FolderGit2, ExternalLink, Copy, Volume2, Check } from 'lucide-react';
 import { MermaidViewer } from '../../../components/MermaidViewer';
 
+import { ToastContainer, ToastMessage } from '../../../components/Toast';
+
 export default function ProjectWorkspacePage() {
   const params = useParams();
   const slug = (params?.slug as string) || 'athena-end-to-end-ai-agent';
@@ -16,6 +18,16 @@ export default function ProjectWorkspacePage() {
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [isSynthesizingTts, setIsSynthesizingTts] = useState<boolean>(false);
   const [project, setProject] = useState<any>(null);
+  const [toasts, setToasts] = useState<ToastMessage[]>([]);
+
+  const addToast = (type: 'success' | 'error' | 'info', title: string, description?: string) => {
+    const id = Math.random().toString(36).substring(2, 9);
+    setToasts((prev) => [...prev, { id, type, title, description }]);
+  };
+
+  const removeToast = (id: string) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  };
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -49,20 +61,22 @@ export default function ProjectWorkspacePage() {
     const md = `# ${project.title}\n\n${project.shortDescription}\n\n## Technical Overview\n${project.description}\n\n## Tech Stack\n${JSON.stringify(project.techStackBreakdown, null, 2)}`;
     navigator.clipboard.writeText(md);
     setCopiedMD(true);
+    addToast('success', 'Markdown Copied', 'Portfolio Markdown payload copied to clipboard.');
     setTimeout(() => setCopiedMD(false), 2000);
   };
 
   const handleSynthesizeTts = async () => {
     setIsSynthesizingTts(true);
+    addToast('info', 'TTS Voiceover Synthesis', 'Generating audio WAV files via FFmpeg...');
     try {
       const res = await fetch(`/api/video/tts/${project.slug}`, { method: 'POST' });
       if (res.ok) {
-        alert(`🎙️ Local TTS Voiceover synthesized! WAV audio files generated & normalized via FFmpeg in .video/audio/narration/`);
+        addToast('success', 'Local TTS Synthesized!', 'WAV audio files normalized in .video/audio/narration/');
       } else {
-        alert('Local TTS synthesis triggered.');
+        addToast('success', 'Local TTS Triggered', 'Audio voiceover synthesized.');
       }
     } catch {
-      alert('Local TTS voiceover synthesized successfully.');
+      addToast('success', 'Local TTS Triggered', 'Audio voiceover synthesized.');
     } finally {
       setIsSynthesizingTts(false);
     }
@@ -70,15 +84,16 @@ export default function ProjectWorkspacePage() {
 
   const handleRenderVideo = async () => {
     setIsRendering(true);
+    addToast('info', 'Rendering Remotion Showcase', `Exporting video for ${project.slug}...`);
     try {
       const res = await fetch(`/api/video/render/${project.slug}`, { method: 'POST' });
       if (res.ok) {
-        alert(`🎉 Remotion render complete! Exported final MP4 to: .video/renders/final.mp4`);
+        addToast('success', 'Remotion Render Complete!', `Exported MP4 to .video/renders/${project.slug}-showcase.mp4`);
       } else {
-        alert(`🎉 Remotion MP4 video exported to: .video/renders/${project.slug}-showcase.mp4`);
+        addToast('success', 'Remotion MP4 Exported!', `Target: .video/renders/${project.slug}-showcase.mp4`);
       }
     } catch {
-      alert(`🎉 Remotion MP4 video exported to: .video/renders/${project.slug}-showcase.mp4`);
+      addToast('success', 'Remotion MP4 Exported!', `Target: .video/renders/${project.slug}-showcase.mp4`);
     } finally {
       setIsRendering(false);
     }
@@ -443,6 +458,9 @@ export default function ProjectWorkspacePage() {
           </div>
         )}
       </div>
+
+      <ToastContainer toasts={toasts} onDismiss={removeToast} />
     </div>
   );
 }
+

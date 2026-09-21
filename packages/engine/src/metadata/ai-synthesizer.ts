@@ -260,7 +260,7 @@ Return strictly valid JSON with keys: "contributions" (10-15 detailed bullet poi
 
   try {
     const ai = new GoogleGenAI({ apiKey });
-    const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro-latest', 'gemini-1.5-flash'];
+    const modelsToTry = ['gemini-3.6-flash', 'gemini-flash-latest', 'gemini-2.5-flash', 'gemini-1.5-flash-latest', 'gemini-1.5-pro'];
     let response: any = null;
     let lastErr: any = null;
 
