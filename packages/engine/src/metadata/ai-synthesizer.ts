@@ -181,6 +181,34 @@ export function generateMediumDescription(evidence: ExtractedEvidence): string {
   return `**${repoName}** is a production-grade software engineering system implemented primarily in ${langList}${aiTech}${dbTech}. The backend service layer is built on ${backendTech}${endpointsCount}, managing incoming payload validation, CORS security, and rate-limiting middleware.${frontendTech ? ` The presentation tier is engineered using ${frontendTech}, featuring reactive component hierarchies and modular state synchronization.` : ''} The entire application adopts a clean, decoupled architecture optimized for containerized deployment and automated AST inspection.`;
 }
 
+export function generateArchitectureOverview(evidence: ExtractedEvidence): string {
+  if (evidence.architectureOverview && evidence.architectureOverview.trim().length > 50) {
+    return evidence.architectureOverview;
+  }
+
+  const { repoName, techStack, apiEndpoints, keyModules } = evidence;
+  const frontendTech = techStack.frontend.join(', ') || 'React / HTML5';
+  const backendTech = techStack.backend.join(', ') || 'Node.js Express / Python API';
+  const aiTech = techStack.aiMl.join(', ');
+  const dbTech = techStack.database.join(', ');
+
+  const overviewLines: string[] = [
+    `### 📐 System Design & Architectural Engineering Analysis`,
+    `**${repoName}** is built around a **decoupled, multi-tier system architecture** engineered for high concurrency, clear layer boundaries, and low request latency.`,
+    `#### 1. Presentation & API Gateway Tier`,
+    `- **Presentation Layer**: ${techStack.frontend.length > 0 ? `Reactive UI built with \`${frontendTech}\`, managing client-side state and rendering.` : 'Client UI interface isolating presentation state from backend API endpoints.'}`,
+    `- **API Routing & Middleware**: ${techStack.backend.length > 0 ? `REST/WebSocket API Gateway powered by \`${backendTech}\`.` : 'API Gateway handling request validation, rate limiting, and CORS headers.'}${apiEndpoints.length > 0 ? ` Exposes ${apiEndpoints.length} validated API endpoints.` : ''}`,
+    `#### 2. Domain Controllers & Business Logic`,
+    `- **Service Logic**: Decouples entrypoint routing from domain rules. Request payloads are validated before entering domain controllers.`,
+    `${keyModules.length > 0 ? `- **Architectural Modules**: Core functional boundaries isolated across ${keyModules.slice(0, 4).map((m) => `\`${m.name}\``).join(', ')}.` : ''}`,
+    `#### 3. Inference Engine & Data Persistence Subsystem`,
+    `${aiTech ? `- **AI/ML Inference**: Model execution pipeline accelerated by \`${aiTech}\`.` : ''}`,
+    `${dbTech ? `- **Storage Layer**: Structured persistence managed by \`${dbTech}\`.` : '- **Persistence & State Integrity**: Maintains determinism and state consistency across execution runs.'}`,
+  ];
+
+  return overviewLines.filter(Boolean).join('\n\n');
+}
+
 export function generateExhaustiveTechnicalDescription(evidence: ExtractedEvidence): string {
   const { repoName, techStack, detectedLanguages, apiEndpoints, keyModules, readmeSummary } = evidence;
 

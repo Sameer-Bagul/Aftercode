@@ -53,7 +53,7 @@ export async function cloneRepositoryToWorkspace(repoUrl: string, workspaceDir: 
     console.log(` 📥 [Step 1/7] Executing full shallow clone (git clone --depth 1) for ${repoUrl}...`);
     await execa('git', ['clone', '--depth', '1', '--single-branch', '--no-tags', targetUrl, '.'], {
       cwd: resolved,
-      timeout: 10000,
+      timeout: 30000,
       env: {
         ...process.env,
         GIT_TERMINAL_PROMPT: '0',

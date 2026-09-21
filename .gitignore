@@ -9,15 +9,17 @@ ui/node_modules/
 *.pem
 
 # Sandboxed Processing Workspace (Must stay clean)
-workspace/current/
-workspace/current/*
-!workspace/current/.gitkeep
+workspace/
+workspace/*
+!workspace/.gitkeep
 
 # Build Outputs
 dist/
 ui/dist/
 .next/
+.next-build/
 apps/web/.next/
+apps/web/.next-build/
 .video/
 coverage/
 

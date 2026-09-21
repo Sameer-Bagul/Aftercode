@@ -1,0 +1,332 @@
+{
+  "_id": "athena-end-to-end-ai-agent-id",
+  "title": "Athena End To End Ai Agent",
+  "slug": "athena-end-to-end-ai-agent",
+  "shortDescription": "Production-Ready TTS Microservice (Supertonic ONNX) Architecture • Folder Structure • Deployment • Scaling • APIs • Best Practices Fully tuned for AI agent usage. What This Serv...",
+  "description": "**Athena** is a desktop‑bound, autonomous 3D AI companion that blends real‑time **Three.js** rendering of VRM avatars with a local AI microservice stack. Built on an **Electron** host that bridges a Vite‑powered React UI to Python and Node services via IPC, it delivers *zero‑latency* speech‑to‑text using **Whisper‑fast**, high‑fidelity text‑to‑speech via **SuperTonic**, and intelligent behavior orchestrated by **LangGraph** agents. The stack leverages `@athena-ai/core` adapters for multiple TTS/STT providers, enabling seamless fallback to browser APIs.",
+  "longDescription": "The system is organized into three primary layers. The **Presentation Layer** consists of a React/Vite front‑end that hosts the `<AthenaWidget />` component, rendering the avatar with a custom Three.js pipeline, MediaPipe‑driven face tracking, and lip‑sync driven by FFT audio analysis. The **Inter‑Process Communication Layer** uses Electron’s `contextBridge` and async IPC channels to relay user interactions, audio streams, and control commands between the renderer and the **Main Process**, which manages window lifecycles and spawns local microservices. *Security guardrails* include isolated preload scripts, strict content‑security policies, and validation of inbound messages before they reach the AI engine.\n\nThe **Local Microservice Layer** runs a Python FastAPI **Whisper‑fast** STT server (`POST /stt`, `GET /status`) and a Node.js **SuperTonic** TTS server (`POST /tts`, `GET /health`). These services expose minimal HTTP endpoints, avoiding external network calls and ensuring privacy. The **LangGraph** orchestrator (`LangGraph Agent`) consumes transcriptions, routes them through LLM providers (Google Gemini, Ollama, custom agents via `CustomAgentAdapter`), and returns responses that are spoken back through the TTS stack. The architecture diagram in the project details visualizes these interactions as a directed graph of UI, IPC, and microservice nodes.\n\nBuild topology is managed by a single `npm start` command that concurrently launches the Electron host, Vite dev server, and the Python/Node services, each binding to dynamically allocated ports to prevent collisions. The codebase is typed with **TypeScript**, linted via **ESLint**, and packaged for cross‑platform distribution using Electron’s build tools. All components are modular, allowing developers to swap adapters (e.g., `OpenAITTSAdapter`, `AzureTTSAdapter`, `WebSpeechSTTAdapter`) without altering core logic.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "WebSockets",
+      "Express",
+      "FastAPI"
+    ],
+    "database": [],
+    "aiMl": [
+      "ONNX Runtime"
+    ],
+    "infrastructure": [
+      "Docker"
+    ],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected a modular microservice application using Electron IPC to bridge a Vite React frontend with local Python and Node services.",
+    "Developed a custom Three.js rendering pipeline for VRM and FBX models, achieving stable 60 FPS performance.",
+    "Implemented deep GPU memory management via `deepDispose` and enforced high‑performance WebGL contexts.",
+    "Integrated LangGraph for dynamic tool orchestration, enabling web search, weather, timer, and RAG capabilities.",
+    "Built a zero‑latency local voice stack combining Whisper‑fast (STT) and SuperTonic (TTS) with real‑time audio streaming.",
+    "Added MediaPipe‑based face and eye tracking to maintain avatar eye contact and natural blinking.",
+    "Created FFT‑driven lip‑sync mapping audio frequencies to blendshape weights, reducing CPU overhead.",
+    "Designed fallback adapters (`WebSpeechTTSAdapter`, `WebSpeechSTTAdapter`) for browser‑only environments.",
+    "Implemented robust event system in `AthenaEngine` for status changes, speech lifecycle, and error handling.",
+    "Established a unified `CustomAgentAdapter` allowing plug‑in of arbitrary LLM endpoints with custom request/response transforms."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [Presentation & Client Layer]\n UI[Frontend UI Components]\n AudioPlayer[WebAudio / Stream Player]\n end\n subgraph APITier [API Gateway & Routing Layer]\n Router[Backend Service Router]\n WSStream[WebSocket Binary Frame Handler]\n end\n subgraph ServiceTier [Service Logic & Controllers Layer]\n Controller[Service Controllers & Handlers]\n end\n subgraph DataEngineTier [Inference Engine & Storage]\n InferenceEngine[AI/ML Model Inference Runtime]\n end\n subgraph InfraTier [Infrastructure & Sandbox]\n Container[Docker Container Sandbox]\n end\n UI --> Router\n UI --> WSStream\n WSStream --> Controller\n Router --> Controller\n Controller --> InferenceEngine\n InferenceEngine --> Controller\n Controller --> UI\n Container -.-> Router\n Container -.-> Controller",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [Data Ingestion & Extraction Layer]\n RawSource[Source Code & Documents]\n ASTScanner[AST Parser & Manifest Extractor]\n Chunker[Code Chunker & Tokenizer]\n end\n subgraph Indexing [Hybrid Search & Indexing Engine]\n BM25[BM25 Lexical Index]\n VectorStore[TF-IDF / Vector Store]\n RRF[Reciprocal Rank Fusion]\n end\n subgraph Processing [Synthesis & Inference Engine]\n ContextAssembler[Context Window Assembler]\n LLMProvider[ONNX Runtime]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET /health (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Real‑time 3D avatar rendering with VRM and FBX support.",
+    "Local, privacy‑preserving speech‑to‑text via Whisper‑fast.",
+    "High‑fidelity text‑to‑speech using SuperTonic with optional cloud providers (OpenAI, Azure, ElevenLabs).",
+    "Dynamic tool execution through LangGraph agents (search, weather, timer, RAG).",
+    "MediaPipe face tracking for eye contact and blink animation.",
+    "FFT‑based lip‑sync that maps audio to facial blendshapes.",
+    "Electron IPC bridge that isolates UI from backend services.",
+    "Configurable widget positioning (`bottom-right`, `bottom-left`, `inline`).",
+    "Theme support (`dark`, `light`) and customizable avatar model URL.",
+    "Graceful fallback to browser Web Speech API when no API keys are provided."
+  ],
+  "challenges": [
+    "Balancing GPU memory usage while loading high‑poly VRM models required custom disposal logic.",
+    "Ensuring sub‑100 ms TTS latency demanded a native Node TTS engine and careful audio buffering.",
+    "Coordinating dynamic port allocation for STT/TTS services without collisions added complexity to the startup script.",
+    "Maintaining synchronization between IPC events and UI state under heavy AI load required debounced listeners.",
+    "Providing accurate lip‑sync without excessive CPU usage led to the adoption of FFT‑based mapping instead of full phoneme analysis."
+  ],
+  "learnings": [
+    "Electron IPC can serve as a performant, secure bridge when combined with strict preload validation.",
+    "Local Whisper models deliver acceptable accuracy for desktop use while keeping user data private.",
+    "Modular adapter patterns simplify swapping between cloud and on‑device AI services.",
+    "FFT‑based lip‑sync offers a good trade‑off between realism and computational cost.",
+    "Dynamic service discovery (port negotiation) is essential for developer ergonomics in multi‑service desktop apps."
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by WebSockets, Express, FastAPI. AI/ML capabilities powered by ONNX Runtime. Deployed using Docker.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Payload processed through AI/ML pipeline or local inference model"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Service layer delegates task to ML runtime or LLM API worker",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in services/TTS-supertonic/src/routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/tts",
+      "description": "Endpoint defined in services/TTS-supertonic/src/routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/status",
+      "description": "Endpoint defined in services/whisper-fast/server.py"
+    },
+    {
+      "method": "POST",
+      "path": "/stt",
+      "description": "Endpoint defined in services/whisper-fast/server.py"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Docs",
+      "path": "docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Packages",
+      "path": "athena-sdk/packages",
+      "description": "Module component managing packages source logic"
+    },
+    {
+      "name": "Core",
+      "path": "renderer/src/services/tools/core",
+      "description": "Module component managing core source logic"
+    },
+    {
+      "name": "Src",
+      "path": "services/TTS-supertonic/src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Types",
+      "path": "athena-sdk/packages/core/src/types",
+      "description": "Module component managing types source logic"
+    },
+    {
+      "name": "Components",
+      "path": "renderer/src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "renderer/src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Backend",
+      "path": "dist-electron/backend",
+      "description": "Module component managing backend source logic"
+    },
+    {
+      "name": "Services",
+      "path": "services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Models",
+      "path": "renderer/public/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "renderer/src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "services/TTS-supertonic/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "services/TTS-supertonic/scripts",
+      "description": "Module component managing scripts source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add support for additional LLM backends via `CustomAgentAdapter` (e.g., Anthropic, Cohere).",
+    "Implement a plug‑in system for third‑party tools within the LangGraph orchestration layer.",
+    "Introduce persistent RAG memory using a lightweight vector store (e.g., SQLite + ONNX embeddings).",
+    "Provide a Docker Compose setup to simplify multi‑service deployment on non‑developer machines.",
+    "Enhance security by signing IPC messages and adding sandboxed renderer processes."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "athena-end-to-end-ai-agent - Technical Video Showcase",
+    "totalDurationSeconds": 30,
+    "totalDurationFrames": 900,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the technical breakdown of athena-end-to-end-ai-agent, a production-grade application engineered with TypeScript, JavaScript, Python. System Architecture & Topology: The application uses a decoupled multi-tier architecture powered by WebSockets, Express, FastAPI on the backend and React, TailwindCSS on the client. Network Routes: The API exposes 4 primary routes including GET /health and POST /tts and GET /status, managing request routing and data serialization. AI Capabilities: Powered by ONNX Runtime, delivering real-time inference and intelligent processing. Performance & Quality: Automated quality checks and clean component patterns ensure high reliability. Explore the full open-source codebase on GitHub at Sameer-Bagul slash athena-end-to-end-ai-agent.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Introduction",
+        "heading": "athena-end-to-end-ai-agent",
+        "subheading": "Production-Grade TypeScript, JavaScript, Python Application",
+        "narration": "Welcome to the technical breakdown of athena-end-to-end-ai-agent, built with TypeScript, JavaScript, Python.",
+        "durationFrames": 150,
+        "startFrame": 0,
+        "endFrame": 150,
+        "bgGradient": "linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)",
+        "badges": [
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "React"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Architecture & System Topology",
+        "heading": "Multi-Tier System Topology",
+        "subheading": "WebSockets, Express, FastAPI API • React, TailwindCSS UI",
+        "narration": "Decoupled architecture combining WebSockets, Express, FastAPI backend with React, TailwindCSS client interface.",
+        "durationFrames": 150,
+        "startFrame": 150,
+        "endFrame": 300,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "WebSockets",
+          "Express",
+          "FastAPI",
+          "Docker"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "API Routes & Endpoints",
+        "heading": "4 REST/WS API Routes",
+        "subheading": "GET /health | POST /tts | GET /status",
+        "narration": "Exposing 4 API routes with parameter validation and rate limiting.",
+        "durationFrames": 150,
+        "startFrame": 300,
+        "endFrame": 450,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "GET",
+          "POST",
+          "GET",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "Core Code Modules",
+        "heading": "Modular Source Code Structure",
+        "subheading": "Docs • Packages • Core • Src",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 150,
+        "startFrame": 450,
+        "endFrame": 600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "Docs",
+          "Packages",
+          "Core",
+          "Src"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Technical Features & Stack",
+        "heading": "Engineering Highlights",
+        "subheading": "**Ultra-fast on-device TTS** (no external API calls) • **HTTP API** for easy integration with AI agents and LLM pipelines",
+        "narration": "High-reliability build pipelines, clean state management, and continuous quality checks.",
+        "durationFrames": 150,
+        "startFrame": 600,
+        "endFrame": 750,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "Outro & Call To Action",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+        "narration": "Check out the complete open-source repository on GitHub!",
+        "durationFrames": 150,
+        "startFrame": 750,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, interpolate, useCurrentFrame, spring, useVideoConfig } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"athenaendtoendaiagentShowcase\"\n component={MainComposition}\n durationInFrames={900}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'athena-end-to-end-ai-agent',\n shortDescription: '# **Production-Ready TTS Microservice (Supertonic ONNX)** **Architecture • Folder Structure • De',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string; shortDescription: string }> = ({ title, shortDescription }) => {\n const frame = useCurrentFrame();\n const { fps } = useVideoConfig();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Introduction */}\n <Sequence from={0} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>athena-end-to-end-ai-agent</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript, JavaScript, Python Application</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Architecture & System Topology */}\n <Sequence from={150} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Multi-Tier System Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>WebSockets, Express, FastAPI API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: API Routes & Endpoints */}\n <Sequence from={300} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WS API Routes</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET /health | POST /tts | GET /status</p>\n </div>\n </Sequence>\n\n {/* Scene 4: Core Code Modules */}\n <Sequence from={450} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Modular Source Code Structure</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Docs • Packages • Core • Src</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Technical Features & Stack */}\n <Sequence from={600} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Engineering Highlights</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>**Ultra-fast on-device TTS** (no external API calls) • **HTTP API** for easy integration with AI agents and LLM pipelines</p>\n </div>\n </Sequence>\n\n {/* Scene 6: Outro & Call To Action */}\n <Sequence from={750} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/athena-end-to-end-ai-agent</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "athena-end-to-end-ai-agent",
+    "url": "https://github.com/Sameer-Bagul/athena-end-to-end-ai-agent",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-21T19:20:58.781Z",
+    "lastAnalyzedAt": "2026-09-21T19:20:58.781Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

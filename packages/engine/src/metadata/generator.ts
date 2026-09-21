@@ -8,6 +8,7 @@ import {
   generateMermaidSequenceDiagram,
   generateMediumDescription,
   generateExhaustiveTechnicalDescription,
+  generateArchitectureOverview,
 } from './ai-synthesizer.js';
 import { generateRemotionVideoScript } from '../video/remotion-script-generator.js';
 import { RagSynthesisResult } from '../rag/rag-synthesizer.js';
@@ -39,6 +40,7 @@ export async function generateMetadataPayload(
 
   const mediumDescription = ragSynthesis?.mediumDescription || generateMediumDescription(evidence);
   const longDescription = ragSynthesis?.longDescription || ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
+  const architectureOverview = generateArchitectureOverview(evidence);
   const remotionVideoScript = generateRemotionVideoScript(evidence);
 
   // Clean markdown tags and extract first 180 chars of clean prose
@@ -87,7 +89,7 @@ export async function generateMetadataPayload(
     features: synthesis.features.length > 0 ? synthesis.features : evidence.features,
     challenges: synthesis.challenges,
     learnings: synthesis.learnings,
-    architectureOverview: evidence.architectureOverview,
+    architectureOverview,
     userFlow: evidence.userFlow,
     codeFlow: evidence.codeFlow,
     apiEndpoints: evidence.apiEndpoints,

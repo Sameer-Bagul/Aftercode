@@ -3,9 +3,10 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "rm -rf .next && next dev",
+    "clean": "rm -rf .next .next-build",
+    "build": "NEXT_BUILD_DIR=.next-build next build",
+    "start": "NEXT_BUILD_DIR=.next-build next start",
     "lint": "next lint"
   },
   "dependencies": {

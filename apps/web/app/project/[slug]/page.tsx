@@ -401,13 +401,112 @@ export default function ProjectWorkspacePage() {
               )}
             </div>
 
-            {/* Exhaustive Technical Architecture Overview */}
+            {/* Exhaustive Technical Architecture Breakdown */}
             {(project.longDescription || project.description) && (
               <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
                 <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '14px' }}>Exhaustive Technical Architecture Breakdown</h2>
                 <FormattedMarkdown content={project.longDescription || project.description} />
               </div>
             )}
+
+            {/* System Design & Core Engineering Textual Analysis */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span>📐</span> System Design & Core Architectural Engineering Analysis
+              </h2>
+
+              {project.architectureOverview ? (
+                <FormattedMarkdown content={project.architectureOverview} />
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                  <p style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.6, margin: 0 }}>
+                    <strong>{project.title}</strong> is engineered around a <strong>decoupled, resilient multi-tier system design</strong>. 
+                    The architecture enforces strict separation of concerns across client presentation, REST/WebSocket API request dispatching, service controller business logic, and backend data persistence.
+                  </p>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '14px', marginTop: '8px' }}>
+                    <div style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0284c7', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                        🌐 Presentation & Routing Layer
+                      </h4>
+                      <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                        Frontend component hierarchy communicates asynchronously with backend endpoints. Request parameters are validated before entering domain controllers.
+                      </p>
+                    </div>
+
+                    <div style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#10b981', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                        ⚡ Service Logic & State Machine
+                      </h4>
+                      <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                        Business logic is encapsulated in isolated service controllers. Async task queues and error boundaries ensure non-blocking operation under heavy load.
+                      </p>
+                    </div>
+
+                    <div style={{ padding: '16px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                      <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: '#8b5cf6', margin: '0 0 6px 0', textTransform: 'uppercase' }}>
+                        🔒 Security & Fault Resilience
+                      </h4>
+                      <p style={{ fontSize: '0.8rem', color: '#475569', margin: 0, lineHeight: 1.5 }}>
+                        Enforces CORS security headers, input sanitization schemas, rate-limiting backoffs, and isolated runtime containers for deployment.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* AST Discovered API Endpoints & Key Modules Matrix */}
+              {((Array.isArray(project.apiEndpoints) && project.apiEndpoints.length > 0) || (Array.isArray(project.keyModules) && project.keyModules.length > 0)) && (
+                <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid #f1f5f9', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
+                  {/* API Endpoints */}
+                  {Array.isArray(project.apiEndpoints) && project.apiEndpoints.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        🔌 Discovered API Interfaces ({project.apiEndpoints.length})
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {project.apiEndpoints.slice(0, 6).map((ep: any, idx: number) => {
+                          const isPost = ep.method === 'POST';
+                          const isGet = ep.method === 'GET';
+                          return (
+                            <div key={idx} style={{ padding: '10px 14px', borderRadius: '10px', background: '#f8fafc', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '10px' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <span style={{ padding: '2px 8px', borderRadius: '6px', background: isPost ? '#ecfdf5' : isGet ? '#f0f9ff' : '#fff7ed', color: isPost ? '#047857' : isGet ? '#0284c7' : '#c2410c', fontSize: '0.7rem', fontWeight: 800, fontFamily: 'monospace' }}>
+                                  {ep.method || 'GET'}
+                                </span>
+                                <span style={{ fontSize: '0.825rem', fontFamily: 'monospace', fontWeight: 700, color: '#0f172a' }}>
+                                  {ep.path}
+                                </span>
+                              </div>
+                              {ep.description && <span style={{ fontSize: '0.75rem', color: '#64748b' }}>{ep.description}</span>}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Architectural Modules */}
+                  {Array.isArray(project.keyModules) && project.keyModules.length > 0 && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                      <h3 style={{ fontSize: '0.8rem', fontWeight: 800, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        🧩 Discovered Architectural Modules ({project.keyModules.length})
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                        {project.keyModules.slice(0, 6).map((mod: any, idx: number) => (
+                          <div key={idx} style={{ padding: '10px 14px', borderRadius: '10px', background: '#f8fafc', border: '1px solid #e2e8f0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+                            <span style={{ fontSize: '0.825rem', fontWeight: 700, color: '#0f172a' }}>{mod.name}</span>
+                            <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: '#0284c7', background: '#ffffff', padding: '2px 8px', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                              {mod.path}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* System Architecture & Multi-Flowchart Diagrams */}
             <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
@@ -467,6 +566,7 @@ export default function ProjectWorkspacePage() {
                 </div>
               </div>
 
+              {/* Interactive Mermaid Canvas */}
               {diagramTab === 'topology' && (
                 <MermaidViewer chart={project.architectureDiagram || 'graph TD\nUI-->API'} id={`overview-mermaid-${project.slug}`} />
               )}
@@ -475,6 +575,108 @@ export default function ProjectWorkspacePage() {
               )}
               {diagramTab === 'sequence' && (
                 <MermaidViewer chart={project.sequenceDiagram || 'sequenceDiagram\nClient->>Gateway: POST /api\nGateway-->>Client: 200 OK'} id={`sequence-mermaid-${project.slug}`} />
+              )}
+
+              {/* Textual System Design Breakdown for Active Diagram Tab */}
+              {diagramTab === 'topology' && (
+                <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>🏗️</span> System Topology Textual Specification & Layer Boundaries
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, margin: '0 0 14px 0' }}>
+                    The system topology diagram above visualizes the physical and logical boundaries of <strong>{project.title}</strong>. Communication across tiers is strictly mediated through defined interfaces to eliminate tight coupling.
+                  </p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '12px' }}>
+                    <div style={{ padding: '12px 14px', borderRadius: '10px', background: '#ffffff', border: '1px solid #cbd5e1' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0284c7', textTransform: 'uppercase' }}>Presentation & Client Tier</span>
+                      <p style={{ fontSize: '0.8rem', color: '#334155', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                        {project.techStackBreakdown?.frontend?.length > 0
+                          ? `Reactive interface powered by ${project.techStackBreakdown.frontend.join(', ')} managing client state and user interactions.`
+                          : 'Client application entrypoint rendering interactive UI components.'}
+                      </p>
+                    </div>
+                    <div style={{ padding: '12px 14px', borderRadius: '10px', background: '#ffffff', border: '1px solid #cbd5e1' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#047857', textTransform: 'uppercase' }}>API Gateway & Routing Tier</span>
+                      <p style={{ fontSize: '0.8rem', color: '#334155', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                        {project.techStackBreakdown?.backend?.length > 0
+                          ? `Backend service router using ${project.techStackBreakdown.backend.join(', ')} validating HTTP/WebSocket payloads.`
+                          : 'HTTP API Gateway enforcing schema validation, rate-limiting, and middleware guards.'}
+                      </p>
+                    </div>
+                    <div style={{ padding: '12px 14px', borderRadius: '10px', background: '#ffffff', border: '1px solid #cbd5e1' }}>
+                      <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#7e22ce', textTransform: 'uppercase' }}>Inference & Persistence Engine</span>
+                      <p style={{ fontSize: '0.8rem', color: '#334155', margin: '4px 0 0 0', lineHeight: 1.4 }}>
+                        {project.techStackBreakdown?.aiMl?.concat(project.techStackBreakdown?.database || []).length > 0
+                          ? `Data engine utilizing ${project.techStackBreakdown.aiMl.concat(project.techStackBreakdown.database).join(', ')}.`
+                          : 'Database persistence layer and model execution engine for state processing.'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {diagramTab === 'dataflow' && (
+                <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>🔄</span> Data Ingestion, Indexing & Processing Pipeline Walkthrough
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, margin: '0 0 14px 0' }}>
+                    Data moves through deterministic stages from ingestion and tokenization to ranking and synthesis:
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {(Array.isArray(project.userFlow) && project.userFlow.length > 0
+                      ? project.userFlow
+                      : [
+                          'Data Ingestion: Raw source code, documents, or HTTP payloads are ingested into AST parsers.',
+                          'Tokenization & Indexing: Content is chunked into lexical (BM25) and dense vector embeddings.',
+                          'Hybrid Reciprocal Rank Fusion: Search indices score and rank the top context fragments.',
+                          'Context Assembly: Prompts are constructed within strict token budget constraints.',
+                          'Inference & Persistence: Output models synthesize results and persist state to storage.',
+                        ]
+                    ).map((step: string, idx: number) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '10px 14px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+                        <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#0284c7', color: '#ffffff', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                          {idx + 1}
+                        </span>
+                        <span style={{ fontSize: '0.825rem', color: '#334155', fontWeight: 500, lineHeight: 1.5 }}>
+                          {step}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {diagramTab === 'sequence' && (
+                <div style={{ marginTop: '20px', padding: '20px', borderRadius: '12px', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>⚡</span> Step-by-Step Runtime Request Execution & Lifecycle Trace
+                  </h3>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: 1.6, margin: '0 0 14px 0' }}>
+                    Every incoming user request undergoes strict lifecycle checks before execution and response building:
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {(Array.isArray(project.codeFlow) && project.codeFlow.length > 0
+                      ? project.codeFlow
+                      : [
+                          'Client Dispatch: Client browser dispatches REST/WebSocket JSON request to API Gateway.',
+                          'Security & Middleware: Gateway verifies CORS headers, authorization tokens, and rate limits.',
+                          'Service Controller Dispatch: Route handler delegates payload to domain service controller.',
+                          'Engine & DB Execution: Service invokes AI model inference and performs database CRUD operations.',
+                          'Response Serialization: Result payload is normalized into JSON and delivered to the client.',
+                        ]
+                    ).map((step: string, idx: number) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '10px 14px', borderRadius: '10px', background: '#ffffff', border: '1px solid #e2e8f0' }}>
+                        <span style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#10b981', color: '#ffffff', fontSize: '0.75rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '1px' }}>
+                          {idx + 1}
+                        </span>
+                        <span style={{ fontSize: '0.825rem', color: '#334155', fontWeight: 500, lineHeight: 1.5 }}>
+                          {step}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
 

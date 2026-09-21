@@ -4,6 +4,7 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['execa', '@google/genai', 'ajv', 'glob'],
   },
+  distDir: process.env.NEXT_BUILD_DIR || '.next',
 };
 
 export default nextConfig;
