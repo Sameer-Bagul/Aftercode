@@ -84,7 +84,7 @@ Return strictly valid JSON with key fields:
 DO NOT use emojis.`;
 
   const ai = new GoogleGenAI({ apiKey });
-  const modelsToTry = ['gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-3.6-pro'];
+  const modelsToTry = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-flash'];
   let response: any = null;
   let lastErr: any = null;
 
