@@ -4,15 +4,16 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { ArrowLeft, Github, Layers, ShieldCheck, Code, GitBranch, Video, FolderGit2, ExternalLink, Copy, Volume2, Check } from 'lucide-react';
-import { MermaidViewer } from '../../../components/MermaidViewer';
-
-import { ToastContainer, ToastMessage } from '../../../components/Toast';
+import { MermaidViewer } from '@/components/MermaidViewer';
+import { ToastContainer, ToastMessage } from '@/components/Toast';
+import { FormattedMarkdown } from '@/components/FormattedMarkdown';
 
 export default function ProjectWorkspacePage() {
   const params = useParams();
   const slug = (params?.slug as string) || 'athena-end-to-end-ai-agent';
 
   const [activeTab, setActiveTab] = useState<'overview' | 'video' | 'graph' | 'assets' | 'json'>('overview');
+  const [diagramTab, setDiagramTab] = useState<'topology' | 'dataflow' | 'sequence'>('topology');
   const [copiedMD, setCopiedMD] = useState<boolean>(false);
   const [activeSceneIndex, setActiveSceneIndex] = useState<number>(0);
   const [isRendering, setIsRendering] = useState<boolean>(false);
@@ -345,23 +346,224 @@ export default function ProjectWorkspacePage() {
       <div style={{ maxWidth: '1400px', margin: '32px auto 0', padding: '0 32px' }}>
         {activeTab === 'overview' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
-            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '12px', alignItems: 'center' }}>
-                <span style={{ padding: '4px 10px', borderRadius: '6px', background: '#f1f5f9', color: '#475569', fontSize: '0.75rem', fontWeight: 700 }}>
-                  {project.category || 'Repository'}
+            {/* Executive Summary & Badges */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ padding: '4px 12px', borderRadius: '6px', background: '#f1f5f9', color: '#475569', fontSize: '0.75rem', fontWeight: 700 }}>
+                  {project.category || 'Web App'}
                 </span>
-                <span style={{ padding: '4px 10px', borderRadius: '6px', background: '#ecfdf5', color: '#047857', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <span style={{ padding: '4px 12px', borderRadius: '6px', background: '#ecfdf5', color: '#047857', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <ShieldCheck size={14} color="#10b981" /> AST Verified
                 </span>
+                {project.status && (
+                  <span style={{ padding: '4px 12px', borderRadius: '6px', background: '#f0f9ff', color: '#0284c7', fontSize: '0.75rem', fontWeight: 700 }}>
+                    Status: {project.status}
+                  </span>
+                )}
+                {project.role && (
+                  <span style={{ padding: '4px 12px', borderRadius: '6px', background: '#faf5ff', color: '#7e22ce', fontSize: '0.75rem', fontWeight: 700 }}>
+                    Role: {project.role}
+                  </span>
+                )}
               </div>
+
               <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '8px' }}>Executive Summary</h2>
-              <p style={{ color: '#334155', fontSize: '1rem', lineHeight: 1.6 }}>{project.shortDescription}</p>
+              <FormattedMarkdown content={project.description || project.shortDescription} />
+
+              {/* Tech Stack Matrix */}
+              {project.techStackBreakdown && (
+                <div style={{ marginTop: '24px', paddingTop: '20px', borderTop: '1px solid #f1f5f9', display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
+                  {Object.entries(project.techStackBreakdown).map(([category, stack]: [string, any]) => {
+                    if (!Array.isArray(stack) || stack.length === 0) return null;
+                    const catColors: Record<string, { bg: string; color: string }> = {
+                      frontend: { bg: '#eff6ff', color: '#1d4ed8' },
+                      backend: { bg: '#f0fdf4', color: '#15803d' },
+                      database: { bg: '#fff7ed', color: '#c2410c' },
+                      aiMl: { bg: '#faf5ff', color: '#7e22ce' },
+                      infrastructure: { bg: '#ecfeff', color: '#0e7490' },
+                      tools: { bg: '#f1f5f9', color: '#334155' },
+                    };
+                    const style = catColors[category] || { bg: '#f1f5f9', color: '#334155' };
+                    return (
+                      <div key={category} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>{category}:</span>
+                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                          {stack.map((t: string) => (
+                            <span key={t} style={{ padding: '3px 10px', borderRadius: '6px', background: style.bg, color: style.color, fontSize: '0.75rem', fontWeight: 700 }}>
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
-            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>System Architecture & Topology</h2>
-              <MermaidViewer chart={project.architectureDiagram || 'graph TD\nUI-->API'} id={`overview-mermaid-${project.slug}`} />
+            {/* Exhaustive Technical Architecture Overview */}
+            {(project.longDescription || project.description) && (
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '14px' }}>Exhaustive Technical Architecture Breakdown</h2>
+                <FormattedMarkdown content={project.longDescription || project.description} />
+              </div>
+            )}
+
+            {/* System Architecture & Multi-Flowchart Diagrams */}
+            <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '16px' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>System Architecture & Interactive Flowcharts</h2>
+                
+                {/* Flowchart Type Switcher */}
+                <div style={{ display: 'flex', gap: '6px', background: '#f1f5f9', padding: '4px', borderRadius: '8px' }}>
+                  <button
+                    onClick={() => setDiagramTab('topology')}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: diagramTab === 'topology' ? '#ffffff' : 'transparent',
+                      color: diagramTab === 'topology' ? '#0284c7' : '#64748b',
+                      boxShadow: diagramTab === 'topology' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                    }}
+                  >
+                    🏗️ System Topology
+                  </button>
+                  <button
+                    onClick={() => setDiagramTab('dataflow')}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: diagramTab === 'dataflow' ? '#ffffff' : 'transparent',
+                      color: diagramTab === 'dataflow' ? '#0284c7' : '#64748b',
+                      boxShadow: diagramTab === 'dataflow' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                    }}
+                  >
+                    🔄 Data Pipeline
+                  </button>
+                  <button
+                    onClick={() => setDiagramTab('sequence')}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      background: diagramTab === 'sequence' ? '#ffffff' : 'transparent',
+                      color: diagramTab === 'sequence' ? '#0284c7' : '#64748b',
+                      boxShadow: diagramTab === 'sequence' ? '0 1px 2px rgba(0,0,0,0.05)' : 'none',
+                    }}
+                  >
+                    ⚡ Execution Sequence
+                  </button>
+                </div>
+              </div>
+
+              {diagramTab === 'topology' && (
+                <MermaidViewer chart={project.architectureDiagram || 'graph TD\nUI-->API'} id={`overview-mermaid-${project.slug}`} />
+              )}
+              {diagramTab === 'dataflow' && (
+                <MermaidViewer chart={project.dataFlowDiagram || project.architectureDiagram || 'graph LR\nSource-->BM25'} id={`dataflow-mermaid-${project.slug}`} />
+              )}
+              {diagramTab === 'sequence' && (
+                <MermaidViewer chart={project.sequenceDiagram || 'sequenceDiagram\nClient->>Gateway: POST /api\nGateway-->>Client: 200 OK'} id={`sequence-mermaid-${project.slug}`} />
+              )}
             </div>
+
+            {/* Key Engineering Accomplishments / Contributions */}
+            {Array.isArray(project.myContributions) && project.myContributions.length > 0 && (
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>Key Engineering Accomplishments ({project.myContributions.length})</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '14px' }}>
+                  {project.myContributions.map((contrib: string, i: number) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start', background: '#f8fafc', padding: '14px', borderRadius: '10px', border: '1px solid #f1f5f9' }}>
+                      <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#ecfdf5', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px' }}>
+                        <Check size={14} />
+                      </div>
+                      <span style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.5, fontWeight: 500 }}>{contrib}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Key Technical Features */}
+            {Array.isArray(project.features) && project.features.length > 0 && (
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px' }}>Technical Features & System Capabilities ({project.features.length})</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '14px' }}>
+                  {project.features.map((feat: string, i: number) => (
+                    <div key={i} style={{ background: '#ecfeff', border: '1px solid #cff4fc', padding: '16px', borderRadius: '12px' }}>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#0891b2', textTransform: 'uppercase' }}>Feature #{i + 1}</span>
+                      <p style={{ fontSize: '0.875rem', color: '#164e63', fontWeight: 600, marginTop: '4px', margin: 0, lineHeight: 1.5 }}>{feat}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Engineering Challenges & Learnings Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(480px, 1fr))', gap: '28px' }}>
+              {/* Engineering Challenges */}
+              {Array.isArray(project.challenges) && project.challenges.length > 0 && (
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                  <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#f59e0b' }}></span>
+                    Engineering Challenges & Trade-offs
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {project.challenges.map((chal: string, i: number) => (
+                      <div key={i} style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '14px', borderRadius: '10px' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#92400e', fontWeight: 500, margin: 0, lineHeight: 1.5 }}>{chal}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Technical Learnings */}
+              {Array.isArray(project.learnings) && project.learnings.length > 0 && (
+                <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                  <h2 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#8b5cf6' }}></span>
+                    Technical Learnings & Architectural Insights
+                  </h2>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {project.learnings.map((learn: string, i: number) => (
+                      <div key={i} style={{ background: '#f3e8ff', border: '1px solid #e9d5ff', padding: '14px', borderRadius: '10px' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#6b21a8', fontWeight: 500, margin: 0, lineHeight: 1.5 }}>{learn}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Actionable Future Roadmap */}
+            {Array.isArray(project.futureRoadmap) && project.futureRoadmap.length > 0 && (
+              <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '28px', boxShadow: '0 4px 12px rgba(0,0,0,0.03)' }}>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#ff7e5f' }}></span>
+                  Actionable Future Roadmap ({project.futureRoadmap.length})
+                </h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '14px' }}>
+                  {project.futureRoadmap.map((item: string, i: number) => (
+                    <div key={i} style={{ background: '#fff5f5', border: '1px solid #ffe3e3', padding: '16px', borderRadius: '12px' }}>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#e03131', textTransform: 'uppercase' }}>Goal #{i + 1}</span>
+                      <p style={{ fontSize: '0.875rem', color: '#c92a2a', fontWeight: 600, marginTop: '4px', margin: 0, lineHeight: 1.5 }}>{item}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 

@@ -103,49 +103,124 @@ export function generateMermaidArchitectureDiagram(evidence: ExtractedEvidence):
   return lines.join('\n');
 }
 
+export function generateMermaidDataFlowDiagram(evidence: ExtractedEvidence): string {
+  const { repoName, techStack, apiEndpoints } = evidence;
+  const hasAi = techStack.aiMl.length > 0;
+  const hasDb = techStack.database.length > 0;
+
+  const lines: string[] = ['graph LR'];
+  lines.push('    subgraph Ingestion ["Data Ingestion & Extraction Layer"]');
+  lines.push('        RawSource["Source Code & Documents"]')
+  lines.push('        ASTScanner["AST Parser & Manifest Extractor"]')
+  lines.push('        Chunker["Code Chunker & Tokenizer"]')
+  lines.push('    end');
+
+  lines.push('    subgraph Indexing ["Hybrid Search & Indexing Engine"]');
+  lines.push('        BM25["BM25 Lexical Index"]')
+  lines.push('        VectorStore["TF-IDF / Vector Store"]')
+  lines.push('        RRF["Reciprocal Rank Fusion (RRF)"]')
+  lines.push('    end');
+
+  lines.push('    subgraph Processing ["Synthesis & Inference Engine"]');
+  lines.push('        ContextAssembler["Context Window Assembler"]')
+  lines.push(`        LLMProvider["${hasAi ? techStack.aiMl.join(' / ') : 'AI LLM Multi-Provider Registry'}"]`);
+  if (hasDb) {
+    lines.push(`        DatabaseLayer["${techStack.database.join(' / ')} Persistence"]`);
+  }
+  lines.push('    end');
+
+  lines.push('    RawSource -->|"Extract Syntax Trees"| ASTScanner');
+  lines.push('    ASTScanner -->|"Segment Text Tokens"| Chunker');
+  lines.push('    Chunker -->|"Build Lexical Tokens"| BM25');
+  lines.push('    Chunker -->|"Generate Dense Embeddings"| VectorStore');
+  lines.push('    BM25 -->|"Score Chunks"| RRF');
+  lines.push('    VectorStore -->|"Cosine Similarity"| RRF');
+  lines.push('    RRF -->|"Top-Ranked Context"| ContextAssembler');
+  lines.push('    ContextAssembler -->|"Prompt Payload"| LLMProvider');
+  if (hasDb) {
+    lines.push('    LLMProvider -->|"Store Structured State"| DatabaseLayer');
+  }
+
+  return lines.join('\n');
+}
+
+export function generateMermaidSequenceDiagram(evidence: ExtractedEvidence): string {
+  const { repoName, techStack, apiEndpoints } = evidence;
+  const mainEndpoint = apiEndpoints[0] ? `${apiEndpoints[0].method} ${apiEndpoints[0].path.replace(/[:"()]/g, '')}` : 'POST /api/analyze';
+
+  const lines: string[] = ['sequenceDiagram'];
+  lines.push('    autonumber');
+  lines.push('    actor Client as Client / Browser');
+  lines.push('    participant Gateway as API Gateway / Router');
+  lines.push('    participant Controller as Service Controller');
+  lines.push('    participant Engine as AI / Business Engine');
+  lines.push('    participant DB as Persistence Storage');
+
+  lines.push(`    Client->>Gateway: ${mainEndpoint} (JSON Payload)`);
+  lines.push('    Gateway->>Gateway: Validate CORS, Headers & Rate Limits');
+  lines.push('    Gateway->>Controller: Dispatch Sanitized Request');
+  lines.push('    Controller->>Engine: Execute Business Logic & RAG Context Lookup');
+  lines.push('    Engine->>DB: Query / Mutate Recordsets');
+  lines.push('    DB-->>Engine: Return State / Documents');
+  lines.push('    Engine-->>Controller: Return Processed Data Frame');
+  lines.push('    Controller-->>Gateway: HTTP 200 OK + JSON Body');
+  lines.push('    Gateway-->>Client: Render UI Update / Toast');
+
+  return lines.join('\n');
+}
+
+export function generateMediumDescription(evidence: ExtractedEvidence): string {
+  const { repoName, techStack, detectedLanguages, apiEndpoints } = evidence;
+  const langList = detectedLanguages.map(l => `**${l}**`).join(', ') || '**TypeScript**';
+  const backendTech = techStack.backend.map(b => `\`${b}\``).join(', ') || '`Node.js Express`';
+  const frontendTech = techStack.frontend.map(f => `\`${f}\``).join(', ');
+  const aiTech = techStack.aiMl.length > 0 ? ` with local AI/ML acceleration via ${techStack.aiMl.map(a => `\`${a}\``).join(', ')}` : '';
+  const dbTech = techStack.database.length > 0 ? ` and structured persistence powered by ${techStack.database.map(d => `\`${d}\``).join(', ')}` : '';
+  const endpointsCount = apiEndpoints.length > 0 ? ` exposing **${apiEndpoints.length} REST API routes**` : '';
+
+  return `**${repoName}** is a production-grade software engineering system implemented primarily in ${langList}${aiTech}${dbTech}. The backend service layer is built on ${backendTech}${endpointsCount}, managing incoming payload validation, CORS security, and rate-limiting middleware.${frontendTech ? ` The presentation tier is engineered using ${frontendTech}, featuring reactive component hierarchies and modular state synchronization.` : ''} The entire application adopts a clean, decoupled architecture optimized for containerized deployment and automated AST inspection.`;
+}
+
 export function generateExhaustiveTechnicalDescription(evidence: ExtractedEvidence): string {
   const { repoName, techStack, detectedLanguages, apiEndpoints, keyModules, readmeSummary } = evidence;
 
   const cleanSummary = stripEmojis(readmeSummary || '').replace(/^#+\s*/g, '');
-
-  const langList = detectedLanguages.join(', ') || 'TypeScript/JavaScript';
-  const frontendTech = techStack.frontend.join(', ') || 'standard web technologies';
-  const backendTech = techStack.backend.join(', ') || 'Node.js/Express service architecture';
-  const aiTech = techStack.aiMl.length > 0 ? ` featuring local AI/ML acceleration via ${techStack.aiMl.join(', ')}` : '';
-  const dbTech = techStack.database.length > 0 ? ` and structured persistence powered by ${techStack.database.join(', ')}` : '';
-  const infraTech = techStack.infrastructure.length > 0 ? ` Deployment is containerized and orchestrated through ${techStack.infrastructure.join(', ')}.` : '';
+  const langList = detectedLanguages.map(l => `**${l}**`).join(', ') || '**TypeScript**';
+  const frontendTech = techStack.frontend.map(f => `\`${f}\``).join(', ') || '`React` / `HTML5`';
+  const backendTech = techStack.backend.map(b => `\`${b}\``).join(', ') || '`Node.js Express`';
+  const aiTech = techStack.aiMl.length > 0 ? ` featuring local AI/ML inference via ${techStack.aiMl.map(a => `\`${a}\``).join(', ')}` : '';
+  const dbTech = techStack.database.length > 0 ? ` and structured persistence powered by ${techStack.database.map(d => `\`${d}\``).join(', ')}` : '';
+  const infraTech = techStack.infrastructure.length > 0 ? ` Deployment is containerized and orchestrated through ${techStack.infrastructure.map(i => `\`${i}\``).join(', ')}.` : '';
 
   const modulesList = keyModules.length > 0
-    ? ` The codebase is structured modularly across key functional boundaries including ${keyModules.map((m) => `${m.name} (${m.path})`).join(', ')}.`
+    ? ` The codebase is structured modularly across key functional boundaries including ${keyModules.map((m) => `\`${m.name}\` (\`${m.path}\`)`).join(', ')}.`
     : '';
 
   const endpointsList = apiEndpoints.length > 0
-    ? ` The network interface exposes ${apiEndpoints.length} primary REST/WebSocket routes including ${apiEndpoints.slice(0, 4).map((e) => `${e.method} ${e.path}`).join(', ')}.`
+    ? ` The network interface exposes **${apiEndpoints.length} primary REST/WebSocket routes** including ${apiEndpoints.slice(0, 4).map((e) => `\`${e.method} ${e.path}\``).join(', ')}.`
     : '';
 
   return [
-    `${repoName} is a production-grade software engineering system implemented primarily in ${langList}.${aiTech}${dbTech}.`,
-    `System Architecture & Component Topology: The core application is partitioned into clear service boundaries. Backend request processing is powered by ${backendTech}, managing incoming payload validation, CORS policies, and rate-limiting middleware. ${frontendTech ? `The user presentation layer is built using ${frontendTech}, utilizing reactive component hierarchies and state management.` : ''}${modulesList}`,
-    `Data Pipeline & Execution Lifecycle: Incoming requests follow a deterministic lifecycle. ${endpointsList} Requests enter through designated entrypoint routes, pass through authentication and parameter validation, and execute business logic within isolated service modules. Output data frames and JSON models are serialized cleanly back to callers.`,
-    `Infrastructure, Reliability & Build System: ${infraTech} Environment variables are managed using isolated configuration templates. Automated linting, static analysis, and code quality checks are enforced via ${techStack.tools.concat(techStack.testing).join(', ') || 'standard tooling'}.`,
-    cleanSummary ? `Project Background & Documentation: ${cleanSummary}` : '',
+    `### Core System Architecture & Service Topology\n**${repoName}** is a production-grade software engineering system implemented in ${langList}.${aiTech}${dbTech}. The core application is partitioned into decoupled service boundaries. Backend request processing is powered by ${backendTech}, managing incoming payload validation, CORS security policies, and rate-limiting middleware. ${frontendTech ? `The presentation tier is built using ${frontendTech}, utilizing reactive component hierarchies and state management.` : ''}${modulesList}`,
+
+    `### Data Pipeline, Processing & Execution Flow\nIncoming requests follow a deterministic execution lifecycle. ${endpointsList} Requests enter through designated entrypoint routes, pass through parameter validation, and execute business logic within isolated service controllers. Output data frames and JSON models are serialized cleanly back to callers with low latency overhead.`,
+
+    `### Algorithmic Design Patterns & Decoupled Controllers\nThe system enforces separation of concerns between HTTP routing handlers, business domain logic, and data layer models. Service controllers isolate side-effects, while data transformation utilities normalize payloads prior to persistence or UI rendering. Error boundaries capture runtime exceptions gracefully to maintain service availability.`,
+
+    `### Infrastructure, Reliability & Build System\n${infraTech} Environment variables are managed using isolated configuration templates. Automated linting, static analysis, and code quality checks are enforced via ${techStack.tools.concat(techStack.testing).map(t => `\`${t}\``).join(', ') || '`TypeScript` / `ESLint`'}.`,
+
+    cleanSummary ? `### Project Documentation & Context\n${cleanSummary}` : '',
   ]
     .filter(Boolean)
     .join('\n\n');
 }
 
 export async function runMultiPassSynthesis(evidence: ExtractedEvidence): Promise<SynthesisResult> {
-  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false' && AiProviderRegistry.getActiveProviders().length > 0) {
-    try {
-      console.log(` 🤖 [Step 4/7] Invoking AI Provider Registry for multi-pass technical synthesis...`);
-      const llmResult = await runLlmMultiPassSynthesis(evidence);
-      console.log(` ✅ [Step 4/7] AI LLM synthesis completed successfully (${llmResult.contributions.length} contributions, ${llmResult.features.length} features, ${llmResult.challenges.length} challenges generated).`);
-      return llmResult;
-    } catch (err: any) {
-      console.warn(` ⚠️ [Step 4/7] AI LLM call failed (${err.message}). Falling back to Deep Heuristic Synthesizer.`);
-    }
-  } else {
-    console.log(` 💡 [Step 4/7] No AI providers configured or LLM synthesis disabled. Executing Deep Heuristic Synthesis pass...`);
+  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
+    console.log(` 🤖 [Step 4/7] Invoking AI Provider Registry for multi-pass technical synthesis...`);
+    const llmResult = await runLlmMultiPassSynthesis(evidence);
+    console.log(` ✅ [Step 4/7] AI LLM synthesis completed successfully (${llmResult.contributions.length} contributions, ${llmResult.features.length} features, ${llmResult.challenges.length} challenges generated).`);
+    return llmResult;
   }
 
   const heuristicResult = runDeepHeuristicSynthesis(evidence);

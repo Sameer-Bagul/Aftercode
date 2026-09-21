@@ -134,17 +134,11 @@ export function generateExhaustiveTechnicalDescription(evidence: ExtractedEviden
 }
 
 export async function runMultiPassSynthesis(evidence: ExtractedEvidence): Promise<SynthesisResult> {
-  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false' && AiProviderRegistry.getActiveProviders().length > 0) {
-    try {
-      console.log(` 🤖 [Step 4/7] Invoking AI Provider Registry for multi-pass technical synthesis...`);
-      const llmResult = await runLlmMultiPassSynthesis(evidence);
-      console.log(` ✅ [Step 4/7] AI LLM synthesis completed successfully (${llmResult.contributions.length} contributions, ${llmResult.features.length} features, ${llmResult.challenges.length} challenges generated).`);
-      return llmResult;
-    } catch (err: any) {
-      console.warn(` ⚠️ [Step 4/7] AI LLM call failed (${err.message}). Falling back to Deep Heuristic Synthesizer.`);
-    }
-  } else {
-    console.log(` 💡 [Step 4/7] No AI providers configured or LLM synthesis disabled. Executing Deep Heuristic Synthesis pass...`);
+  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
+    console.log(` 🤖 [Step 4/7] Invoking AI Provider Registry for multi-pass technical synthesis...`);
+    const llmResult = await runLlmMultiPassSynthesis(evidence);
+    console.log(` ✅ [Step 4/7] AI LLM synthesis completed successfully (${llmResult.contributions.length} contributions, ${llmResult.features.length} features, ${llmResult.challenges.length} challenges generated).`);
+    return llmResult;
   }
 
   const heuristicResult = runDeepHeuristicSynthesis(evidence);

@@ -28,50 +28,84 @@ export const AnalysisModal: React.FC<AnalysisModalProps> = ({
   errorMessage,
   onClose,
 }) => {
+  const [activeStep, setActiveStep] = React.useState<number>(1);
+
+  React.useEffect(() => {
+    if (!isOpen || status !== 'running') {
+      if (status === 'completed') setActiveStep(7);
+      if (!isOpen) setActiveStep(1);
+      return;
+    }
+
+    setActiveStep(1);
+    const timer1 = setTimeout(() => setActiveStep(2), 1200);
+    const timer2 = setTimeout(() => setActiveStep(3), 2400);
+    const timer3 = setTimeout(() => setActiveStep(4), 3600);
+    const timer4 = setTimeout(() => setActiveStep(5), 4800);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+      clearTimeout(timer3);
+      clearTimeout(timer4);
+    };
+  }, [isOpen, status]);
+
   if (!isOpen) return null;
+
+  const getStepStatus = (stepNum: number): 'pending' | 'running' | 'completed' | 'error' => {
+    if (status === 'completed') return 'completed';
+    if (status === 'error') {
+      if (stepNum === activeStep) return 'error';
+      return stepNum < activeStep ? 'completed' : 'pending';
+    }
+    if (stepNum < activeStep) return 'completed';
+    if (stepNum === activeStep) return 'running';
+    return 'pending';
+  };
 
   const steps: AnalysisStep[] = [
     {
       number: 1,
       label: 'Workspace Sandbox & Shallow Clone',
       description: 'Preparing sandboxed directory and executing shallow git clone into memory',
-      status: status === 'running' ? 'completed' : status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(1),
     },
     {
       number: 2,
       label: 'Complexity & Structural AST Scanning',
       description: 'Scanning directory trees up to depth 10 for source files, manifests, and configs',
-      status: status === 'running' ? 'completed' : status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(2),
     },
     {
       number: 3,
       label: 'Route & Package Manifest Evidence',
       description: 'Extracting ground-truth package dependencies, framework routes, and API endpoints',
-      status: status === 'running' ? 'completed' : status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(3),
     },
     {
       number: 4,
       label: 'Ephemeral Hybrid RAG Indexing',
       description: 'Chunking source code and populating BM25 sparse search & TF-IDF term vectors',
-      status: status === 'running' ? 'completed' : status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(4),
     },
     {
       number: 5,
       label: 'Gemini SDK Multi-Pass Synthesis',
       description: 'Invoking Google GenAI SDK (@google/genai) for deep architectural prompt synthesis',
-      status: status === 'running' ? 'running' : status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(5),
     },
     {
       number: 6,
       label: 'AJV Schema & Zero-Fabrication Rules',
       description: 'Enforcing JSON schema validation and zero-hallucination business rule checks',
-      status: status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(6),
     },
     {
       number: 7,
       label: 'Writing Metadata & Video Script',
       description: `Saving output payload to output/metadata/${slug}.json`,
-      status: status === 'completed' ? 'completed' : 'pending',
+      status: getStepStatus(7),
     },
   ];
 

@@ -4,6 +4,8 @@ import { stripEmojis } from '../metadata/normalizer.js';
 import { AiProviderRegistry } from '../ai/provider-registry.js';
 
 export interface RagSynthesisResult {
+  mediumDescription?: string;
+  longDescription?: string;
   architectureDescription: string;
   contributions: string[];
   features: string[];
@@ -38,12 +40,8 @@ export async function runRagMultiPassSynthesis(
 
   console.log(` 🎯 [RAG Retriever] Retrived ${topChunks.length} top-ranked Hybrid RAG code chunks for synthesis.`);
 
-  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false' && AiProviderRegistry.getActiveProviders().length > 0) {
-    try {
-      return await executeMultiProviderRagSynthesis(evidence, topChunks);
-    } catch (err: any) {
-      console.warn(` ⚠️ [RAG Synthesizer] AI Layer error (${err.message}). Switching to Deep Heuristic RAG synthesis.`);
-    }
+  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
+    return await executeMultiProviderRagSynthesis(evidence, topChunks);
   }
 
   return executeHeuristicRagSynthesis(evidence, topChunks);
@@ -70,6 +68,8 @@ Tech Stack: ${JSON.stringify(evidence.techStack)}
 Endpoints: ${JSON.stringify(evidence.apiEndpoints)}
 
 Return strictly valid JSON with key fields:
+- "mediumDescription": (1 large, rich paragraph summarizing core purpose, architectural style, and tech stack using Markdown **bold** and \`code\` formatting)
+- "longDescription": (3-5 detailed paragraphs explaining core system architecture, data ingestion pipelines, execution flow, security guardrails, and build topology formatted with Markdown **bold**, *italics*, and \`code\` formatting)
 - "architectureDescription": (3-4 paragraphs detailed technical overview)
 - "contributions": (10-15 technical bullet points)
 - "features": (8+ bullet points)
@@ -83,7 +83,9 @@ DO NOT use emojis.`;
   if (response && response.data) {
     const parsed = response.data;
     return {
-      architectureDescription: parsed.architectureDescription || '',
+      mediumDescription: parsed.mediumDescription || '',
+      longDescription: parsed.longDescription || parsed.architectureDescription || '',
+      architectureDescription: parsed.architectureDescription || parsed.longDescription || '',
       contributions: (parsed.contributions || []).map((s: string) => stripEmojis(s)),
       features: (parsed.features || []).map((s: string) => stripEmojis(s)),
       challenges: (parsed.challenges || []).map((s: string) => stripEmojis(s)),

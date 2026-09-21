@@ -3,7 +3,8 @@
   "title": "Minecraft Ai",
   "slug": "minecraft-ai",
   "shortDescription": "This is a Next.js project bootstrapped with create-next-app. Getting Started First, run the development server: ``bash npm run dev or yarn dev or pnpm dev or bun dev ` Open http://...",
-  "description": "System Architecture for minecraft-ai: Built with Python, TypeScript.\n\nBackend service layer powered by FastAPI, managing incoming payload validation, CORS policies, and rate-limiting middleware.\n\nPresentation and data storage layers integrate React, Next.js.",
+  "description": "**minecraft-ai** is a production-grade software engineering system implemented primarily in **Python**, **TypeScript**. The backend service layer is built on `FastAPI` exposing **4 REST API routes**, managing incoming payload validation, CORS security, and rate-limiting middleware. The presentation tier is engineered using `React`, `Next.js`, featuring reactive component hierarchies and modular state synchronization. The entire application adopts a clean, decoupled architecture optimized for containerized deployment and automated AST inspection.",
+  "longDescription": "System Architecture for minecraft-ai: Built with Python, TypeScript.\n\nBackend service layer powered by FastAPI, managing incoming payload validation, CORS policies, and rate-limiting middleware.\n\nPresentation and data storage layers integrate React, Next.js.",
   "category": "Web App",
   "isFeatured": true,
   "status": "Completed",
@@ -39,11 +40,25 @@
     "Exposed 4 REST/WebSocket API endpoints",
     "Modularized logic within README.md",
     "Modularized logic within docker-compose.yml",
-    "Modularized logic within docs/CLIENT_SOLUTION_REPORT.md"
+    "Modularized logic within docs/CLIENT_SOLUTION_REPORT.md",
+    "Architected and deployed a decoupled FastAPI backend providing /ask, /generate_block, and /health endpoints.",
+    "Engineered an AgentPipeline routing user requests dynamically between RAG queries, safety guardrails, and procedural generation tools.",
+    "Implemented a hybrid retrieval-augmented generation (RAG) engine combining BM25 keyword matching with TF-IDF vector cosine similarity.",
+    "Integrated a procedural 3D generation pipeline creating Blockbench Java JSON schemas, binary .glb models, and 16x16 pixel-art PNG textures.",
+    "Built a Next.js 14 and TypeScript web console featuring interactive chat and dynamic response type badges for Answer, Abstention, Tool Call, and Guardrail.",
+    "Integrated an interactive WebGL 3D model viewport enabling 360-degree orbit controls directly within the frontend interface.",
+    "Implemented safety guardrail modules to identify non-compliant inputs and issue structured abstentions.",
+    "Designed a structured tool execution logger recording tool invocations to tool_calls.json.",
+    "Constructed an automated evaluation harness in eval/run_eval.py benchmarking 15 golden dataset queries with a 100% pass rate.",
+    "Configured containerized multi-service deployment via Docker and Docker Compose orchestrating the FastAPI backend and Next.js frontend.",
+    "Structured data indexing across Craftify support tickets and documentation to provide grounded citations with relevance scores.",
+    "Configured CORS middleware on FastAPI to support secure local and containerized frontend-to-backend communication."
   ],
   "image": null,
   "gallery": [],
   "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (FastAPI)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph InfraTier [\"Infrastructure & Deployment Environment\"]\n Container[\"Docker Container Sandbox (Docker)\"]\n end\n UI -->|\"HTTP Requests: GET /, GET /health, POST /generate_block\"| Router\n Router -->|\"Validate & Dispatch\"| Controller\n Controller -->|\"JSON Response / Stream Output\"| UI\n Container -.->|\"Encloses & Isolates\"| Router\n Container -.->|\"Encloses & Isolates\"| Controller",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource -->|\"Extract Syntax Trees\"| ASTScanner\n ASTScanner -->|\"Segment Text Tokens\"| Chunker\n Chunker -->|\"Build Lexical Tokens\"| BM25\n Chunker -->|\"Generate Dense Embeddings\"| VectorStore\n BM25 -->|\"Score Chunks\"| RRF\n VectorStore -->|\"Cosine Similarity\"| RRF\n RRF -->|\"Top-Ranked Context\"| ContextAssembler\n ContextAssembler -->|\"Prompt Payload\"| LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET / (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
   "liveUrl": null,
   "githubUrl": "https://github.com/Sameer-Bagul/minecraft-ai",
   "apiDocsUrl": null,
@@ -53,7 +68,18 @@
     "Sameer-Bagul"
   ],
   "features": [
-    "Core minecraft-ai functionality"
+    "Core minecraft-ai functionality",
+    "Hybrid RAG Q&A engine combining BM25 lexical search with TF-IDF cosine similarity scoring.",
+    "Agent intent router distinguishing between document inquiries, tool actions, and block generation requests.",
+    "Safety guardrail engine evaluating incoming prompts to enforce abstention policies.",
+    "Procedural 3D Minecraft block generator producing Blockbench Java JSON models and binary .glb assets.",
+    "16x16 pixel-art PNG texture generator customized to descriptive input prompts.",
+    "Interactive WebGL 3D model viewer with 360-degree orbit controls integrated in the Next.js UI.",
+    "Real-time chat interface displaying grounded document citations and relevance metrics.",
+    "Visual response type badges categorizing outputs as Answer, Abstention, Tool Call, or Guardrail.",
+    "Structured tool execution logging capturing arguments and status in tool_calls.json.",
+    "Automated evaluation benchmark running 15 evaluation queries against a golden dataset.",
+    "Multi-container Docker Compose orchestration for full-stack local deployment."
   ],
   "challenges": [
     "Managing state synchronization and component decoupling across 7 core modules",
@@ -62,7 +88,12 @@
   ],
   "learnings": [
     "Deep technical patterns in Python, TypeScript, React, Next.js",
-    "Effective hybrid search indexing and code chunking for automated AST analysis"
+    "Effective hybrid search indexing and code chunking for automated AST analysis",
+    "Hybrid retrieval systems combining BM25 with vector-based TF-IDF outperform single-technique search when indexing mixed technical and support documentation.",
+    "Explicit agent routing states (Answer, Abstention, Tool Call, Guardrail) improve frontend UX by standardizing response badges and citation handling.",
+    "Standardizing procedural asset outputs to Blockbench Java JSON ensures seamless compatibility with Minecraft modding conventions.",
+    "Automated evaluation harnesses using golden datasets are essential for validating agent safety and intent routing stability during iteration.",
+    "Decoupling procedural 3D model generation into dedicated REST endpoints optimizes API throughput and prevents UI thread blocking."
   ],
   "architectureOverview": "Frontend built with React, Next.js. Backend API powered by FastAPI. Deployed using Docker.",
   "userFlow": [
@@ -264,8 +295,8 @@
     "portfolioWorthiness": "high"
   },
   "metadata": {
-    "generatedAt": "2026-09-21T16:23:01.428Z",
-    "lastAnalyzedAt": "2026-09-21T16:23:01.428Z",
+    "generatedAt": "2026-09-21T17:41:41.105Z",
+    "lastAnalyzedAt": "2026-09-21T17:41:41.105Z",
     "sourceCommit": null,
     "manuallyVerified": false
   }

@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+import * as fs from 'fs';
 import { AiProvider, AiGenerationOptions, AiGenerationResult } from './provider-interface.js';
 import { GeminiProvider } from './providers/gemini-provider.js';
 import { OpenRouterProvider } from './providers/openrouter-provider.js';
@@ -5,6 +8,20 @@ import { OpenAiProvider } from './providers/openai-provider.js';
 
 export interface AiSynthesisResult<T = any> extends AiGenerationResult {
   data: T;
+}
+
+function ensureEnvLoaded() {
+  if (!process.env.GEMINI_API_KEY && !process.env.GOOGLE_GENAI_API_KEY) {
+    let current = process.cwd();
+    while (current !== path.parse(current).root) {
+      const envPath = path.join(current, '.env');
+      if (fs.existsSync(envPath)) {
+        dotenv.config({ path: envPath });
+        break;
+      }
+      current = path.dirname(current);
+    }
+  }
 }
 
 export class AiProviderRegistry {
@@ -15,6 +32,7 @@ export class AiProviderRegistry {
   ];
 
   public static getActiveProviders(): AiProvider[] {
+    ensureEnvLoaded();
     return this.providers.filter((p) => p.isAvailable());
   }
 

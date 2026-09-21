@@ -28,6 +28,9 @@
     "slug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
     "shortDescription": { "type": "string" },
     "description": { "type": "string" },
+    "longDescription": { "type": ["string", "null"] },
+    "dataFlowDiagram": { "type": ["string", "null"] },
+    "sequenceDiagram": { "type": ["string", "null"] },
     "category": {
       "type": "string",
       "enum": [

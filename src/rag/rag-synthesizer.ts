@@ -38,12 +38,8 @@ export async function runRagMultiPassSynthesis(
 
   console.log(` 🎯 [RAG Retriever] Retrived ${topChunks.length} top-ranked Hybrid RAG code chunks for synthesis.`);
 
-  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false' && AiProviderRegistry.getActiveProviders().length > 0) {
-    try {
-      return await executeMultiProviderRagSynthesis(evidence, topChunks);
-    } catch (err: any) {
-      console.warn(` ⚠️ [RAG Synthesizer] AI Layer error (${err.message}). Switching to Deep Heuristic RAG synthesis.`);
-    }
+  if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
+    return await executeMultiProviderRagSynthesis(evidence, topChunks);
   }
 
   return executeHeuristicRagSynthesis(evidence, topChunks);

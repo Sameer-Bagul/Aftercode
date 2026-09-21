@@ -17,10 +17,9 @@ export class GeminiProvider implements AiProvider {
 
     const ai = new GoogleGenAI({ apiKey });
     const modelsToTry = options.modelsToTry || [
+      'gemini-3.6-flash',
       'gemini-flash-latest',
       'gemini-2.5-flash',
-      'gemini-2.0-flash',
-      'gemini-1.5-flash',
     ];
 
     let lastError: any = null;
