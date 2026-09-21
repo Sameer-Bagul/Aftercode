@@ -33,7 +33,27 @@ export class AiProviderRegistry {
 
   public static getActiveProviders(): AiProvider[] {
     ensureEnvLoaded();
-    return this.providers.filter((p) => p.isAvailable());
+    const available = this.providers.filter((p) => p.isAvailable());
+
+    const selectedId = (process.env.PRIMARY_AI_PROVIDER || process.env.ACTIVE_AI_PROVIDER || '').toLowerCase();
+
+    if (selectedId) {
+      const selectedProvider = available.find((p) => {
+        const pName = p.name.toLowerCase();
+        if (selectedId === 'groq' && pName.includes('groq')) return true;
+        if (selectedId === 'gemini' && pName.includes('gemini')) return true;
+        if (selectedId === 'openrouter' && pName.includes('openrouter')) return true;
+        if (selectedId === 'openai' && pName.includes('openai') && !pName.includes('openrouter')) return true;
+        return false;
+      });
+
+      if (selectedProvider) {
+        console.log(` 🎯 [AiProviderRegistry] Using exclusively selected provider '${selectedProvider.name}'.`);
+        return [selectedProvider];
+      }
+    }
+
+    return available;
   }
 
   public static async synthesizeJson<T = any>(

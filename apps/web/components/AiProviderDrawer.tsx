@@ -1,13 +1,14 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Cpu, Key, CheckCircle, AlertCircle, Eye, EyeOff, Zap, Sliders, RefreshCw } from 'lucide-react';
+import { X, Cpu, Key, CheckCircle, AlertCircle, Eye, EyeOff, Zap, Sliders, RefreshCw, Star } from 'lucide-react';
 
 export interface ProviderItem {
   id: string;
   name: string;
   enabled: boolean;
   hasKey: boolean;
+  isPrimary: boolean;
   model: string;
   availableModels: string[];
   keyEnv: string;
@@ -22,6 +23,7 @@ interface AiProviderDrawerProps {
 
 export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProviderDrawerProps) {
   const [providers, setProviders] = useState<ProviderItem[]>([]);
+  const [primaryId, setPrimaryId] = useState<string>('groq');
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -31,6 +33,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
 
   const [savingId, setSavingId] = useState<string | null>(null);
   const [testingId, setTestingId] = useState<string | null>(null);
+  const [settingPrimaryId, setSettingPrimaryId] = useState<string | null>(null);
   const [testResult, setTestResult] = useState<{ [id: string]: { ok: boolean; msg: string } }>({});
 
   const fetchProviders = async () => {
@@ -40,6 +43,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
       const data = await res.json();
       if (data.success) {
         setProviders(data.providers);
+        if (data.primaryProvider) setPrimaryId(data.primaryProvider);
         const modelMap: { [id: string]: string } = {};
         data.providers.forEach((p: ProviderItem) => {
           modelMap[p.id] = p.model;
@@ -61,6 +65,33 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
     }
   }, [isOpen]);
 
+  const handleSetPrimaryProvider = async (providerId: string) => {
+    try {
+      setSettingPrimaryId(providerId);
+      const res = await fetch('/api/ai/providers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'set_primary_provider',
+          providerId,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setPrimaryId(providerId);
+        await fetchProviders();
+        if (onProvidersUpdated) onProvidersUpdated();
+      } else {
+        alert(`Error setting primary provider: ${data.error}`);
+      }
+    } catch (err: any) {
+      alert(`Failed to set primary provider: ${err.message}`);
+    } finally {
+      setSettingPrimaryId(null);
+    }
+  };
+
   const handleSaveCredentials = async (providerId: string) => {
     try {
       setSavingId(providerId);
@@ -75,6 +106,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
           providerId,
           apiKey: key || undefined,
           model,
+          isPrimary: primaryId === providerId,
         }),
       });
 
@@ -195,7 +227,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
         }
       `}</style>
 
-      {/* Backdrop click to close */}
+      {/* Backdrop */}
       <div
         onClick={onClose}
         style={{
@@ -207,7 +239,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
         }}
       />
 
-      {/* Slide Drawer Panel */}
+      {/* Drawer Panel */}
       <div
         style={{
           position: 'relative',
@@ -255,7 +287,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
                 AI Provider Hub
               </h2>
               <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 500 }}>
-                Configure LLM keys, speed & model routing
+                Configure active provider, API keys & models
               </span>
             </div>
           </div>
@@ -277,25 +309,58 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
           </button>
         </div>
 
-        {/* Scrollable Body */}
+        {/* Scrollable Content */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
           
-          {/* Info Banner */}
+          {/* Active Provider Selector Banner */}
           <div
             style={{
-              padding: '14px 16px',
-              borderRadius: '12px',
-              backgroundColor: '#fff7ed',
-              border: '1px solid #ffedd5',
-              fontSize: '0.8rem',
-              color: '#9a3412',
-              lineHeight: 1.5,
+              padding: '16px',
+              borderRadius: '14px',
+              backgroundColor: '#f8fafc',
+              border: '1.5px solid #e2e8f0',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '8px',
             }}
           >
-            <div style={{ fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px', color: '#c2410c' }}>
-              <Zap size={16} fill="#ea580c" color="#ea580c" /> Multi-LLM Auto-Fallback Engine
-            </div>
-            The engine automatically tries configured providers in priority order (Groq, Gemini, OpenRouter, OpenAI). If one rate-limits, it falls back seamlessly.
+            <label
+              style={{
+                fontSize: '0.75rem',
+                fontWeight: 800,
+                color: '#0f172a',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+              }}
+            >
+              <Star size={15} fill="#f59e0b" color="#f59e0b" /> Exclusive Active AI Provider
+            </label>
+            <p style={{ margin: 0, fontSize: '0.75rem', color: '#64748b', lineHeight: 1.4 }}>
+              Select which AI provider engine is strictly used for repository synthesis:
+            </p>
+            <select
+              value={primaryId}
+              onChange={(e) => handleSetPrimaryProvider(e.target.value)}
+              disabled={Boolean(settingPrimaryId)}
+              style={{
+                width: '100%',
+                padding: '10px 12px',
+                borderRadius: '10px',
+                backgroundColor: '#ffffff',
+                border: '1px solid #cbd5e1',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                color: '#0f172a',
+                outline: 'none',
+                cursor: 'pointer',
+              }}
+            >
+              <option value="groq">⚡ Groq AI (Ultra-Fast 12ms Inference)</option>
+              <option value="gemini">🤖 Google Gemini AI</option>
+              <option value="openrouter">🌐 OpenRouter AI</option>
+              <option value="openai">🟢 OpenAI (GPT-4o)</option>
+            </select>
           </div>
 
           {loading ? (
@@ -321,6 +386,8 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
             </div>
           ) : (
             providers.map((p) => {
+              const isSelectedPrimary = primaryId === p.id;
+
               const getBadgeColor = () => {
                 if (p.id === 'groq') return { bg: '#fff7ed', border: '#ffedd5', color: '#ea580c' };
                 if (p.id === 'gemini') return { bg: '#ecfeff', border: '#cffafe', color: '#0891b2' };
@@ -337,8 +404,8 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
                     padding: '20px',
                     borderRadius: '16px',
                     backgroundColor: '#ffffff',
-                    border: '1px solid #e2e8f0',
-                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.03)',
+                    border: isSelectedPrimary ? '2px solid #ea580c' : '1px solid #e2e8f0',
+                    boxShadow: isSelectedPrimary ? '0 4px 16px rgba(234, 88, 12, 0.12)' : '0 4px 12px rgba(0, 0, 0, 0.03)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '14px',
@@ -346,51 +413,57 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
                 >
                   {/* Title Bar */}
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <span
-                      style={{
-                        padding: '4px 12px',
-                        borderRadius: '20px',
-                        fontSize: '0.8rem',
-                        fontWeight: 700,
-                        backgroundColor: badge.bg,
-                        border: `1px solid ${badge.border}`,
-                        color: badge.color,
-                      }}
-                    >
-                      {p.name}
-                    </span>
-
-                    {p.hasKey ? (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <span
                         style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '4px',
-                          fontSize: '0.75rem',
+                          padding: '4px 12px',
+                          borderRadius: '20px',
+                          fontSize: '0.8rem',
                           fontWeight: 700,
-                          color: '#047857',
-                          backgroundColor: '#ecfdf5',
-                          padding: '3px 10px',
-                          borderRadius: '20px',
-                          border: '1px solid #d1fae5',
+                          backgroundColor: badge.bg,
+                          border: `1px solid ${badge.border}`,
+                          color: badge.color,
                         }}
                       >
-                        <CheckCircle size={13} /> Active
+                        {p.name}
                       </span>
-                    ) : (
-                      <span
+                      {isSelectedPrimary && (
+                        <span
+                          style={{
+                            fontSize: '0.7rem',
+                            fontWeight: 800,
+                            color: '#ea580c',
+                            backgroundColor: '#fff7ed',
+                            padding: '2px 8px',
+                            borderRadius: '12px',
+                            border: '1px solid #ffedd5',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                          }}
+                        >
+                          <Star size={11} fill="#ea580c" /> Active Engine
+                        </span>
+                      )}
+                    </div>
+
+                    {!isSelectedPrimary && (
+                      <button
+                        onClick={() => handleSetPrimaryProvider(p.id)}
+                        disabled={Boolean(settingPrimaryId)}
                         style={{
-                          fontSize: '0.75rem',
-                          fontWeight: 600,
-                          color: '#94a3b8',
+                          fontSize: '0.725rem',
+                          fontWeight: 700,
+                          color: '#475569',
                           backgroundColor: '#f8fafc',
-                          padding: '3px 10px',
-                          borderRadius: '20px',
-                          border: '1px solid #e2e8f0',
+                          padding: '4px 10px',
+                          borderRadius: '8px',
+                          border: '1px solid #cbd5e1',
+                          cursor: 'pointer',
                         }}
                       >
-                        Missing Key
-                      </span>
+                        Use This Provider
+                      </button>
                     )}
                   </div>
 
@@ -530,7 +603,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
                     </button>
                   </div>
 
-                  {/* Diagnostic Test Output */}
+                  {/* Test Diagnostic Result */}
                   {testResult[p.id] && (
                     <div
                       style={{
@@ -573,7 +646,7 @@ export function AiProviderDrawer({ isOpen, onClose, onProvidersUpdated }: AiProv
               boxShadow: '0 2px 8px rgba(234, 88, 12, 0.25)',
             }}
           >
-            Done & Save Settings
+            Done & Save Hub State
           </button>
         </div>
       </div>

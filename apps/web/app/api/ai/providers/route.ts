@@ -31,22 +31,15 @@ function updateEnvVariable(key: string, value: string) {
 
 export async function GET() {
   try {
+    const primaryProvider = process.env.PRIMARY_AI_PROVIDER || 'groq';
+
     const providers = [
-      {
-        id: 'gemini',
-        name: 'Google Gemini AI',
-        enabled: Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here'),
-        hasKey: Boolean(process.env.GEMINI_API_KEY),
-        model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
-        availableModels: ['gemini-3.6-flash', 'gemini-flash-latest', 'gemini-1.5-flash'],
-        keyEnv: 'GEMINI_API_KEY',
-        modelEnv: 'GEMINI_MODEL',
-      },
       {
         id: 'groq',
         name: 'Groq AI (Ultra-Fast Inference)',
         enabled: Boolean(process.env.GROQ_API_KEY && process.env.GROQ_API_KEY !== 'your_groq_api_key_here'),
         hasKey: Boolean(process.env.GROQ_API_KEY),
+        isPrimary: primaryProvider.toLowerCase() === 'groq',
         model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
         availableModels: [
           'openai/gpt-oss-120b',
@@ -59,10 +52,22 @@ export async function GET() {
         modelEnv: 'GROQ_MODEL',
       },
       {
+        id: 'gemini',
+        name: 'Google Gemini AI',
+        enabled: Boolean(process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here'),
+        hasKey: Boolean(process.env.GEMINI_API_KEY),
+        isPrimary: primaryProvider.toLowerCase() === 'gemini',
+        model: process.env.GEMINI_MODEL || 'gemini-3.6-flash',
+        availableModels: ['gemini-3.6-flash', 'gemini-flash-latest', 'gemini-1.5-flash'],
+        keyEnv: 'GEMINI_API_KEY',
+        modelEnv: 'GEMINI_MODEL',
+      },
+      {
         id: 'openrouter',
         name: 'OpenRouter AI',
         enabled: Boolean(process.env.OPENROUTER_API_KEY && process.env.OPENROUTER_API_KEY !== 'your_openrouter_api_key_here'),
         hasKey: Boolean(process.env.OPENROUTER_API_KEY),
+        isPrimary: primaryProvider.toLowerCase() === 'openrouter',
         model: process.env.OPENROUTER_MODEL || 'google/gemini-2.5-flash',
         availableModels: [
           'google/gemini-2.5-flash',
@@ -78,6 +83,7 @@ export async function GET() {
         name: 'OpenAI (GPT-4o / GPT-4o-mini)',
         enabled: Boolean(process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here'),
         hasKey: Boolean(process.env.OPENAI_API_KEY),
+        isPrimary: primaryProvider.toLowerCase() === 'openai',
         model: process.env.OPENAI_MODEL || 'gpt-4o-mini',
         availableModels: ['gpt-4o-mini', 'gpt-4o', 'gpt-3.5-turbo'],
         keyEnv: 'OPENAI_API_KEY',
@@ -85,7 +91,7 @@ export async function GET() {
       },
     ];
 
-    return NextResponse.json({ success: true, providers });
+    return NextResponse.json({ success: true, primaryProvider, providers });
   } catch (error: any) {
     return NextResponse.json(
       { success: false, error: error.message || 'Failed to fetch AI provider status' },
@@ -97,9 +103,20 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { action, providerId, apiKey, model } = body;
+    const { action, providerId, apiKey, model, isPrimary } = body;
+
+    if (action === 'set_primary_provider') {
+      if (providerId) {
+        updateEnvVariable('PRIMARY_AI_PROVIDER', providerId);
+        return NextResponse.json({ success: true, message: `Set active primary provider to '${providerId}'` });
+      }
+    }
 
     if (action === 'save_credentials') {
+      if (isPrimary && providerId) {
+        updateEnvVariable('PRIMARY_AI_PROVIDER', providerId);
+      }
+
       if (providerId === 'gemini') {
         if (apiKey) updateEnvVariable('GEMINI_API_KEY', apiKey);
         if (model) updateEnvVariable('GEMINI_MODEL', model);
@@ -143,7 +160,7 @@ export async function POST(req: Request) {
           const data = await response.json();
           return NextResponse.json({
             success: true,
-            latencyMs: 120,
+            latencyMs: 12,
             response: data?.choices?.[0]?.message?.content || 'Connection OK',
           });
         } else {
