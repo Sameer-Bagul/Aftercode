@@ -4,12 +4,14 @@ import { normalizeSlug, stripEmojis, sanitizeObjectEmojis } from './normalizer.j
 import {
   runMultiPassSynthesis,
   generateMermaidArchitectureDiagram,
+  generateMermaidDataFlowDiagram,
+  generateMermaidSequenceDiagram,
+  generateMediumDescription,
   generateExhaustiveTechnicalDescription,
   generateArchitectureOverview,
   cleanShortDescription,
   generateTechnicalUserFlow,
   generateTechnicalCodeFlow,
-  generateMediumDescription,
 } from './ai-synthesizer.js';
 import { generateRemotionVideoScript } from '../video/remotion-script-generator.js';
 import { RagSynthesisResult } from '../rag/rag-synthesizer.js';
@@ -36,8 +38,11 @@ export async function generateMetadataPayload(
   const isFeatured = classification.portfolioWorthiness === 'high';
   const synthesis = ragSynthesis || (await runMultiPassSynthesis(evidence));
   const mermaidDiagram = generateMermaidArchitectureDiagram(evidence);
+  const dataFlowDiagram = generateMermaidDataFlowDiagram(evidence);
+  const sequenceDiagram = generateMermaidSequenceDiagram(evidence);
+
   const mediumDescription = ragSynthesis?.mediumDescription || generateMediumDescription(evidence);
-  const exhaustiveDescription = ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
+  const longDescription = ragSynthesis?.longDescription || ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
   const architectureOverview = synthesis.architectureOverview || generateArchitectureOverview(evidence);
   const userFlow = synthesis.userFlow || generateTechnicalUserFlow(evidence);
   const codeFlow = synthesis.codeFlow || generateTechnicalCodeFlow(evidence);
@@ -50,7 +55,7 @@ export async function generateMetadataPayload(
     slug,
     shortDescription: cleanShortDesc,
     description: mediumDescription,
-    longDescription: exhaustiveDescription,
+    longDescription,
     category,
     isFeatured,
     status: classification.type === 'archived' ? 'Archived' : 'Completed',
@@ -63,6 +68,8 @@ export async function generateMetadataPayload(
     image: null,
     gallery: [],
     architectureDiagram: mermaidDiagram,
+    dataFlowDiagram,
+    sequenceDiagram,
     liveUrl: null,
     githubUrl: repoUrl,
     apiDocsUrl: null,

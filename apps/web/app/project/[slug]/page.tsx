@@ -18,6 +18,8 @@ export default function ProjectWorkspacePage() {
   const [activeSceneIndex, setActiveSceneIndex] = useState<number>(0);
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [isSynthesizingTts, setIsSynthesizingTts] = useState<boolean>(false);
+  const [isGeneratingScript, setIsGeneratingScript] = useState<boolean>(false);
+  const [aiProviderUsed, setAiProviderUsed] = useState<string | null>(null);
   const [project, setProject] = useState<any>(null);
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -64,6 +66,31 @@ export default function ProjectWorkspacePage() {
     setCopiedMD(true);
     addToast('success', 'Markdown Copied', 'Portfolio Markdown payload copied to clipboard.');
     setTimeout(() => setCopiedMD(false), 2000);
+  };
+
+  const handleGenerateAiScript = async () => {
+    if (!project) return;
+    setIsGeneratingScript(true);
+    addToast('info', 'AI Script Synthesis', `Querying AI Hub to synthesize video script for ${project.title}...`);
+
+    try {
+      const res = await fetch(`/api/video/script/${project.slug}`, { method: 'POST' });
+      const data = await res.json();
+      if (res.ok && data.success && data.scriptConfig) {
+        setAiProviderUsed(data.aiProvider || 'AI Hub');
+        setProject((prev: any) => ({
+          ...prev,
+          remotionVideoScript: data.scriptConfig,
+        }));
+        addToast('success', 'AI Script Generated!', `Synthesized 6 dynamic scenes via ${data.aiProvider || 'AI Hub'}`);
+      } else {
+        addToast('error', 'AI Synthesis Failed', data.error || 'AI Hub script generation error.');
+      }
+    } catch (err: any) {
+      addToast('error', 'AI Synthesis Error', err?.message || 'Failed to communicate with AI Hub API.');
+    } finally {
+      setIsGeneratingScript(false);
+    }
   };
 
   const handleSynthesizeTts = async () => {
@@ -772,24 +799,60 @@ export default function ProjectWorkspacePage() {
         {activeTab === 'video' && (
           <div style={{ display: 'grid', gridTemplateColumns: '320px 1fr', gap: '28px' }}>
             <div style={{ background: '#ffffff', border: '1px solid #e2e8f0', borderRadius: '16px', padding: '20px', boxShadow: '0 1px 3px rgba(0,0,0,0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', flexWrap: 'wrap', gap: '8px' }}>
                 <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a' }}>Storyboard Scenes</h3>
-                <button
-                  onClick={handleRenderVideo}
-                  disabled={isRendering}
-                  style={{
-                    padding: '6px 12px',
-                    borderRadius: '6px',
-                    background: '#0f172a',
-                    color: '#ffffff',
-                    border: 'none',
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    cursor: 'pointer',
-                  }}
-                >
-                  {isRendering ? 'Rendering...' : 'Render MP4'}
-                </button>
+                <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                  <button
+                    onClick={handleGenerateAiScript}
+                    disabled={isGeneratingScript}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isGeneratingScript ? 'AI Synthesizing...' : aiProviderUsed ? `🤖 AI (${aiProviderUsed})` : '🤖 AI Script'}
+                  </button>
+
+                  <button
+                    onClick={handleSynthesizeTts}
+                    disabled={isSynthesizingTts}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      background: '#0284c7',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isSynthesizingTts ? 'TTS...' : 'TTS Voice'}
+                  </button>
+
+                  <button
+                    onClick={handleRenderVideo}
+                    disabled={isRendering}
+                    style={{
+                      padding: '6px 12px',
+                      borderRadius: '6px',
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      border: 'none',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {isRendering ? 'Rendering...' : 'Render MP4'}
+                  </button>
+                </div>
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>

@@ -4,6 +4,12 @@ import { stripEmojis } from '../metadata/normalizer.js';
 import { AiProviderRegistry } from '../ai/provider-registry.js';
 
 export interface RagSynthesisResult {
+  shortDescription?: string;
+  architectureOverview?: string;
+  userFlow?: string[];
+  codeFlow?: string[];
+  mediumDescription?: string;
+  longDescription?: string;
   architectureDescription: string;
   contributions: string[];
   features: string[];
@@ -66,6 +72,8 @@ Tech Stack: ${JSON.stringify(evidence.techStack)}
 Endpoints: ${JSON.stringify(evidence.apiEndpoints)}
 
 Return strictly valid JSON with key fields:
+- "mediumDescription": (1 large, rich paragraph summarizing core purpose, architectural style, and tech stack using Markdown **bold** and \`code\` formatting)
+- "longDescription": (3-5 detailed paragraphs explaining core system architecture, data ingestion pipelines, execution flow, security guardrails, and build topology formatted with Markdown **bold**, *italics*, and \`code\` formatting)
 - "architectureDescription": (3-4 paragraphs detailed technical overview)
 - "contributions": (10-15 technical bullet points)
 - "features": (8+ bullet points)
@@ -79,7 +87,9 @@ DO NOT use emojis.`;
   if (response && response.data) {
     const parsed = response.data;
     return {
-      architectureDescription: parsed.architectureDescription || '',
+      mediumDescription: parsed.mediumDescription || '',
+      longDescription: parsed.longDescription || parsed.architectureDescription || '',
+      architectureDescription: parsed.architectureDescription || parsed.longDescription || '',
       contributions: (parsed.contributions || []).map((s: string) => stripEmojis(s)),
       features: (parsed.features || []).map((s: string) => stripEmojis(s)),
       challenges: (parsed.challenges || []).map((s: string) => stripEmojis(s)),

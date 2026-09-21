@@ -9,6 +9,22 @@ export interface RepoColorPalette {
   cardBorder: string;
 }
 
+export function generateNapkinFlowchart(title: string, subtitle: string, steps: string[]) {
+  const defaultLabels = ['Client UI', 'API Router', 'AI Hub Engine', 'Persistence Layer'];
+  const nodes = (steps.length > 0 ? steps : defaultLabels).slice(0, 4).map((s, idx) => ({
+    id: `step_${idx + 1}`,
+    label: s,
+    description: `Phase ${idx + 1} System Step`,
+    category: defaultLabels[idx % defaultLabels.length],
+  }));
+
+  return {
+    title,
+    subtitle,
+    steps: nodes,
+  };
+}
+
 /**
  * NapkinSvgGenerator
  * Programmatic visual engine generating dynamic repo-aware SVG flowcharts and mindmaps for Remotion scenes.

@@ -14,7 +14,130 @@ export interface SynthesisResult {
   futureRoadmap: string[];
 }
 
-export function cleanShortDescription(summary: string | undefined, repoName: string, category: string, detectedLanguages: string[]): string {
+export function generateMermaidArchitectureDiagram(evidence: ExtractedEvidence): string {
+  const { techStack, apiEndpoints, keyModules } = evidence;
+  const hasFrontend = techStack.frontend.length > 0;
+  const hasBackend = techStack.backend.length > 0;
+  const hasDb = techStack.database.length > 0;
+  const hasAi = techStack.aiMl.length > 0;
+  const hasInfra = techStack.infrastructure.length > 0;
+
+  const frontendTech = techStack.frontend.join(' / ') || 'React / HTML5';
+  const backendTech = techStack.backend.join(' / ') || 'Node.js Express / Python API';
+  const aiTech = techStack.aiMl.join(' / ') || 'Local ONNX / ML Inference';
+  const dbTech = techStack.database.join(' / ') || 'SQL / NoSQL Database';
+  const infraTech = techStack.infrastructure.join(' / ') || 'Docker Multi-Stage Build';
+
+  const lines: string[] = ['graph TD'];
+  lines.push('    subgraph ClientTier ["Presentation & Client Layer"]');
+  lines.push(`        UI["${hasFrontend ? `Frontend UI Components (${frontendTech})` : 'Client / User App Interface'}"]`);
+  lines.push('    end');
+
+  lines.push('    subgraph APITier ["API Gateway & Routing Layer"]');
+  lines.push(`        Router["${hasBackend ? `Backend Service Router (${backendTech})` : 'HTTP Request Router'}"]`);
+  lines.push('    end');
+
+  lines.push('    subgraph ServiceTier ["Service Logic & Controllers Layer"]');
+  const serviceModuleName = keyModules.find((m) => m.name.toLowerCase().includes('service'))?.path || 'src/services';
+  lines.push(`        Controller["Service Controllers & Handlers (${serviceModuleName})"]`);
+  lines.push('    end');
+
+  if (hasAi || hasDb) {
+    lines.push('    subgraph DataEngineTier ["Inference Engine & Data Storage"]');
+    if (hasAi) lines.push(`        InferenceEngine["AI/ML Model Inference Runtime (${aiTech})"]`);
+    if (hasDb) lines.push(`        Database["Persistence Storage Layer (${dbTech})"]`);
+    lines.push('    end');
+  }
+
+  if (hasInfra) {
+    lines.push('    subgraph InfraTier ["Infrastructure & Sandbox"]');
+    lines.push(`        Container["Docker Container Sandbox (${infraTech})"]`);
+    lines.push('    end');
+  }
+
+  lines.push('    UI --> Router');
+  lines.push('    Router --> Controller');
+  if (hasAi) lines.push('    Controller --> InferenceEngine');
+  if (hasDb) lines.push('    Controller --> Database');
+  lines.push('    Controller --> UI');
+
+  return lines.join('\n');
+}
+
+export function generateMermaidDataFlowDiagram(evidence: ExtractedEvidence): string {
+  const { techStack } = evidence;
+  const hasAi = techStack.aiMl.length > 0;
+  const hasDb = techStack.database.length > 0;
+
+  const lines: string[] = ['graph LR'];
+  lines.push('    subgraph Ingestion ["Data Ingestion & Extraction Layer"]');
+  lines.push('        RawSource["Source Code & Documents"]');
+  lines.push('        ASTScanner["AST Parser & Manifest Extractor"]');
+  lines.push('        Chunker["Code Chunker & Tokenizer"]');
+  lines.push('    end');
+
+  lines.push('    subgraph Indexing ["Hybrid Search & Indexing Engine"]');
+  lines.push('        BM25["BM25 Lexical Index"]');
+  lines.push('        VectorStore["TF-IDF / Vector Store"]');
+  lines.push('        RRF["Reciprocal Rank Fusion (RRF)"]');
+  lines.push('    end');
+
+  lines.push('    subgraph Processing ["Synthesis & Inference Engine"]');
+  lines.push('        ContextAssembler["Context Window Assembler"]');
+  lines.push(`        LLMProvider["${hasAi ? techStack.aiMl.join(' / ') : 'AI LLM Multi-Provider Registry'}"]`);
+  if (hasDb) lines.push(`        DatabaseLayer["${techStack.database.join(' / ')} Persistence"]`);
+  lines.push('    end');
+
+  lines.push('    RawSource --> ASTScanner');
+  lines.push('    ASTScanner --> Chunker');
+  lines.push('    Chunker --> BM25');
+  lines.push('    Chunker --> VectorStore');
+  lines.push('    BM25 --> RRF');
+  lines.push('    VectorStore --> RRF');
+  lines.push('    RRF --> ContextAssembler');
+  lines.push('    ContextAssembler --> LLMProvider');
+
+  return lines.join('\n');
+}
+
+export function generateMermaidSequenceDiagram(evidence: ExtractedEvidence): string {
+  const { apiEndpoints } = evidence;
+  const mainEndpoint = apiEndpoints[0] ? `${apiEndpoints[0].method} ${apiEndpoints[0].path.replace(/[:"()]/g, '')}` : 'POST /api/analyze';
+
+  const lines: string[] = ['sequenceDiagram'];
+  lines.push('    autonumber');
+  lines.push('    actor Client as Client / Browser');
+  lines.push('    participant Gateway as API Gateway / Router');
+  lines.push('    participant Controller as Service Controller');
+  lines.push('    participant Engine as AI / Business Engine');
+  lines.push('    participant DB as Persistence Storage');
+
+  lines.push(`    Client->>Gateway: ${mainEndpoint} (JSON Payload)`);
+  lines.push('    Gateway->>Gateway: Validate CORS, Headers & Rate Limits');
+  lines.push('    Gateway->>Controller: Dispatch Sanitized Request');
+  lines.push('    Controller->>Engine: Execute Business Logic & RAG Context Lookup');
+  lines.push('    Engine->>DB: Query / Mutate Recordsets');
+  lines.push('    DB-->>Engine: Return State / Documents');
+  lines.push('    Engine-->>Controller: Return Processed Data Frame');
+  lines.push('    Controller-->>Gateway: HTTP 200 OK + JSON Body');
+  lines.push('    Gateway-->>Client: Render UI Update / Toast');
+
+  return lines.join('\n');
+}
+
+export function generateMediumDescription(evidence: ExtractedEvidence): string {
+  const { repoName, techStack, detectedLanguages, apiEndpoints } = evidence;
+  const langList = detectedLanguages.map(l => `**${l}**`).join(', ') || '**TypeScript**';
+  const backendTech = techStack.backend.map(b => `\`${b}\``).join(', ') || '`Node.js Express`';
+  const frontendTech = techStack.frontend.map(f => `\`${f}\``).join(', ');
+  const aiTech = techStack.aiMl.length > 0 ? ` with local AI/ML acceleration via ${techStack.aiMl.map(a => `\`${a}\``).join(', ')}` : '';
+  const dbTech = techStack.database.length > 0 ? ` and structured persistence powered by ${techStack.database.map(d => `\`${d}\``).join(', ')}` : '';
+  const endpointsCount = apiEndpoints.length > 0 ? ` exposing **${apiEndpoints.length} REST API routes**` : '';
+
+  return `**${repoName}** is a production-grade software engineering system implemented primarily in ${langList}${aiTech}${dbTech}. The backend service layer is built on ${backendTech}${endpointsCount}, managing incoming payload validation, CORS security, and rate-limiting middleware.${frontendTech ? ` The presentation tier is engineered using ${frontendTech}, featuring reactive component hierarchies and modular state synchronization.` : ''} The entire application adopts a clean, decoupled architecture optimized for containerized deployment and automated AST inspection.`;
+}
+
+export function cleanShortDescription(summary: string | undefined | null, repoName: string, category: string, detectedLanguages: string[]): string {
   let clean = stripEmojis(summary || '')
     .replace(/#+\s*/g, '')
     .replace(/\*\*|__|\*|_/g, '')
@@ -96,56 +219,6 @@ export function generateArchitectureOverview(evidence: ExtractedEvidence): strin
   ];
 
   return overviewLines.filter(Boolean).join('\n\n');
-}
-
-export function generateMermaidArchitectureDiagram(evidence: ExtractedEvidence): string {
-  const { techStack, apiEndpoints, keyModules } = evidence;
-  const hasFrontend = techStack.frontend.length > 0;
-  const hasBackend = techStack.backend.length > 0;
-  const hasDb = techStack.database.length > 0;
-  const hasAi = techStack.aiMl.length > 0;
-  const hasInfra = techStack.infrastructure.length > 0;
-
-  const frontendTech = techStack.frontend.join(' / ') || 'React / HTML5';
-  const backendTech = techStack.backend.join(' / ') || 'Node.js Express / Python API';
-  const aiTech = techStack.aiMl.join(' / ') || 'Local ONNX / ML Inference';
-  const dbTech = techStack.database.join(' / ') || 'SQL / NoSQL Database';
-  const infraTech = techStack.infrastructure.join(' / ') || 'Docker Multi-Stage Build';
-
-  const lines: string[] = ['graph TD'];
-  lines.push('    subgraph ClientTier ["Presentation & Client Layer"]');
-  lines.push(`        UI["${hasFrontend ? `Frontend UI Components (${frontendTech})` : 'Client / User App Interface'}"]`);
-  lines.push('    end');
-
-  lines.push('    subgraph APITier ["API Gateway & Routing Layer"]');
-  lines.push(`        Router["${hasBackend ? `Backend Service Router (${backendTech})` : 'HTTP Request Router'}"]`);
-  lines.push('    end');
-
-  lines.push('    subgraph ServiceTier ["Service Logic & Controllers Layer"]');
-  const serviceModuleName = keyModules.find((m) => m.name.toLowerCase().includes('service'))?.path || 'src/services';
-  lines.push(`        Controller["Service Controllers & Handlers (${serviceModuleName})"]`);
-  lines.push('    end');
-
-  if (hasAi || hasDb) {
-    lines.push('    subgraph DataEngineTier ["Inference Engine & Data Storage"]');
-    if (hasAi) lines.push(`        InferenceEngine["AI/ML Model Inference Runtime (${aiTech})"]`);
-    if (hasDb) lines.push(`        Database["Persistence Storage Layer (${dbTech})"]`);
-    lines.push('    end');
-  }
-
-  if (hasInfra) {
-    lines.push('    subgraph InfraTier ["Infrastructure & Sandbox"]');
-    lines.push(`        Container["Docker Container Sandbox (${infraTech})"]`);
-    lines.push('    end');
-  }
-
-  lines.push('    UI --> Router');
-  lines.push('    Router --> Controller');
-  if (hasAi) lines.push('    Controller --> InferenceEngine');
-  if (hasDb) lines.push('    Controller --> Database');
-  lines.push('    Controller --> UI');
-
-  return lines.join('\n');
 }
 
 export function generateExhaustiveTechnicalDescription(evidence: ExtractedEvidence): string {
