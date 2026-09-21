@@ -22,3 +22,5 @@ export * from './video/remotion-builder.js';
 export * from './video/remotion-script-generator.js';
 export * from './mcp/napkin-mcp-client.js';
 export * from './mcp/server.js';
+export * from './ai/provider-interface.js';
+export * from './ai/provider-registry.js';

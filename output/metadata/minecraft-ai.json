@@ -1,0 +1,272 @@
+{
+  "_id": "minecraft-ai-id",
+  "title": "Minecraft Ai",
+  "slug": "minecraft-ai",
+  "shortDescription": "This is a Next.js project bootstrapped with create-next-app. Getting Started First, run the development server: ``bash npm run dev or yarn dev or pnpm dev or bun dev ` Open http://...",
+  "description": "System Architecture for minecraft-ai: Built with Python, TypeScript.\n\nBackend service layer powered by FastAPI, managing incoming payload validation, CORS policies, and rate-limiting middleware.\n\nPresentation and data storage layers integrate React, Next.js.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js"
+    ],
+    "backend": [
+      "FastAPI"
+    ],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [
+      "Docker"
+    ],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected end-to-end codebase for minecraft-ai utilizing Python, TypeScript",
+    "Engineered presentation layer with React, Next.js",
+    "Built backend router and service controllers with FastAPI",
+    "Exposed 4 REST/WebSocket API endpoints",
+    "Modularized logic within README.md",
+    "Modularized logic within docker-compose.yml",
+    "Modularized logic within docs/CLIENT_SOLUTION_REPORT.md"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (FastAPI)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph InfraTier [\"Infrastructure & Deployment Environment\"]\n Container[\"Docker Container Sandbox (Docker)\"]\n end\n UI -->|\"HTTP Requests: GET /, GET /health, POST /generate_block\"| Router\n Router -->|\"Validate & Dispatch\"| Controller\n Controller -->|\"JSON Response / Stream Output\"| UI\n Container -.->|\"Encloses & Isolates\"| Router\n Container -.->|\"Encloses & Isolates\"| Controller",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/minecraft-ai",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Core minecraft-ai functionality"
+  ],
+  "challenges": [
+    "Managing state synchronization and component decoupling across 7 core modules",
+    "Optimizing data serialization and payload validation for concurrent requests",
+    "Ensuring cross-platform container stability and build isolation"
+  ],
+  "learnings": [
+    "Deep technical patterns in Python, TypeScript, React, Next.js",
+    "Effective hybrid search indexing and code chunking for automated AST analysis"
+  ],
+  "architectureOverview": "Frontend built with React, Next.js. Backend API powered by FastAPI. Deployed using Docker.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in backend/app/main.py"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in backend/app/main.py"
+    },
+    {
+      "method": "POST",
+      "path": "/generate_block",
+      "description": "Endpoint defined in backend/app/main.py"
+    },
+    {
+      "method": "POST",
+      "path": "/ask",
+      "description": "Endpoint defined in backend/app/main.py"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Backend",
+      "path": "backend",
+      "description": "Module component managing backend source logic"
+    },
+    {
+      "name": "App",
+      "path": "frontend/src/app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Docs",
+      "path": "docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Frontend",
+      "path": "frontend",
+      "description": "Module component managing frontend source logic"
+    },
+    {
+      "name": "Models",
+      "path": "frontend/public/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Src",
+      "path": "frontend/src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "frontend/src/components",
+      "description": "Module component managing components source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Implement WebRTC real-time binary stream handler",
+    "Add automated end-to-end integration test coverage",
+    "Deploy automated CI/CD container build pipeline"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "minecraft-ai - Technical Video Showcase",
+    "totalDurationSeconds": 30,
+    "totalDurationFrames": 900,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the technical breakdown of minecraft-ai, a production-grade application engineered with Python, TypeScript. System Architecture & Topology: The application uses a decoupled multi-tier architecture powered by FastAPI on the backend and React, Next.js on the client. Network Routes: The API exposes 4 primary routes including GET / and GET /health and POST /generate_block, managing request routing and data serialization. Persistence Layer: Data persistence and query execution are managed by Database Layer. Performance & Quality: Automated quality checks and clean component patterns ensure high reliability. Explore the full open-source codebase on GitHub at Sameer-Bagul slash minecraft-ai.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Introduction",
+        "heading": "minecraft-ai",
+        "subheading": "Production-Grade Python, TypeScript Application",
+        "narration": "Welcome to the technical breakdown of minecraft-ai, built with Python, TypeScript.",
+        "durationFrames": 150,
+        "startFrame": 0,
+        "endFrame": 150,
+        "bgGradient": "linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)",
+        "badges": [
+          "Python",
+          "TypeScript",
+          "React",
+          "Next.js"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Architecture & System Topology",
+        "heading": "Multi-Tier System Topology",
+        "subheading": "FastAPI API • React, Next.js UI",
+        "narration": "Decoupled architecture combining FastAPI backend with React, Next.js client interface.",
+        "durationFrames": 150,
+        "startFrame": 150,
+        "endFrame": 300,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "FastAPI",
+          "Docker"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "API Routes & Endpoints",
+        "heading": "4 REST/WS API Routes",
+        "subheading": "GET / | GET /health | POST /generate_block",
+        "narration": "Exposing 4 API routes with parameter validation and rate limiting.",
+        "durationFrames": 150,
+        "startFrame": 300,
+        "endFrame": 450,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "GET",
+          "GET",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "Core Code Modules",
+        "heading": "Modular Source Code Structure",
+        "subheading": "Backend • App • Docs • Frontend",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 150,
+        "startFrame": 450,
+        "endFrame": 600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "Backend",
+          "App",
+          "Docs",
+          "Frontend"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Technical Features & Stack",
+        "heading": "Engineering Highlights",
+        "subheading": "Core minecraft-ai functionality",
+        "narration": "High-reliability build pipelines, clean state management, and continuous quality checks.",
+        "durationFrames": 150,
+        "startFrame": 600,
+        "endFrame": 750,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "Outro & Call To Action",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/minecraft-ai",
+        "narration": "Check out the complete open-source repository on GitHub!",
+        "durationFrames": 150,
+        "startFrame": 750,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, interpolate, useCurrentFrame, spring, useVideoConfig } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"minecraftaiShowcase\"\n component={MainComposition}\n durationInFrames={900}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'minecraft-ai',\n shortDescription: 'This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string; shortDescription: string }> = ({ title, shortDescription }) => {\n const frame = useCurrentFrame();\n const { fps } = useVideoConfig();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Introduction */}\n <Sequence from={0} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>minecraft-ai</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade Python, TypeScript Application</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Architecture & System Topology */}\n <Sequence from={150} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Multi-Tier System Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>FastAPI API • React, Next.js UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: API Routes & Endpoints */}\n <Sequence from={300} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WS API Routes</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET / | GET /health | POST /generate_block</p>\n </div>\n </Sequence>\n\n {/* Scene 4: Core Code Modules */}\n <Sequence from={450} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Modular Source Code Structure</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Backend • App • Docs • Frontend</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Technical Features & Stack */}\n <Sequence from={600} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Engineering Highlights</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core minecraft-ai functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 6: Outro & Call To Action */}\n <Sequence from={750} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/minecraft-ai</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "minecraft-ai",
+    "url": "https://github.com/Sameer-Bagul/minecraft-ai",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-21T16:23:01.428Z",
+    "lastAnalyzedAt": "2026-09-21T16:23:01.428Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}
