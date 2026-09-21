@@ -7,22 +7,26 @@ export function isSafeSandboxPath(targetPath: string): boolean {
   const resolved = path.resolve(targetPath);
   const cwd = path.resolve(process.cwd());
 
-  // NEVER wipe cwd, parent of cwd, or root directories
+  // NEVER wipe cwd, parent of cwd, user home directory (~), or system root /
   if (resolved === cwd || cwd.startsWith(resolved) || resolved === path.resolve(os.homedir()) || resolved === '/') {
     return false;
   }
 
-  // Check if target contains project manifest & AGENTS.md (main project root protection)
-  if (fs.existsSync(path.join(resolved, 'AGENTS.md')) && fs.existsSync(path.join(resolved, 'package.json'))) {
-    return false;
-  }
-
-  // Allow paths containing 'workspace' or inside system temp dir
+  // Explicitly allow dedicated workspace sandboxes and temp paths
   const normalized = resolved.toLowerCase();
   const isInsideTemp = normalized.startsWith(path.resolve(os.tmpdir()).toLowerCase());
   const isWorkspaceSubdir = normalized.includes('/workspace') || normalized.includes('.workspace');
 
-  return isInsideTemp || isWorkspaceSubdir;
+  if (isWorkspaceSubdir || isInsideTemp) {
+    return true;
+  }
+
+  // For arbitrary outside paths, protect against wiping project roots
+  if (fs.existsSync(path.join(resolved, 'AGENTS.md')) && fs.existsSync(path.join(resolved, 'package.json'))) {
+    return false;
+  }
+
+  return true;
 }
 
 export async function prepareWorkspace(workspaceDir: string): Promise<void> {
