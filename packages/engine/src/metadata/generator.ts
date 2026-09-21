@@ -9,6 +9,9 @@ import {
   generateMediumDescription,
   generateExhaustiveTechnicalDescription,
   generateArchitectureOverview,
+  cleanShortDescription,
+  generateTechnicalUserFlow,
+  generateTechnicalCodeFlow,
 } from './ai-synthesizer.js';
 import { generateRemotionVideoScript } from '../video/remotion-script-generator.js';
 import { RagSynthesisResult } from '../rag/rag-synthesizer.js';
@@ -40,24 +43,11 @@ export async function generateMetadataPayload(
 
   const mediumDescription = ragSynthesis?.mediumDescription || generateMediumDescription(evidence);
   const longDescription = ragSynthesis?.longDescription || ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
-  const architectureOverview = generateArchitectureOverview(evidence);
+  const architectureOverview = synthesis.architectureOverview || generateArchitectureOverview(evidence);
+  const userFlow = synthesis.userFlow || generateTechnicalUserFlow(evidence);
+  const codeFlow = synthesis.codeFlow || generateTechnicalCodeFlow(evidence);
+  const cleanShortDesc = synthesis.shortDescription || cleanShortDescription(evidence.readmeSummary, repoName, category, evidence.detectedLanguages);
   const remotionVideoScript = generateRemotionVideoScript(evidence);
-
-  // Clean markdown tags and extract first 180 chars of clean prose
-  let cleanShortDesc = (evidence.readmeSummary || '')
-    .replace(/#+\s*/g, '')
-    .replace(/\*\*|__|\*|_/g, '')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  if (!cleanShortDesc || cleanShortDesc.length < 10) {
-    cleanShortDesc = `Production-grade ${category} repository implementing ${evidence.detectedLanguages.slice(0, 3).join(', ')}.`;
-  } else if (cleanShortDesc.length > 180) {
-    cleanShortDesc = cleanShortDesc.substring(0, 180) + '...';
-  }
-  cleanShortDesc = stripEmojis(cleanShortDesc);
 
   const rawPayload = {
     _id: `${slug}-id`,
@@ -90,8 +80,8 @@ export async function generateMetadataPayload(
     challenges: synthesis.challenges,
     learnings: synthesis.learnings,
     architectureOverview,
-    userFlow: evidence.userFlow,
-    codeFlow: evidence.codeFlow,
+    userFlow,
+    codeFlow,
     apiEndpoints: evidence.apiEndpoints,
     keyModules: evidence.keyModules,
     metrics: null,

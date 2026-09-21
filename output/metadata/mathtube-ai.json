@@ -1,0 +1,279 @@
+{
+  "_id": "mathtube-ai-id",
+  "title": "Mathtube Ai",
+  "slug": "mathtube-ai",
+  "shortDescription": "Production-grade Practice software engineering system implemented in Python. Features a decoupled multi-tier architecture with validated API endpoints and resilient state processing.",
+  "description": "**MathTube AI** is a Python‑centric, **FastAPI**‑driven backend that orchestrates AI‑generated educational video pipelines. It exposes a concise REST surface for job submission, live log streaming via Server‑Sent Events, and video retrieval, while persisting job metadata in a lightweight SQLite store used by the Chroma vector database. The architecture follows a **micro‑service‑like** pattern within a single process, leveraging `asyncio` for non‑blocking execution and `pydantic` models for request validation, all wrapped in a clean, container‑friendly layout.",
+  "longDescription": "**Core System Architecture**\nThe service boots a `FastAPI` application (`api_server.py`) that defines endpoints for job creation (`POST /api/generate`), status polling (`GET /api/jobs/{job_id}/status`), live log streaming (`GET /api/jobs/{job_id}/stream`), and video assets (`GET /api/videos*`). Incoming `GenerateRequest` payloads are validated with `pydantic.BaseModel` and materialized into a `Job` object stored in `_jobs` and persisted to `data/jobs.json`. A background `asyncio` task invokes the pipeline via `_build_cmd`, which launches the `main.py` script inside the project's virtual environment.\n\n*Data Ingestion & Persistence*\\nThe system uses a SQLite database (`data/chroma/chroma.sqlite3`) to back the Chroma vector store. Schema tables include `tenants`, `databases`, and `collections`, enforcing multi‑tenant isolation and unique constraints on collection names per database. Default tenant and database rows are seeded on startup, ensuring a ready‑to‑use environment for vector‑based retrieval.\n\n*Execution Flow*\\n1. **Job Submission** – Client POSTs a `GenerateRequest`; a short UUID is generated and a `Job` entry is created.\n2. **Pipeline Launch** – `_run_job` builds a command list (`_build_cmd`) and spawns a subprocess (`subprocess.Popen`) that runs `main.py` with all user‑specified parameters (topic, level, model, etc.).\n3. **Log Capture** – Subprocess stdout/stderr are streamed into `job.logs`; the `/stream` endpoint yields new lines as SSE events.\n4. **Result Harvesting** – Upon completion, the job directory under `output/<job_id>` contains `lesson_blueprint.json`, `qa_report.json`, and generated MP4 files. The `/videos` endpoint walks these directories, aggregates metadata, and returns a catalog.\n\n*Security Guardrails*\\n- **Tenant Isolation** is enforced at the DB layer via foreign keys (`tenant_id`) and unique constraints.\n- **Input Sanitization** relies on `pydantic` type enforcement and explicit default values, reducing injection risk.\n- **File Access** is confined to the `output` subtree; all path constructions use `Path` objects to avoid directory traversal.\n\n*Build & Deployment Topology*\\nThe codebase is structured for containerization: a `Dockerfile` can copy the repository, install dependencies into `.venv`, and expose port 8000. The SQLite file is mounted as a volume for persistence, while the `output` directory is also a volume to retain generated media across restarts.",
+  "category": "Practice",
+  "isFeatured": false,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [],
+    "backend": [],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented a fully typed FastAPI service with CORS support for local front‑ends",
+    "Designed a robust `GenerateRequest` pydantic model covering AI generation parameters",
+    "Created an async job scheduler that launches AI pipelines as subprocesses",
+    "Integrated Server‑Sent Events for real‑time log streaming to clients",
+    "Developed SQLite schema for multi‑tenant Chroma vector storage",
+    "Seeded default tenant and database entries on startup for out‑of‑the‑box usage",
+    "Implemented safe file path handling for video and metadata serving",
+    "Added comprehensive job persistence via `data/jobs.json` with atomic saves",
+    "Provided endpoint to enumerate generated videos with aggregated metadata",
+    "Ensured graceful handling of server restarts by marking running jobs as failed"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Client / User App Interface\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/generate (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/arjunghuge644/mathtube-ai",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "POST /api/generate – submit AI video generation jobs with rich parameter set",
+    "GET /api/jobs/{job_id}/status – retrieve current job state and result URLs",
+    "GET /api/jobs/{job_id}/stream – live SSE log feed for debugging and progress tracking",
+    "GET /api/videos – list all completed videos with size, duration, and QA status",
+    "GET /api/videos/{job_id}/{filename} – stream generated MP4 files",
+    "GET /api/videos/{job_id}/thumbnail – serve video thumbnail images",
+    "GET /api/videos/{job_id}/{filename}/meta – expose blueprint and QA metadata as JSON",
+    "Multi‑tenant aware SQLite schema for vector collections",
+    "Default tenant/database auto‑creation for zero‑config deployment",
+    "Configurable AI model, language, theme, and TTS provider via request payload"
+  ],
+  "challenges": [
+    "Balancing synchronous FastAPI request handling with long‑running AI subprocesses required careful async design to avoid blocking the event loop",
+    "Ensuring file system security while dynamically constructing paths for video assets and metadata demanded rigorous use of `Path` objects",
+    "Persisting job state in a flat JSON file (`jobs.json`) introduces race conditions under high concurrency; mitigated with atomic writes but still a scalability limit",
+    "SQLite’s single‑writer limitation can become a bottleneck if vector store writes increase; future migration to a server‑based DB may be needed",
+    "Managing subprocess stdout/stderr streams for real‑time SSE without deadlocks required explicit non‑blocking reads and buffer management"
+  ],
+  "learnings": [
+    "`asyncio.create_task` is ideal for fire‑and‑forget background work in FastAPI, but proper exception handling inside the task is essential",
+    "Server‑Sent Events provide a lightweight alternative to WebSockets for uni‑directional log streaming",
+    "Embedding tenant isolation at the DB schema level simplifies authorization logic downstream",
+    "Using a CLI wrapper (`main.py`) decouples the API from heavy AI libraries, allowing independent versioning and testing",
+    "Atomic file writes (`tempfile` + rename) prevent corruption of the job store during abrupt shutdowns"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**mathtube-ai** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React / Next.js`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes 7 validated REST/WebSocket endpoints.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Frontend`, `Scripts`, `Src`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React) serialize input objects and send HTTP/WebSocket requests to `/api/generate`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Entrypoint Invocation: Request enters network interface layer via `POST /api/generate`.",
+    "Schema & Guardrail Verification: Middleware sanitizes payload parameters and checks rate-limiting limits.",
+    "Controller Dispatch: Router delegates validated object to `Frontend` service controller.",
+    "Engine Execution & Storage Operations: Controller executes business logic, queries database models (Persistence), and invokes ML workers.",
+    "Response Serialization: Result model is formatted into standard JSON response frame and delivered with HTTP 200 OK."
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/api/generate",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/{job_id}/stream",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/jobs/{job_id}/status",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/videos",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/videos/{job_id}/thumbnail",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/videos/{job_id}/{filename}",
+      "description": "Endpoint defined in api_server.py"
+    },
+    {
+      "method": "GET",
+      "path": "/api/videos/{job_id}/{filename}/meta",
+      "description": "Endpoint defined in api_server.py"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Frontend",
+      "path": "frontend",
+      "description": "Module component managing frontend source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Migrate job persistence from flat JSON to a relational DB (e.g., PostgreSQL) to support high concurrency and richer queries",
+    "Introduce authentication/authorization (OAuth2) to enforce tenant‑level access controls on all endpoints",
+    "Replace SQLite/Chroma with a scalable vector database (e.g., Milvus or Pinecone) for large‑scale content retrieval",
+    "Add WebSocket support for bidirectional progress updates and interactive control of running jobs",
+    "Implement automated cleanup of stale job directories and database entries to manage storage growth",
+    "Expose a Swagger/OpenAPI spec with detailed schema definitions for all request/response models",
+    "Containerize the service with a multi‑stage Docker build and provide Helm charts for Kubernetes deployment",
+    "Add unit and integration test suites covering endpoint contracts, job lifecycle, and security edge cases",
+    "Enable configurable output storage backends (e.g., S3) for generated videos and metadata",
+    "Provide a plug‑in architecture for alternative AI models and TTS providers without code changes"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "mathtube-ai - Technical Video Showcase",
+    "totalDurationSeconds": 30,
+    "totalDurationFrames": 900,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the technical breakdown of mathtube-ai, a production-grade application engineered with Python. System Architecture & Topology: The application uses a decoupled multi-tier architecture powered by Node.js Express on the backend and React on the client. Network Routes: The API exposes 7 primary routes including POST /api/generate and GET /api/jobs/{job_id}/stream and GET /api/jobs/{job_id}/status, managing request routing and data serialization. Persistence Layer: Data persistence and query execution are managed by Database Layer. Performance & Quality: Automated quality checks and clean component patterns ensure high reliability. Explore the full open-source codebase on GitHub at Sameer-Bagul slash mathtube-ai.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Introduction",
+        "heading": "mathtube-ai",
+        "subheading": "Production-Grade Python Application",
+        "narration": "Welcome to the technical breakdown of mathtube-ai, built with Python.",
+        "durationFrames": 150,
+        "startFrame": 0,
+        "endFrame": 150,
+        "bgGradient": "linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)",
+        "badges": [
+          "Python"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Architecture & System Topology",
+        "heading": "Multi-Tier System Topology",
+        "subheading": "Node.js Express API • React UI",
+        "narration": "Decoupled architecture combining Node.js Express backend with React client interface.",
+        "durationFrames": 150,
+        "startFrame": 150,
+        "endFrame": 300,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "API Routes & Endpoints",
+        "heading": "7 REST/WS API Routes",
+        "subheading": "POST /api/generate | GET /api/jobs/{job_id}/stream | GET /api/jobs/{job_id}/status",
+        "narration": "Exposing 7 API routes with parameter validation and rate limiting.",
+        "durationFrames": 150,
+        "startFrame": 300,
+        "endFrame": 450,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "POST",
+          "GET",
+          "GET",
+          "GET"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "Core Code Modules",
+        "heading": "Modular Source Code Structure",
+        "subheading": "Frontend • Scripts • Src",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 150,
+        "startFrame": 450,
+        "endFrame": 600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "Frontend",
+          "Scripts",
+          "Src"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Technical Features & Stack",
+        "heading": "Engineering Highlights",
+        "subheading": "Core mathtube-ai functionality",
+        "narration": "High-reliability build pipelines, clean state management, and continuous quality checks.",
+        "durationFrames": 150,
+        "startFrame": 600,
+        "endFrame": 750,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 6,
+        "name": "Outro & Call To Action",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/mathtube-ai",
+        "narration": "Check out the complete open-source repository on GitHub!",
+        "durationFrames": 150,
+        "startFrame": 750,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, interpolate, useCurrentFrame, spring, useVideoConfig } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"mathtubeaiShowcase\"\n component={MainComposition}\n durationInFrames={900}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'mathtube-ai',\n shortDescription: 'Production-Grade Application',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string; shortDescription: string }> = ({ title, shortDescription }) => {\n const frame = useCurrentFrame();\n const { fps } = useVideoConfig();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Introduction */}\n <Sequence from={0} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ff7e5f 0%, #feb47b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>mathtube-ai</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade Python Application</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Architecture & System Topology */}\n <Sequence from={150} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Multi-Tier System Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API • React UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: API Routes & Endpoints */}\n <Sequence from={300} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>7 REST/WS API Routes</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>POST /api/generate | GET /api/jobs/{job_id}/stream | GET /api/jobs/{job_id}/status</p>\n </div>\n </Sequence>\n\n {/* Scene 4: Core Code Modules */}\n <Sequence from={450} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Modular Source Code Structure</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Frontend • Scripts • Src</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Technical Features & Stack */}\n <Sequence from={600} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Engineering Highlights</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core mathtube-ai functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 6: Outro & Call To Action */}\n <Sequence from={750} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/mathtube-ai</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "mathtube-ai",
+    "url": "https://github.com/arjunghuge644/mathtube-ai",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "secondary",
+    "portfolioWorthiness": "medium"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-21T19:59:53.147Z",
+    "lastAnalyzedAt": "2026-09-21T19:59:53.147Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

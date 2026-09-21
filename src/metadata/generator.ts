@@ -5,6 +5,11 @@ import {
   runMultiPassSynthesis,
   generateMermaidArchitectureDiagram,
   generateExhaustiveTechnicalDescription,
+  generateArchitectureOverview,
+  cleanShortDescription,
+  generateTechnicalUserFlow,
+  generateTechnicalCodeFlow,
+  generateMediumDescription,
 } from './ai-synthesizer.js';
 import { generateRemotionVideoScript } from '../video/remotion-script-generator.js';
 import { RagSynthesisResult } from '../rag/rag-synthesizer.js';
@@ -31,31 +36,21 @@ export async function generateMetadataPayload(
   const isFeatured = classification.portfolioWorthiness === 'high';
   const synthesis = ragSynthesis || (await runMultiPassSynthesis(evidence));
   const mermaidDiagram = generateMermaidArchitectureDiagram(evidence);
+  const mediumDescription = ragSynthesis?.mediumDescription || generateMediumDescription(evidence);
   const exhaustiveDescription = ragSynthesis?.architectureDescription || generateExhaustiveTechnicalDescription(evidence);
+  const architectureOverview = synthesis.architectureOverview || generateArchitectureOverview(evidence);
+  const userFlow = synthesis.userFlow || generateTechnicalUserFlow(evidence);
+  const codeFlow = synthesis.codeFlow || generateTechnicalCodeFlow(evidence);
+  const cleanShortDesc = synthesis.shortDescription || cleanShortDescription(evidence.readmeSummary, repoName, category, evidence.detectedLanguages);
   const remotionVideoScript = generateRemotionVideoScript(evidence);
-
-  // Clean markdown tags and extract first 180 chars of clean prose
-  let cleanShortDesc = (evidence.readmeSummary || '')
-    .replace(/#+\s*/g, '')
-    .replace(/\*\*|__|\*|_/g, '')
-    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
-    .replace(/`([^`]+)`/g, '$1')
-    .replace(/\s+/g, ' ')
-    .trim();
-
-  if (!cleanShortDesc || cleanShortDesc.length < 10) {
-    cleanShortDesc = `Production-grade ${category} repository implementing ${evidence.detectedLanguages.slice(0, 3).join(', ')}.`;
-  } else if (cleanShortDesc.length > 180) {
-    cleanShortDesc = cleanShortDesc.substring(0, 180) + '...';
-  }
-  cleanShortDesc = stripEmojis(cleanShortDesc);
 
   const rawPayload = {
     _id: `${slug}-id`,
     title: repoName.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
     slug,
     shortDescription: cleanShortDesc,
-    description: exhaustiveDescription,
+    description: mediumDescription,
+    longDescription: exhaustiveDescription,
     category,
     isFeatured,
     status: classification.type === 'archived' ? 'Archived' : 'Completed',
@@ -77,9 +72,9 @@ export async function generateMetadataPayload(
     features: synthesis.features.length > 0 ? synthesis.features : evidence.features,
     challenges: synthesis.challenges,
     learnings: synthesis.learnings,
-    architectureOverview: evidence.architectureOverview,
-    userFlow: evidence.userFlow,
-    codeFlow: evidence.codeFlow,
+    architectureOverview,
+    userFlow,
+    codeFlow,
     apiEndpoints: evidence.apiEndpoints,
     keyModules: evidence.keyModules,
     metrics: null,

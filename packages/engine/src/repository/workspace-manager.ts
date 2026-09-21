@@ -43,26 +43,37 @@ export async function cloneRepositoryToWorkspace(repoUrl: string, workspaceDir: 
   const resolved = path.resolve(workspaceDir);
   await prepareWorkspace(resolved);
 
-  let targetUrl = repoUrl;
   const token = process.env.GITHUB_TOKEN;
-  if (token && !token.includes('your_') && !token.includes('YOUR_') && targetUrl.startsWith('https://github.com/')) {
-    targetUrl = targetUrl.replace('https://github.com/', `https://x-access-token:${token}@github.com/`);
-  }
+  const hasValidToken = token && !token.includes('your_') && !token.includes('YOUR_');
+  const authHeaderValue = hasValidToken
+    ? `AUTHORIZATION: basic ${Buffer.from(`x-access-token:${token}`).toString('base64')}`
+    : '';
 
   try {
     console.log(` 📥 [Step 1/7] Executing full shallow clone (git clone --depth 1) for ${repoUrl}...`);
-    await execa('git', ['clone', '--depth', '1', '--single-branch', '--no-tags', targetUrl, '.'], {
+    const extraEnv: Record<string, string> = {
+      GIT_TERMINAL_PROMPT: '0',
+      GIT_LFS_SKIP_SMUDGE: '1',
+    };
+    if (authHeaderValue) {
+      extraEnv.GIT_CONFIG_COUNT = '1';
+      extraEnv.GIT_CONFIG_KEY_0 = 'http.extraheader';
+      extraEnv.GIT_CONFIG_VALUE_0 = authHeaderValue;
+    }
+
+    await execa('git', ['clone', '--depth', '1', '--single-branch', '--no-tags', repoUrl, '.'], {
       cwd: resolved,
       timeout: 30000,
       env: {
         ...process.env,
-        GIT_TERMINAL_PROMPT: '0',
-        GIT_LFS_SKIP_SMUDGE: '1',
+        ...extraEnv,
       },
     });
     console.log(` ✅ [Step 1/7] Shallow clone completed successfully into workspace sandbox.`);
   } catch (err) {
-    console.warn(` ⚠️ [Step 1/7] Git clone encountered error (${(err as Error).message}). Switching to GitHub API Tarball Streaming Fallback...`);
+    const rawErrMsg = (err as Error).message || '';
+    const safeErrMsg = token ? rawErrMsg.replaceAll(token, '[REDACTED_TOKEN]') : rawErrMsg;
+    console.warn(` ⚠️ [Step 1/7] Git clone encountered error (${safeErrMsg}). Switching to GitHub API Tarball Streaming Fallback...`);
     try {
       await prepareWorkspace(resolved);
       const match = repoUrl.match(/github\.com\/([^/]+)\/([^/]+)/);

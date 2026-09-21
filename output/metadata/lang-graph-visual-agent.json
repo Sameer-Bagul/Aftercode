@@ -1,0 +1,327 @@
+{
+  "_id": "lang-graph-visual-agent-id",
+  "title": "Lang Graph Visual Agent",
+  "slug": "lang-graph-visual-agent",
+  "shortDescription": "Interactive visual studio and state-machine runner for LangGraph multi-agent AI workflows, featuring real-time node execution tracing, Human-in-the-Loop breakpoint interrupts, and dynamic Google Gemini 2.5 Flash function calling.",
+  "description": "**Lang-Graph-Visual-Agent** is an interactive web-based visual IDE and state-machine execution environment engineered to design, simulate, and debug multi-agent AI orchestration workflows powered by **LangGraph** and **Google Gemini AI**. The application bridges high-level visual graph topology design with real-time runtime state inspection. It features four production-grade agent workflow presets: a **ReAct Weather Agent** with live tool declaration dispatching, a **Supervisor Multi-Agent Team** (routing between dedicated Researcher and Coder sub-agents), a **Human-in-the-Loop (HITL) Financial Review Gate** implementing state pause-and-resume interrupts, and a **Plan-and-Execute Loop** for dynamic task decomposition and re-planning. Both TypeScript and Python execution code frames are generated side-by-side for every node, empowering full-stack AI engineers to visually trace state mutations, inspect token context windows, and deploy production-ready graph code.",
+  "longDescription": "### 🧠 Chapter 1: Multi-Agent StateGraph Architecture & Reactive Flow Engine\nThe core engine of **LangGraph Visual Agent** is built upon LangGraph's `StateGraph` state-machine abstraction. Application state is modeled as an immutable, strongly-typed state object (`TeamState`, `WireState`) passed across a directed execution graph. Each node represents either an **LLM Agent** (powered by Google Gemini), a **Conditional Router** (evaluating edge dispatch logic), or a **Tool Executor**. Node state updates use atomic channel reducers to merge new message frames, update active node pointers (`activeNodeId`), and log step delta records (`stepIndex`, `stateDiff`) without mutating global application scope.\n\n### 🔀 Chapter 2: Supervisor Routing, Parallel Sub-Agents & Dynamic Tool Calling\nComplex tasks are handled by a **Supervisor Multi-Agent Architecture**. The **Supervisor Router** evaluates incoming user prompts and decides whether to route execution to a specialized `Researcher` node or a `Coder` node based on the structured `next` field in state. For tool-assisted workflows, the engine binds function declarations (e.g., `weatherToolDeclaration`) to Google Gemini (`gemini-2.5-flash`). When Gemini emits a `function_calls` payload, the engine intercepts the intent, dispatches execution to the corresponding tool handler node (`weather_tool`, `code_sandbox`), and streams the resulting tool payload back into the context window for final response synthesis.\n\n### 🛡️ Chapter 3: Human-in-the-Loop (HITL) Interruption & State Checkpointing\nTo guarantee safety and oversight when executing high-risk autonomous operations (such as financial transactions or database mutations), the application implements a **Human-in-the-Loop (HITL) Interrupt Protocol**. Using `MemorySaver` thread checkpointing, the execution runtime evaluates rule thresholds (e.g., `draft.amount > 1000`). If a threshold is exceeded, the runner triggers an `interrupt()` breakpoint, freezing graph execution and persisting state to memory. The visual canvas highlights the pending review node, allowing human supervisors to inspect the exact state snapshot, approve or reject the request, and dispatch a `Command(resume=...)` signal to resume execution seamlessly.\n\n### 🎨 Chapter 4: Visual Graph Studio, Dual-Language Code Generator & Monorepo Infrastructure\nThe frontend presentation layer is engineered with **Next.js 14 App Router**, **React Flow**, and **Zustand** state synchronization. It provides a visual canvas displaying node topologies, animated active data edges, state inspector drawers, and execution trace logs. For every node and router in the graph, the studio dynamically renders side-by-side **TypeScript** (`@langchain/langgraph`) and **Python** (`langgraph`) code snippets, allowing developers to copy verified production code into their own codebases. The application is packaged in a monorepo setup with ESLint static analysis and containerized deployment readiness.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer & Lead AI Architect",
+  "clientOrCompany": "Open Source System",
+  "duration": "2 months",
+  "targetAudience": "AI Software Engineers & LLM Systems Architects",
+  "techStackBreakdown": {
+    "frontend": [
+      "React 18",
+      "Next.js 14 (App Router)",
+      "React Flow",
+      "TailwindCSS",
+      "Zustand",
+      "Lucide React"
+    ],
+    "backend": [
+      "Node.js",
+      "Express API",
+      "LangGraph JS / TS",
+      "LangChain Core"
+    ],
+    "database": [
+      "MemorySaver Checkpointer",
+      "Prisma State Cache"
+    ],
+    "aiMl": [
+      "Google Gemini 2.5 Flash",
+      "LangGraph StateGraph Engine",
+      "Gemini Function Calling API"
+    ],
+    "infrastructure": [
+      "Docker Multi-Stage Build",
+      "Vercel Deployment"
+    ],
+    "devops": [
+      "GitHub Actions CI/CD"
+    ],
+    "testing": [
+      "Jest",
+      "Vitest"
+    ],
+    "tools": [
+      "TypeScript",
+      "ESLint",
+      "Prettier"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected end-to-end LangGraph visual IDE and interactive state-machine runner in Next.js 14 and TypeScript.",
+    "Built a modular StateGraph execution engine supporting ReAct agents, Supervisor routers, and Plan-and-Execute loops.",
+    "Integrated Google Gemini 2.5 Flash with native function calling declarations (`weatherToolDeclaration`).",
+    "Engineered Human-in-the-Loop (HITL) breakpoint interrupts with threshold checking (`draft.amount > 1000`) and MemorySaver thread checkpointing.",
+    "Developed side-by-side Python and TypeScript production code generation for every node and router in the visual canvas.",
+    "Created an interactive React Flow node canvas with animated active edge highlights and step-by-step state diff tracing.",
+    "Implemented `Command(resume=...)` pause-and-resume state hydration protocol for manual approval gating.",
+    "Encapsulated external API calls and banking operations behind isolated adapter wrappers for security and testability.",
+    "Configured automated state inspection drawers displaying node outputs, context windows, and function call parameters.",
+    "Containerized application with Docker multi-stage builds and established ESLint static analysis guardrails."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n  subgraph PresentationTier [\"Presentation & Visual Canvas Tier\"]\n    UI[\"React 18 / Next.js 14 SPA\"]\n    Canvas[\"React Flow Visual Graph Canvas\"]\n    Inspector[\"Zustand State Inspector Drawer\"]\n  end\n\n  subgraph APIGateway [\"API Router & Controller Tier\"]\n    Router[\"Next.js API Gateway (/api/graph/*)\"]\n    AuthGuard[\"JWT & Rate Limit Middleware\"]\n  end\n\n  subgraph LangGraphEngine [\"LangGraph State Machine Engine\"]\n    Runner[\"StateGraph Runtime Engine\"]\n    Checkpointer[\"MemorySaver Thread Checkpointer\"]\n    InterruptManager[\"HITL Interrupt & Resume Manager\"]\n  end\n\n  subgraph ModelAndTools [\"Inference & External Execution Layer\"]\n    GeminiAPI[\"Google Gemini 2.5 Flash LLM\"]\n    ToolDispatcher[\"Function Calling Tool Dispatcher\"]\n    WeatherTool[\"Weather API Service Tool\"]\n    CodeSandbox[\"Python / TS Code Sandbox\"]\n  end\n\n  UI -->|\"Dispatches User Prompt / Thread ID\"| Router\n  Router --> AuthGuard\n  AuthGuard --> Router\n  Router -->|\"Execute StateGraph Preset\"| Runner\n  Runner -->|\"Query LLM with Function Declarations\"| GeminiAPI\n  GeminiAPI -->|\"Return Response / function_calls\"| Runner\n  Runner -->|\"Invoke Tool Node\"| ToolDispatcher\n  ToolDispatcher --> WeatherTool\n  ToolDispatcher --> CodeSandbox\n  Runner -->|\"Check Threshold & Trigger interrupt()\"| InterruptManager\n  InterruptManager -->|\"Save Checkpoint & Wait Human Approval\"| Checkpointer\n  Checkpointer -->|\"Hydrate State on Resume Command\"| Runner\n  Runner -->|\"Stream Node Highlight & State Diff\"| Inspector\n  Inspector --> UI",
+  "dataFlowDiagram": "flowchart LR\n  UserInput[\"User Prompt / Preset Selection\"] --> Gateway[\"API Gateway /api/graph/run\"]\n  Gateway --> StateInit[\"Initialize State Channels\"]\n  StateInit --> CheckpointInit[\"Create MemorySaver Checkpoint\"]\n  CheckpointInit --> SupervisorNode[\"Supervisor Router Node\"]\n  SupervisorNode -->|\"Function Calling / Route Choice\"| GeminiInference[\"Gemini 2.5 Flash Inference\"]\n  GeminiInference -->|\"Emit function_calls\"| ToolNode[\"Tool Execution Node\"]\n  GeminiInference -->|\"Emit Sub-Agent Route\"| SubAgentNode[\"Researcher / Coder Sub-Agent\"]\n  ToolNode --> ResultReducer[\"State Channel Reducer\"]\n  SubAgentNode --> ResultReducer\n  ResultReducer --> ThresholdCheck{\"Transaction > 1000?\"}\n  ThresholdCheck -->|\"Yes: Trigger interrupt()\"| PauseGate[\"HITL Approval Pause Gate\"]\n  PauseGate -->|\"Human Command(resume)\"| ResumeState[\"Resume State Execution\"]\n  ThresholdCheck -->|\"No: Continue\"| EndNode[\"End Node / Output State\"]\n  ResumeState --> EndNode\n  EndNode --> UI[\"React Flow Graph & State Inspector\"]",
+  "sequenceDiagram": "sequenceDiagram\n  autonumber\n  actor User as User / Visual Canvas\n  participant Gateway as Next.js API Gateway\n  participant Engine as LangGraph Engine\n  participant Gemini as Google Gemini 2.5 Flash\n  participant Checkpointer as MemorySaver Checkpointer\n  participant Tool as Tool Executor\n\n  User->>Gateway: POST /api/graph/run (Preset ID & User Prompt)\n  Gateway->>Engine: Instantiate StateGraph & Thread ID\n  Engine->>Checkpointer: Initialize Thread State Snapshot\n  Engine->>Gemini: Query LLM with Function Declarations\n  Gemini-->>Engine: Return function_calls (e.g. weatherToolDeclaration)\n  Engine->>Tool: Execute weather_tool(location=\"San Francisco\")\n  Tool-->>Engine: Return Weather Payload\n  Engine->>Gemini: Re-query Gemini with Tool Result\n  Gemini-->>Engine: Return Final Agent Response & Draft State\n  alt Draft Amount > $1,000\n    Engine->>Checkpointer: Freeze Execution & Persist Interrupt Checkpoint\n    Engine-->>User: Return HTTP 202 Paused (Presents Human Approval UI)\n    User->>Gateway: POST /api/graph/resume (Command: Approved)\n    Gateway->>Engine: Resume Execution with State Mutation\n  end\n  Engine->>Checkpointer: Persist Final State Frame\n  Engine-->>User: HTTP 200 OK + Execution Logs & Code Snippets",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/Lang-graph-visual-agent",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Interactive React Flow canvas for designing, simulating, and visualizing LangGraph agent topologies.",
+    "ReAct Weather Agent preset with live Google Gemini 2.5 Flash function calling and tool execution.",
+    "Supervisor Multi-Agent pipeline dynamically routing tasks between dedicated Researcher and Coder sub-agents.",
+    "Human-in-the-Loop (HITL) approval gate featuring automatic threshold detection (`draft.amount > 1000`) and interrupt breakpoints.",
+    "Plan-and-Execute agent loop capable of dynamic task decomposition, progress evaluation, and auto-replanning.",
+    "Dual-language code generator emitting synchronized Python (`langgraph`) and TypeScript (`@langchain/langgraph`) code for every node.",
+    "MemorySaver thread checkpointing enabling graph execution pause, resume, state rollback, and replay.",
+    "Real-time state inspector drawer rendering active node highlights, context token windows, and step-by-step state diff logs.",
+    "Extensible `PresetDefinition` schema framework allowing rapid creation of custom multi-agent workflows.",
+    "Containerized Docker multi-stage deployment topology with automated static linting and type safety guardrails."
+  ],
+  "challenges": [
+    "Synchronizing asynchronous LangGraph state transitions with real-time React Flow canvas animation loops.",
+    "Enforcing strict type safety and reducer state symmetry between Python and TypeScript code generation templates.",
+    "Managing Google Gemini rate limits during multi-agent loop iterations without blocking the user interface thread.",
+    "Implementing a resilient Human-in-the-Loop pause-and-resume mechanism across stateless HTTP REST API boundaries.",
+    "Designing clean functional isolation between LLM router nodes, tool execution handlers, and state channel reducers."
+  ],
+  "learnings": [
+    "Declarative conditional routing in LangGraph significantly reduces state machine complexity and eliminates spaghetti logic.",
+    "Providing parallel Python and TypeScript code generation accelerates adoption for multi-language engineering teams.",
+    "State immutability coupled with thread checkpointing simplifies debugging complex, non-deterministic LLM multi-agent systems.",
+    "Gemini function declarations require strict schema alignment; explicit payload validation prevents silent inference failures.",
+    "Modeling Human-in-the-Loop interruptions as dedicated state breakpoints provides superior auditability compared to inline conditionals."
+  ],
+  "architectureOverview": "### 📐 System Design & Core Architectural Engineering Analysis\n\n**Lang-Graph-Visual-Agent** is structured around **Four Core Engineering Pillars** designed for multi-agent LLM orchestration, state-machine determinism, and real-time visual inspection:\n\n#### 1. Presentation & Visual Graph Studio Tier\n- **Interactive Visual Canvas**: Built with **Next.js 14**, **React 18**, and **React Flow**, rendering graph nodes, conditional router edges, and animated data transmission flows.\n- **State Inspection Subsystem**: **Zustand** state store synchronizes active node execution, context token windows, step logs, and side-by-side Python/TypeScript code generation drawers.\n\n#### 2. LangGraph StateGraph Execution Engine Tier\n- **State-Machine Runtime**: Powered by `@langchain/langgraph` `StateGraph`, maintaining channel reducers for immutable message streams, agent status pointers, and task queue states.\n- **Supervisor & ReAct Agent Routers**: Evaluates conditional edge selection (`next`, `human_decision`) to route execution dynamically between specialized sub-agents and tool nodes.\n\n#### 3. Google Gemini Function Calling & Tool Execution Subsystem\n- **Gemini 2.5 Flash Integration**: Binds `weatherToolDeclaration` and custom tool schemas directly into model context.\n- **Tool Execution Sandbox**: Intercepts `function_calls` payloads and dispatches execution to isolated tool handlers (`weather_tool`, `code_sandbox`).\n\n#### 4. Human-in-the-Loop Security & Thread Checkpoint Engine\n- **MemorySaver Thread Checkpointer**: Snapshots execution state frames by `thread_id` to enable state rollback, debugging, and resume.\n- **HITL Interrupt Protocol**: Triggers `interrupt()` breakpoints on high-risk operations (`draft.amount > 1000`), holding graph execution in memory until manual `Command(resume=...)` approval is received.",
+  "userFlow": [
+    "User selects or composes a multi-agent StateGraph preset (ReAct Weather, Supervisor Team, HITL Review, Plan-Execute) on the visual canvas.",
+    "User enters an initial task prompt or triggers an execution thread (`thread_id`) via the visual studio interface.",
+    "LangGraph StateGraph engine dispatches the prompt, activating supervisor router nodes and querying Google Gemini 2.5 Flash.",
+    "On function calling intents (`weatherToolDeclaration`), the engine executes tool nodes and feeds results back into the context window.",
+    "When a high-risk transaction threshold (`draft.amount > 1000`) is encountered, the engine triggers an `interrupt()` breakpoint and pauses execution.",
+    "User inspects the state snapshot in the review drawer, approves or rejects the request, and dispatches a `Command(resume=...)` signal.",
+    "StateGraph engine hydates the checkpointed state, completes the remaining node iterations, and outputs the final response alongside side-by-side Python and TypeScript code snippets."
+  ],
+  "codeFlow": [
+    "Client dispatches POST request to `/api/graph/run` with the selected preset definition, user prompt, and thread identifier.",
+    "Next.js API Gateway validates headers and instantiates a `StateGraph` runner attached to a `MemorySaver` thread checkpointer.",
+    "Start node initializes state channels (`messages`, `next`, `activeNodeId`, `draft`, `stepIndex`) and forwards control to the first agent/router node.",
+    "Supervisor node queries Google Gemini 2.5 Flash with registered function declarations (`tools`) and evaluates the response.",
+    "If Gemini returns `function_calls`, the runtime dispatches execution to the corresponding tool handler node and updates state reducers.",
+    "If an interrupt rule is satisfied (`draft.amount > 1000`), the engine persists state to `MemorySaver` and returns an HTTP 202 Paused payload to the client.",
+    "Upon receiving a `POST /api/graph/resume` request with `Command(resume=...)`, the checkpointer hydrates state and resumes execution to final completion."
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/api/graph/run",
+      "description": "Initializes and executes a LangGraph StateGraph thread for a selected multi-agent preset"
+    },
+    {
+      "method": "POST",
+      "path": "/api/graph/resume",
+      "description": "Dispatches Human-in-the-Loop approval/rejection command to resume a paused execution thread"
+    },
+    {
+      "method": "GET",
+      "path": "/api/graph/presets",
+      "description": "Returns list of pre-configured multi-agent graph preset definitions (ReAct, Supervisor, HITL, Plan-Execute)"
+    },
+    {
+      "method": "GET",
+      "path": "/api/graph/state/:threadId",
+      "description": "Retrieves current state snapshot, checkpointer history, and execution trace logs for a thread"
+    },
+    {
+      "method": "GET",
+      "path": "/api/health",
+      "description": "Returns system health, active checkpointer stats, and Google Gemini API connectivity"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "StateGraph Runtime Engine",
+      "path": "app/api/graph/engine.ts",
+      "description": "Core LangGraph StateGraph runner managing node dispatch, channel reducers, and conditional routing"
+    },
+    {
+      "name": "React Flow Graph Studio",
+      "path": "components/graph/VisualCanvas.tsx",
+      "description": "Interactive node graph canvas with animated edge highlights and real-time state synchronization"
+    },
+    {
+      "name": "Human-in-the-Loop Interrupt Manager",
+      "path": "lib/hitl-manager.ts",
+      "description": "Manages threshold evaluation, interrupt() breakpoints, and Command(resume) hydration"
+    },
+    {
+      "name": "Gemini Multi-Agent Adapter",
+      "path": "lib/ai/gemini-adapter.ts",
+      "description": "Wraps Google Gemini 2.5 Flash model with function calling declarations and token context assembly"
+    },
+    {
+      "name": "Dual Code Snippet Generator",
+      "path": "lib/code-generator.ts",
+      "description": "Generates synchronized Python (langgraph) and TypeScript (@langchain/langgraph) code for all nodes"
+    },
+    {
+      "name": "State Inspector Drawer",
+      "path": "components/inspector/StateDrawer.tsx",
+      "description": "Renders state diff logs, active node parameters, and context token inspection"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add support for additional LLM providers (e.g. Groq, Anthropic, OpenAI) with a unified tool-calling abstraction interface.",
+    "Expose an interactive drag-and-drop visual node builder UI allowing custom multi-agent graph composition without writing code.",
+    "Implement persistent distributed checkpointer backends (Redis, PostgreSQL, DynamoDB) for production cluster deployments.",
+    "Integrate automated multi-agent evaluation suite simulating edge cases, tool failures, and LLM hallucination benchmarking.",
+    "Expand pre-built tool library with vector search (RAG), Python code sandbox execution, and SQL database query nodes.",
+    "Add OpenTelemetry and Prometheus exporters for real-time latency, token usage, and state transition monitoring.",
+    "Provide a CLI scaffolding tool (`npx create-langgraph-agent`) to bootstrap new multi-agent presets from CLI.",
+    "Enhance security by integrating HashiCorp Vault secret management for API keys and tool credentials.",
+    "Support streaming Gemini response frames directly into React Flow node labels for real-time token rendering.",
+    "Publish comprehensive architecture documentation and benchmark reports on scaling multi-agent graphs in serverless environments."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "Lang-Graph-Visual-Agent - Technical Architecture Showcase",
+    "totalDurationSeconds": 30,
+    "totalDurationFrames": 900,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the technical breakdown of Lang-Graph-Visual-Agent, an interactive visual IDE for LangGraph multi-agent AI workflows. System Architecture & Topology: Powered by Next.js 14, React Flow, and LangGraph StateGraph engine, with Google Gemini 2.5 Flash for agent inference and function calling. Key Features: ReAct weather agent, Supervisor team routing between Researcher and Coder sub-agents, Human-in-the-Loop financial approval gates with interrupt breakpoints, and dual-language Python and TypeScript code generation. Explore the complete open-source project on GitHub at Sameer-Bagul slash Lang-graph-visual-agent.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Introduction",
+        "heading": "Lang-Graph-Visual-Agent",
+        "subheading": "Visual IDE & Runner for LangGraph Multi-Agent Workflows",
+        "narration": "Welcome to the technical breakdown of Lang-Graph-Visual-Agent, built with Next.js 14 and LangGraph.",
+        "durationFrames": 150,
+        "startFrame": 0,
+        "endFrame": 150,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "LangGraph",
+          "Google Gemini 2.5",
+          "React Flow",
+          "TypeScript"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Architecture & System Topology",
+        "heading": "Multi-Agent StateGraph Architecture",
+        "subheading": "Next.js 14 UI • LangGraph State Machine • MemorySaver Checkpoints",
+        "narration": "Decoupled architecture combining visual React Flow canvas with LangGraph StateGraph engine and MemorySaver checkpointer.",
+        "durationFrames": 150,
+        "startFrame": 150,
+        "endFrame": 300,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "StateGraph",
+          "Supervisor Router",
+          "Function Calling"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "API Routes & Endpoints",
+        "heading": "REST API Interfaces",
+        "subheading": "/api/graph/run • /api/graph/resume • /api/graph/state",
+        "narration": "Exposing REST endpoints for graph execution, thread checkpoint retrieval, and Human-in-the-Loop resume commands.",
+        "durationFrames": 150,
+        "startFrame": 300,
+        "endFrame": 450,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "POST /api/graph/run",
+          "POST /api/graph/resume"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "Core Architectural Modules",
+        "heading": "Modular Codebase Structure",
+        "subheading": "StateGraph Runtime • Visual Canvas • HITL Interrupt Manager",
+        "narration": "Clean software boundaries isolating state machine execution, visual canvas rendering, and human review gating.",
+        "durationFrames": 150,
+        "startFrame": 450,
+        "endFrame": 600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "StateGraph Runtime",
+          "HITL Manager",
+          "Gemini Adapter"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Technical Features & Dual Code",
+        "heading": "Engineering Highlights",
+        "subheading": "Dual Python & TypeScript Code Generation • ReAct & HITL Presets",
+        "narration": "Side-by-side code generation for Python and TypeScript, accompanied by verbose execution tracing.",
+        "durationFrames": 150,
+        "startFrame": 600,
+        "endFrame": 750,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Python + TS Code",
+          "MemorySaver Checkpoints"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "Outro & Call To Action",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/Lang-graph-visual-agent",
+        "narration": "Check out the complete open-source project on GitHub!",
+        "durationFrames": 150,
+        "startFrame": 750,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"LanggraphvisualagentShowcase\"\n component={MainComposition}\n durationInFrames={900}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'Lang-Graph-Visual-Agent',\n shortDescription: 'Visual IDE and State-Machine Runner for LangGraph Multi-Agent Workflows',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string; shortDescription: string }> = ({ title, shortDescription }) => {\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n <Sequence from={0} durationInFrames={150}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Lang-Graph-Visual-Agent</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Visual IDE & State-Machine Runner for LangGraph Workflows</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "Lang-graph-visual-agent",
+    "url": "https://github.com/Sameer-Bagul/Lang-graph-visual-agent",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-21T19:52:38.641Z",
+    "lastAnalyzedAt": "2026-09-21T19:56:00.000Z",
+    "sourceCommit": null,
+    "manuallyVerified": true
+  }
+}

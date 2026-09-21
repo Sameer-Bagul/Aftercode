@@ -4,6 +4,10 @@ import { stripEmojis } from '../metadata/normalizer.js';
 import { AiProviderRegistry } from '../ai/provider-registry.js';
 
 export interface RagSynthesisResult {
+  shortDescription?: string;
+  architectureOverview?: string;
+  userFlow?: string[];
+  codeFlow?: string[];
   mediumDescription?: string;
   longDescription?: string;
   architectureDescription: string;
