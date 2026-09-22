@@ -176,11 +176,11 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
   ].join(' ');
 
   const targetSeconds = targetDurationMinutes * 60;
-  const sceneCount = 10;
+  const sceneCount = targetDurationMinutes <= 0.5 ? 6 : targetDurationMinutes <= 3 ? 8 : targetDurationMinutes <= 5 ? 10 : 12;
   const perSceneFrames = Math.round((targetSeconds / sceneCount) * fps);
 
   let currentFrame = 0;
-  const scenes: RemotionScene[] = [
+  const allScenes: RemotionScene[] = [
     {
       sceneNumber: 1,
       name: 'Hero & Hook Executive Summary',
@@ -303,7 +303,15 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
     },
   ];
 
-  const totalDurationFrames = currentFrame;
+  const scenes = allScenes.slice(0, sceneCount).map((s, idx) => ({
+    ...s,
+    sceneNumber: idx + 1,
+    durationFrames: perSceneFrames,
+    startFrame: idx * perSceneFrames,
+    endFrame: (idx + 1) * perSceneFrames,
+  }));
+
+  const totalDurationFrames = sceneCount * perSceneFrames;
   const totalDurationSeconds = totalDurationFrames / fps;
 
   const remotionReactCode = generateRemotionReactCode(repoName, totalDurationFrames, fps, scenes);

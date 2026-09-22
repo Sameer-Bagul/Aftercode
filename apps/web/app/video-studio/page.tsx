@@ -83,44 +83,23 @@ export default function VideoStudioPage() {
     loadProjects();
   }, []);
 
-  const scenes = selectedProject?.remotionVideoScript?.scenes || [
-    {
-      sceneNumber: 1,
-      name: 'Hero Architecture Introduction',
-      heading: selectedProject?.title || 'Aftercode Video Engine',
-      subheading: selectedProject?.shortDescription || 'Automated Remotion Video Generation for Repositories',
-      narration: `Welcome to the technical showcase of ${selectedProject?.title || 'the repository'}.`,
-      bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
-      badges: selectedProject?.techStackBreakdown?.frontend || ['TypeScript', 'Next.js'],
-    },
-    {
-      sceneNumber: 2,
-      name: 'AST Code Evidence & RAG Synthesis',
-      heading: 'Static Code & RAG Indexing',
-      subheading: 'Parsing AST trees and semantic code symbols',
-      narration: 'Deep static analysis extracting verified tech stack claims.',
-      bgGradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
-      badges: ['AST Evidence', 'BM25 + RAG'],
-    },
-    {
-      sceneNumber: 3,
-      name: 'Supertonic 3 Local Voiceover',
-      heading: 'Supertonic 3 ONNX Synthesis',
-      subheading: '99M Parameter local TTS model with expression tags',
-      narration: 'Generates narration WAV buffers locally with broadcast-grade FFmpeg normalization.',
-      bgGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-      badges: ['Supertonic 3', 'FFmpeg loudnorm'],
-    },
-    {
-      sceneNumber: 4,
-      name: 'Remotion MP4 Export',
-      heading: 'Programmatic Video Production',
-      subheading: 'Frame-accurate rendering via Chromium & Remotion',
-      narration: 'Render production MP4 videos directly to disk.',
-      bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
-      badges: ['Remotion 4.x', 'Chromium Renderer'],
-    },
-  ];
+  const scenes = React.useMemo(() => {
+    if (!selectedProject?.remotionVideoScript?.scenes) {
+      return [];
+    }
+
+    const targetSeconds = targetDurationMinutes * 60;
+    const targetCount = targetDurationMinutes <= 0.5 ? 6 : targetDurationMinutes <= 3 ? 8 : targetDurationMinutes <= 5 ? 10 : 12;
+    const perSceneFrames = Math.round((targetSeconds / targetCount) * 30);
+
+    return selectedProject.remotionVideoScript.scenes.map((s: any, idx: number) => ({
+      ...s,
+      sceneNumber: idx + 1,
+      durationFrames: s.durationFrames || perSceneFrames,
+      startFrame: idx * (s.durationFrames || perSceneFrames),
+      endFrame: (idx + 1) * (s.durationFrames || perSceneFrames),
+    }));
+  }, [selectedProject, targetDurationMinutes]);
 
   const handleGenerateAiScript = async () => {
     if (!selectedProject) return;

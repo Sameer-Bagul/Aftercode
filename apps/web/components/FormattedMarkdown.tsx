@@ -6,17 +6,19 @@ interface FormattedMarkdownProps {
   content: string;
   className?: string;
   style?: React.CSSProperties;
+  stripFirstHeading?: boolean;
 }
 
-export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, style }) => {
+export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, style, stripFirstHeading = false }) => {
   if (!content) return null;
 
-  // Split into paragraphs by double newlines
-  const paragraphs = content.split(/\n\s*\n/).filter((p) => p.trim().length > 0);
+  let text = content;
+  if (stripFirstHeading) {
+    text = text.replace(/^#+\s+.*?\n+/, '');
+  }
 
-  const renderInlineFormatted = (text: string) => {
-    // Regex matching **bold**, *italic*, and `code`
-    const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
+  const renderInlineFormatted = (rawText: string) => {
+    const parts = rawText.split(/(\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g);
 
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
@@ -42,7 +44,7 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, s
               color: '#0284c7',
               padding: '2px 7px',
               borderRadius: '5px',
-              fontSize: '0.875em',
+              fontSize: '0.85em',
               fontFamily: 'Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace',
               border: '1px solid #e2e8f0',
               fontWeight: 600,
@@ -56,48 +58,104 @@ export const FormattedMarkdown: React.FC<FormattedMarkdownProps> = ({ content, s
     });
   };
 
+  const lines = text.split('\n');
+  const elements: React.ReactNode[] = [];
+  let currentList: { type: 'ul' | 'ol'; items: string[] } | null = null;
+  let keyCounter = 0;
+
+  const flushList = () => {
+    if (currentList) {
+      const isOl = currentList.type === 'ol';
+      const ListTag = isOl ? 'ol' : 'ul';
+      elements.push(
+        <ListTag
+          key={`list-${keyCounter++}`}
+          style={{
+            margin: '8px 0 16px',
+            paddingLeft: '24px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          {currentList.items.map((item, idx) => (
+            <li key={idx} style={{ fontSize: '0.95rem', color: '#334155', lineHeight: 1.6 }}>
+              {renderInlineFormatted(item)}
+            </li>
+          ))}
+        </ListTag>
+      );
+      currentList = null;
+    }
+  };
+
+  lines.forEach((line) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushList();
+      return;
+    }
+
+    if (trimmed.startsWith('# ')) {
+      flushList();
+      elements.push(
+        <h1 key={`h1-${keyCounter++}`} style={{ fontSize: '1.4rem', fontWeight: 800, color: '#0f172a', margin: '16px 0 8px', letterSpacing: '-0.01em' }}>
+          {renderInlineFormatted(trimmed.substring(2))}
+        </h1>
+      );
+    } else if (trimmed.startsWith('## ')) {
+      flushList();
+      elements.push(
+        <h2 key={`h2-${keyCounter++}`} style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '16px 0 8px', letterSpacing: '-0.01em' }}>
+          {renderInlineFormatted(trimmed.substring(3))}
+        </h2>
+      );
+    } else if (trimmed.startsWith('### ')) {
+      flushList();
+      elements.push(
+        <h3 key={`h3-${keyCounter++}`} style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0f172a', margin: '14px 0 6px', letterSpacing: '-0.01em' }}>
+          {renderInlineFormatted(trimmed.substring(4))}
+        </h3>
+      );
+    } else if (trimmed.startsWith('#### ')) {
+      flushList();
+      elements.push(
+        <h4 key={`h4-${keyCounter++}`} style={{ fontSize: '0.975rem', fontWeight: 700, color: '#0284c7', margin: '12px 0 4px' }}>
+          {renderInlineFormatted(trimmed.substring(5))}
+        </h4>
+      );
+    } else if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+      const itemText = trimmed.replace(/^[-*]\s*/, '');
+      if (!currentList || currentList.type !== 'ul') {
+        flushList();
+        currentList = { type: 'ul', items: [itemText] };
+      } else {
+        currentList.items.push(itemText);
+      }
+    } else if (/^\d+\.\s+/.test(trimmed)) {
+      const itemText = trimmed.replace(/^\d+\.\s+/, '');
+      if (!currentList || currentList.type !== 'ol') {
+        flushList();
+        currentList = { type: 'ol', items: [itemText] };
+      } else {
+        currentList.items.push(itemText);
+      }
+    } else {
+      flushList();
+      elements.push(
+        <p key={`p-${keyCounter++}`} style={{ fontSize: '0.95rem', color: '#334155', lineHeight: 1.7, margin: '4px 0' }}>
+          {renderInlineFormatted(trimmed)}
+        </p>
+      );
+    }
+  });
+
+  flushList();
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', ...style }}>
-      {paragraphs.map((para, idx) => {
-        const trimmed = para.trim();
-
-        if (trimmed.startsWith('### ')) {
-          return (
-            <h3
-              key={idx}
-              style={{
-                fontSize: '1.1rem',
-                fontWeight: 800,
-                color: '#0f172a',
-                marginTop: idx > 0 ? '12px' : 0,
-                marginBottom: '4px',
-                letterSpacing: '-0.01em',
-              }}
-            >
-              {renderInlineFormatted(trimmed.substring(4))}
-            </h3>
-          );
-        }
-
-        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-          const listItems = trimmed.split('\n').filter((l) => l.trim().length > 0);
-          return (
-            <ul key={idx} style={{ margin: 0, paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {listItems.map((item, itemIdx) => (
-                <li key={itemIdx} style={{ fontSize: '0.95rem', color: '#334155', lineHeight: 1.6 }}>
-                  {renderInlineFormatted(item.replace(/^[-*]\s*/, ''))}
-                </li>
-              ))}
-            </ul>
-          );
-        }
-
-        return (
-          <p key={idx} style={{ fontSize: '0.975rem', color: '#334155', lineHeight: 1.7, margin: 0 }}>
-            {renderInlineFormatted(trimmed)}
-          </p>
-        );
-      })}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', ...style }}>
+      {elements}
     </div>
   );
 };
+

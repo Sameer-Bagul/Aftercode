@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Video, GitBranch, FolderGit2, BarChart3, Cpu, Github, SlidersHorizontal, Sparkles } from 'lucide-react';
+import { LayoutDashboard, BarChart3, Cpu, Github, Sparkles } from 'lucide-react';
 import { AiProviderDrawer } from './AiProviderDrawer';
 
 export const Navbar: React.FC = () => {
@@ -74,19 +74,10 @@ export const Navbar: React.FC = () => {
             </div>
           </Link>
 
-          {/* Clean Nav Links */}
+          {/* Clean Global Nav Links */}
           <nav style={{ display: 'flex', gap: '4px' }}>
             <Link href="/" style={navItemStyle('/')}>
               <LayoutDashboard size={15} /> Repositories
-            </Link>
-            <Link href="/video-studio" style={navItemStyle('/video-studio')}>
-              <Video size={15} /> Video Studio
-            </Link>
-            <Link href="/knowledge-graph" style={navItemStyle('/knowledge-graph')}>
-              <GitBranch size={15} /> Knowledge Graph
-            </Link>
-            <Link href="/asset-library" style={navItemStyle('/asset-library')}>
-              <FolderGit2 size={15} /> Asset Library
             </Link>
             <Link href="/analytics" style={navItemStyle('/analytics')}>
               <BarChart3 size={15} /> Analytics

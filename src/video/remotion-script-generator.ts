@@ -79,6 +79,8 @@ export async function synthesizeAiRemotionVideoScript(
     try {
       console.log(` 🎬 [Video AI Hub] Synthesizing ${targetDurationMinutes}-minute long-form video script for ${evidence.repoName} using active AI Provider...`);
       const targetSeconds = targetDurationMinutes * 60;
+      const sceneCount = targetDurationMinutes <= 0.5 ? 6 : targetDurationMinutes <= 3 ? 8 : targetDurationMinutes <= 5 ? 10 : 12;
+
       const prompt = `You are a Senior Technical Video Director & Masterclass Instructor. Synthesize an exhaustive ${targetDurationMinutes}-minute (${targetSeconds} seconds) long-form technical documentary script for repository '${evidence.repoName}':
 Languages: ${evidence.detectedLanguages.join(', ')}
 Tech Stack: ${JSON.stringify(evidence.techStack)}
@@ -88,8 +90,8 @@ Features: ${JSON.stringify(evidence.features)}
 
 Return strictly valid JSON with keys (DO NOT include emojis in text):
 1. "voiceoverScript": Full continuous long-form narration script (approx 500-1000 words) covering hero executive summary, multi-tier system topology, AST evidence extraction, RAG hybrid indexing, REST/WebSocket API router design, modular controller tree, database storage models, security guardrails, performance benchmarks, and deployment lifecycle.
-2. "scenes": Array of 10-12 detailed scene objects with:
-   - "sceneNumber": number (1 to 12)
+2. "scenes": Array of ${sceneCount} detailed scene objects with:
+   - "sceneNumber": number (1 to ${sceneCount})
    - "name": string (e.g. "Hero Executive Summary", "Multi-Tier System Topology", "AST Code Evidence Parsing", "Hybrid RAG Search Engine", "REST API Network Interfaces", "Modular Controller Hierarchy", "Model Engine & Storage Layer", "Security & Rate Limiting", "Performance Benchmarks", "Supertonic Audio Synthesis", "Containerized Build System", "GitHub Open Source Outro")
    - "heading": string (catchy technical headline)
    - "subheading": string (descriptive engineering subtitle)
@@ -100,8 +102,7 @@ Return strictly valid JSON with keys (DO NOT include emojis in text):
       if (response && response.data && Array.isArray(response.data.scenes) && response.data.scenes.length >= 6) {
         const parsed = response.data;
         const fps = 30;
-        const sceneCount = parsed.scenes.length;
-        const perSceneSeconds = targetSeconds / sceneCount;
+        const perSceneSeconds = targetSeconds / parsed.scenes.length;
         const perSceneFrames = Math.round(perSceneSeconds * fps);
 
         let currentFrame = 0;
@@ -176,11 +177,10 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
   ].join(' ');
 
   const targetSeconds = targetDurationMinutes * 60;
-  const sceneCount = 10;
+  const sceneCount = targetDurationMinutes <= 0.5 ? 6 : targetDurationMinutes <= 3 ? 8 : targetDurationMinutes <= 5 ? 10 : 12;
   const perSceneFrames = Math.round((targetSeconds / sceneCount) * fps);
 
-  let currentFrame = 0;
-  const scenes: RemotionScene[] = [
+  const allScenes: RemotionScene[] = [
     {
       sceneNumber: 1,
       name: 'Hero & Hook Executive Summary',
@@ -188,8 +188,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: `Production-Grade ${langStr} Engineering System`,
       narration: `Welcome to the comprehensive technical masterclass breakdown of ${repoName}, built with ${langStr}.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: 0,
+      endFrame: perSceneFrames,
       bgGradient: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
       badges: detectedLanguages.concat(techStack.frontend).slice(0, 4),
     },
@@ -200,8 +200,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: `${backendTech} API • ${frontendTech} UI`,
       narration: `Decoupled multi-tier system topology isolating presentation state from backend domain controllers.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames,
+      endFrame: perSceneFrames * 2,
       bgGradient: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
       badges: techStack.backend.concat(techStack.infrastructure).slice(0, 4),
     },
@@ -212,8 +212,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: 'Parsing AST trees and semantic code symbols',
       narration: `Deep static code analysis extracting verified tech stack claims and lexical search indices.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 2,
+      endFrame: perSceneFrames * 3,
       bgGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
       badges: ['AST Evidence', 'BM25 Index', 'RAG Fusion'],
     },
@@ -224,8 +224,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: apiEndpoints.slice(0, 3).map((e) => `${e.method} ${e.path}`).join(' | ') || 'Request Router',
       narration: `Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 3,
+      endFrame: perSceneFrames * 4,
       bgGradient: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)',
       badges: apiEndpoints.map((e) => e.method).slice(0, 4),
     },
@@ -236,8 +236,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: keyModules.map((m) => m.name).slice(0, 4).join(' • ') || 'Source Tree',
       narration: `Clean code boundaries separating entrypoint routing, controllers, and data storage logic.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 4,
+      endFrame: perSceneFrames * 5,
       bgGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
       badges: keyModules.map((m) => m.name).slice(0, 4),
     },
@@ -248,8 +248,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: `${aiTech} • ${dbTech}`,
       narration: `High-performance ML model inference engine integrated with recordset persistence.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 5,
+      endFrame: perSceneFrames * 6,
       bgGradient: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
       badges: techStack.aiMl.concat(techStack.database).slice(0, 4),
     },
@@ -260,8 +260,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: 'Schema Validation & Exception Isolation',
       narration: `Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 6,
+      endFrame: perSceneFrames * 7,
       bgGradient: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)',
       badges: ['CORS Guard', 'Input Sanitization', 'Rate Limiting'],
     },
@@ -272,8 +272,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: features.slice(0, 2).join(' • ') || 'High Reliability Pipeline',
       narration: `Automated quality assurance checks, low latency endpoints, and clean component state management.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 7,
+      endFrame: perSceneFrames * 8,
       bgGradient: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)',
       badges: techStack.tools.concat(techStack.testing).slice(0, 4),
     },
@@ -284,8 +284,8 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: '99M Parameter TTS & FFmpeg Normalization',
       narration: `Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 8,
+      endFrame: perSceneFrames * 9,
       bgGradient: 'linear-gradient(135deg, #10b981 0%, #047857 100%)',
       badges: ['Supertonic 3', 'FFmpeg -16 LUFS', 'ONNX Runtime'],
     },
@@ -296,14 +296,22 @@ export function generateRemotionVideoScript(evidence: ExtractedEvidence, targetD
       subheading: `github.com/Sameer-Bagul/${repoName}`,
       narration: `Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.`,
       durationFrames: perSceneFrames,
-      startFrame: currentFrame,
-      endFrame: (currentFrame += perSceneFrames),
+      startFrame: perSceneFrames * 9,
+      endFrame: perSceneFrames * 10,
       bgGradient: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
       badges: ['GitHub Open-Source', 'MIT License', 'Star on GitHub'],
     },
   ];
 
-  const totalDurationFrames = currentFrame;
+  const scenes = allScenes.slice(0, sceneCount).map((s, idx) => ({
+    ...s,
+    sceneNumber: idx + 1,
+    durationFrames: perSceneFrames,
+    startFrame: idx * perSceneFrames,
+    endFrame: (idx + 1) * perSceneFrames,
+  }));
+
+  const totalDurationFrames = sceneCount * perSceneFrames;
   const totalDurationSeconds = totalDurationFrames / fps;
 
   const remotionReactCode = generateRemotionReactCode(repoName, totalDurationFrames, fps, scenes);

@@ -1,0 +1,339 @@
+{
+  "_id": "chaudhari-law-publishers-id",
+  "title": "Chaudhari Law Publishers",
+  "slug": "chaudhari-law-publishers",
+  "shortDescription": "Production-grade Web App software engineering system implemented in Python, TypeScript. Features a decoupled multi-tier architecture with validated API endpoints and resilient state processing.",
+  "description": "**Chaudhari Law Publishers (CLP)** is a Next.js 16 App Router‑based e‑commerce platform that powers the online catalog and order management for a legal publishing house. The system combines **server‑side API routes** with a **MongoDB Atlas** backend accessed through **Mongoose** (`dbConnect()` singleton) and secures sessions via **NextAuth.js** credentials provider. All configuration lives in `process.env` (`MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL`) and the public admin UI is hosted at `https://clp-admin-5a954ot7t-sameer-baguls-projects.vercel.app`.",
+  "longDescription": "**Core System Architecture**\nThe application follows a **Jamstack‑style** architecture where the frontend (React + TailwindCSS) is rendered by Next.js and API routes are deployed as serverless functions on Vercel. Each route lives under `app/api/*` and uses **NextResponse** for standardized JSON envelopes. Database interactions are abstracted through **Mongoose models** (Book, Category, Subject, Order, User, Author, Publisher) with a shared connection pool created by `dbConnect()`. Text indexes on title, author, SKU, description, and keywords enable fast full‑text search without an external search engine.\n\n*Authentication & Session Guardrails*\nUser authentication is handled by **NextAuth.js** using a credentials provider. Sessions are stored in HTTP‑only cookies and validated by a global `middleware.ts` that redirects unauthenticated requests. Environment variables (`NEXTAUTH_SECRET`, `NEXTAUTH_URL`) are required for token signing and callback URLs. Admin credentials are pre‑seeded (`chaudharilawpublishers@gmail.com`).\n\n`GET /api/auth/captcha` provides a public captcha challenge, while protected routes such as `GET /api/user/profile`, `GET /api/user/cart`, `PUT /api/user/cart`, `GET /api/user/wishlist`, and address management endpoints enforce session checks. Payload schemas are defined in the API guide and validated with **Zod**‑style checks before processing.\n\n**Data Flow & Execution**\nClient requests hit the Next.js API route, the handler parses JSON, validates against the schema, and invokes Mongoose service functions. The service layer performs CRUD on the `chaudhari_law` database, leveraging MongoDB's atomic operators for cart updates and order creation. Responses are wrapped in a consistent envelope (`{ success: true, data: … }`) and sent via `NextResponse.json()`. Rate limiting and error handling policies are documented in the API guide but enforced centrally via middleware.\n\n**Build & Deployment Topology**\nThe codebase is TypeScript‑first, linted with **ESLint**, and compiled by the Next.js build pipeline. Deployments target Vercel's edge network, providing automatic scaling for API routes. MongoDB Atlas handles data persistence with built‑in backups and geo‑replication, ensuring high availability for the publishing catalog.",
+  "category": "Web App",
+  "isFeatured": false,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented the Next.js 16 App Router API layer with typed route handlers",
+    "Created a reusable Mongoose connection pool (`dbConnect()`) for serverless functions",
+    "Designed MongoDB text indexes for efficient full‑text search across book metadata",
+    "Integrated NextAuth.js credentials provider with secure session cookies",
+    "Defined comprehensive API documentation covering auth, user profile, cart, wishlist, and address management",
+    "Implemented request validation using Zod‑style schemas for all public endpoints",
+    "Built standardized JSON response envelopes and error handling contracts",
+    "Configured environment variables for secure database connection and auth secrets",
+    "Authored middleware to protect all `/api/user/*` routes and enforce rate limiting",
+    "Documented the entire system architecture, data models, and integration workflows in Markdown"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/swara-chaudhari/chaudhari-law-publishers",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Full‑text searchable book catalog with 46 specifications per book",
+    "User authentication via NextAuth.js credentials provider",
+    "Protected user profile, cart, wishlist, and address management APIs",
+    "Serverless API routes powered by Next.js App Router",
+    "MongoDB Atlas backend with Mongoose ORM and connection pooling",
+    "Admin dashboard hosted on Vercel with custom domain",
+    "Captcha generation endpoint for bot mitigation",
+    "Consistent API envelope (`success`, `data`, `error`) across all routes",
+    "Rate‑limiting policies defined in middleware",
+    "Comprehensive Markdown API guide with request/response examples"
+  ],
+  "challenges": [
+    "Balancing connection pooling in a serverless environment to avoid exceeding MongoDB Atlas limits",
+    "Ensuring consistent session validation across both API routes and client‑side navigation",
+    "Designing a flexible schema that accommodates 46 book specifications while keeping queries performant",
+    "Implementing robust input validation without over‑engineering the validation layer",
+    "Managing environment‑specific configuration (dev, staging, prod) within Next.js without leaking secrets"
+  ],
+  "learnings": [
+    "Serverless functions benefit greatly from a shared DB connection singleton to reduce latency",
+    "NextAuth.js middleware provides a clean separation of auth concerns but requires careful matcher configuration",
+    "MongoDB text indexes are powerful for search but need thoughtful field weighting to improve relevance",
+    "Standardizing API responses simplifies front‑end error handling and improves developer experience",
+    "Documenting every endpoint early prevents ambiguity and accelerates onboarding of new contributors"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**chaudhari-law-publishers** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, Next.js, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Scripts`, `Tests`, `App`, `Api`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **Persistence Layer**: Data storage and recordset persistence powered by `MongoDB`.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, Next.js, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "Scripts",
+      "path": ".agents/skills/ui-ux-pro-max/scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Tests",
+      "path": ".agents/skills/ui-ux-pro-max/scripts/tests",
+      "description": "Module component managing tests source logic"
+    },
+    {
+      "name": "App",
+      "path": "app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Api",
+      "path": "app/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Store",
+      "path": "store",
+      "description": "Module component managing store source logic"
+    },
+    {
+      "name": "Components",
+      "path": "components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Docs",
+      "path": "docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Models",
+      "path": "models",
+      "description": "Module component managing models source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Migrate search to an external engine (e.g., Elasticsearch) for advanced faceted search and relevance tuning",
+    "Introduce role‑based access control (RBAC) to separate admin and editor permissions",
+    "Add GraphQL layer for flexible client queries while retaining existing REST endpoints",
+    "Implement automated integration tests for all API routes using Playwright or Jest",
+    "Enable incremental static regeneration (ISR) for product pages to improve SEO and load performance"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "chaudhari-law-publishers - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into chaudhari-law-publishers. Section 1 System Topology: Engineered with Python, TypeScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, Next.js, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Scripts, Tests, App, Api. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash chaudhari-law-publishers.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "chaudhari-law-publishers",
+        "subheading": "Production-Grade Python, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of chaudhari-law-publishers, built with Python, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "Python",
+          "TypeScript",
+          "React",
+          "Next.js"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, Next.js, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Scripts • Tests • App • Api",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Scripts",
+          "Tests",
+          "App",
+          "Api"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core chaudhari-law-publishers functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/chaudhari-law-publishers",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"chaudharilawpublishersShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'chaudhari-law-publishers',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>chaudhari-law-publishers</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade Python, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, Next.js, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Scripts • Tests • App • Api</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core chaudhari-law-publishers functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/chaudhari-law-publishers</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "chaudhari-law-publishers",
+    "url": "https://github.com/swara-chaudhari/chaudhari-law-publishers",
+    "visibility": "public",
+    "fork": true
+  },
+  "classification": {
+    "type": "fork",
+    "portfolioWorthiness": "low"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T07:02:26.273Z",
+    "lastAnalyzedAt": "2026-09-22T07:02:26.273Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

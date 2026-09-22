@@ -49,12 +49,19 @@ export async function generateMetadataPayload(
   const cleanShortDesc = synthesis.shortDescription || cleanShortDescription(evidence.readmeSummary, repoName, category, evidence.detectedLanguages);
   const remotionVideoScript = generateRemotionVideoScript(evidence);
 
+  let combinedDescription = mediumDescription;
+  if (cleanShortDesc && mediumDescription && !mediumDescription.includes(cleanShortDesc)) {
+    combinedDescription = `${cleanShortDesc}\n\n${mediumDescription}`;
+  } else if (cleanShortDesc && !mediumDescription) {
+    combinedDescription = cleanShortDesc;
+  }
+
   const rawPayload = {
     _id: `${slug}-id`,
     title: repoName.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
     slug,
-    shortDescription: cleanShortDesc,
-    description: mediumDescription,
+    shortDescription: combinedDescription,
+    description: combinedDescription,
     longDescription,
     category,
     isFeatured,

@@ -23,14 +23,13 @@ export class GroqProvider implements AiProvider {
     const targetModel =
       process.env.GROQ_MODEL ||
       (options.modelsToTry && options.modelsToTry[0]) ||
-      'openai/gpt-oss-120b';
+      'llama-3.3-70b-versatile';
 
     const modelsToTry = [
       targetModel,
-      'qwen/qwen3.8-27b',
-      'openai/gpt-oss-20b',
-      'groq/compound',
-      'groq/compound-mini',
+      'llama-3.1-8b-instant',
+      'mixtral-8x7b-32768',
+      'gemma2-9b-it',
     ].filter((v, i, a) => a.indexOf(v) === i);
 
     let lastError: any = null;

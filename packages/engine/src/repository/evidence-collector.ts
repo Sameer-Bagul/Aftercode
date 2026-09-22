@@ -214,7 +214,7 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
 
         // Package.json parsing
         if (lower === 'package.json') {
-          detectedManifests.push('package.json');
+          detectedManifests.push(entry.name);
           try {
             const raw = fs.readFileSync(fullPath, 'utf-8');
             const pkg = JSON.parse(raw);
@@ -223,18 +223,24 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
             if (deps['react']) techStack.frontend.push('React');
             if (deps['next']) techStack.frontend.push('Next.js');
             if (deps['vue']) techStack.frontend.push('Vue');
+            if (deps['remotion'] || deps['@remotion/cli'] || deps['@remotion/player']) techStack.frontend.push('Remotion Video Engine');
             if (deps['tailwindcss']) techStack.frontend.push('TailwindCSS');
+            if (deps['lucide-react']) techStack.frontend.push('Lucide Icons');
             if (deps['express']) techStack.backend.push('Express');
             if (deps['@nestjs/core']) techStack.backend.push('NestJS');
+            if (deps['hono']) techStack.backend.push('Hono API');
+            if (deps['trpc'] || deps['@trpc/server']) techStack.backend.push('tRPC');
             if (deps['prisma'] || deps['@prisma/client']) techStack.database.push('Prisma');
             if (deps['pg']) techStack.database.push('PostgreSQL');
             if (deps['mongoose'] || deps['mongodb']) techStack.database.push('MongoDB');
             if (deps['redis'] || deps['ioredis']) techStack.database.push('Redis');
+            if (deps['drizzle-orm']) techStack.database.push('Drizzle ORM');
             if (deps['openai']) techStack.aiMl.push('OpenAI API');
             if (deps['@google/genai'] || deps['@google/generative-ai']) techStack.aiMl.push('Gemini AI');
             if (deps['onnxruntime-node'] || deps['onnxruntime-web']) techStack.aiMl.push('ONNX Runtime');
             if (deps['vitest'] || deps['jest']) techStack.testing.push('Vitest/Jest');
             if (deps['typescript']) techStack.tools.push('TypeScript');
+            if (deps['zod']) techStack.tools.push('Zod Schema Validator');
             if (deps['eslint']) techStack.tools.push('ESLint');
           } catch {
             // Ignore parse errors
@@ -266,6 +272,38 @@ export function collectRepositoryEvidence(workspaceDir: string, repoName: string
         if (lower === 'vercel.json') {
           configs.push('vercel.json');
           techStack.infrastructure.push('Vercel');
+        }
+
+        // Next.js App Router API Route Scanner (app/api/**/route.ts or route.js)
+        if (['route.ts', 'route.js', 'route.tsx', 'route.jsx'].includes(lower) && relativePath.includes('api')) {
+          const apiDirMatch = relativePath.match(/(?:app|src\/app)\/(api\/[^\/]+(?:\/[^\/]+)*)\/(?:route\.(?:ts|js|tsx|jsx))/);
+          if (apiDirMatch) {
+            const routePath = '/' + apiDirMatch[1];
+            try {
+              const code = fs.readFileSync(fullPath, 'utf-8');
+              const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+              let foundMethod = false;
+              for (const method of methods) {
+                if (code.includes(`export async function ${method}`) || code.includes(`export function ${method}`)) {
+                  apiEndpoints.push({
+                    method,
+                    path: routePath,
+                    description: `Next.js App Router API endpoint defined in ${relativePath}`,
+                  });
+                  foundMethod = true;
+                }
+              }
+              if (!foundMethod) {
+                apiEndpoints.push({
+                  method: 'GET',
+                  path: routePath,
+                  description: `Next.js App Router API endpoint defined in ${relativePath}`,
+                });
+              }
+            } catch {
+              // Ignore
+            }
+          }
         }
 
         // Code AST / Pattern Route Scanner

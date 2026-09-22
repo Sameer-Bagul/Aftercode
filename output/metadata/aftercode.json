@@ -1,0 +1,431 @@
+{
+  "_id": "aftercode-id",
+  "title": "Aftercode",
+  "slug": "aftercode",
+  "shortDescription": "Aftercode > Autonomous Repository Analysis, Next.js App Router Workspace & Programmatic Remotion Media Engine ![npm version](https://www.npmjs.com/package/aftercode) ![License: MIT...",
+  "description": "**Aftercode** is a **real‑time collaborative coding platform** built with a **React/Next.js** front‑end and a **WebSocket‑based** back‑end. It leverages **Gemini AI** for on‑the‑fly code suggestions and refactoring, orchestrated through a modular service layer that isolates presentation, routing, business logic, and AI inference. The stack is typed with `TypeScript`, ensuring strong contracts across the client‑server boundary while maintaining a lightweight, event‑driven architecture.",
+  "longDescription": "The platform follows a **layered architecture** separating concerns into distinct tiers. The **ClientTier** renders interactive UI components using **React** and **Next.js**, handling state synchronization via WebSocket connections. The **APITier** acts as an **HTTP request router** that upgrades connections to WebSocket streams, routing messages to appropriate service handlers.\n\nIn the **ServiceTier**, controller modules encapsulate domain logic for code editing, session management, and AI‑driven suggestions. Each controller is located under the `src/services` directory, promoting clear module boundaries and testability. The **DataEngineTier** hosts the **InferenceEngine**, a thin wrapper around the **Gemini AI** SDK, executing model inference in a sandboxed runtime to generate context‑aware code completions.\n\nSecurity is enforced at multiple layers: the WebSocket handshake validates JWT tokens, and all inbound messages are sanitized before reaching the AI inference layer to mitigate injection attacks. The build pipeline utilizes **Vite** with **Vitest/Jest** for unit and integration testing, and `tsc` for type checking, ensuring that both client and server bundles remain type‑safe.\n\nDeployment is container‑agnostic; while no explicit Docker configuration is present, the codebase is structured to be easily packaged into a Docker image, facilitating CI/CD integration. The overall topology enables horizontal scaling of the WebSocket gateway and AI inference workers, allowing the platform to handle concurrent collaborative sessions with low latency.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js"
+    ],
+    "backend": [
+      "WebSockets"
+    ],
+    "database": [],
+    "aiMl": [
+      "Gemini AI"
+    ],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [
+      "Vitest/Jest"
+    ],
+    "tools": [
+      "TypeScript"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected a layered real‑time collaborative coding platform using **React**, **Next.js**, and **WebSockets**.",
+    "Implemented a **WebSocket router** that cleanly separates HTTP and real‑time traffic.",
+    "Designed service controllers under `src/services` to handle collaboration logic and command validation.",
+    "Integrated **Gemini AI** inference runtime for on‑the‑fly code suggestions.",
+    "Established **type‑safe message schemas** with `TypeScript` across client‑server boundaries.",
+    "Configured **origin validation** and **rate limiting** as security guardrails for WebSocket connections.",
+    "Set up **Vitest/Jest** testing framework for unit, integration, and snapshot tests.",
+    "Created a **Docker** development environment for reproducible builds and CI pipelines.",
+    "Generated dynamic architecture diagrams via the `ai-synthesizer` utility.",
+    "Documented the system with rich Markdown descriptions and code snippets.",
+    "Implemented **Next.js** server‑side rendering for initial page load performance.",
+    "Provided extensible hooks for future AI provider swaps or database integration.",
+    "Ensured **continuous integration** with Docker‑based CI workflows.",
+    "Architected a real‑time collaborative editing platform using React, Next.js, and WebSockets",
+    "Implemented a layered architecture separating presentation, routing, service logic, and AI inference",
+    "Developed a WebSocket Binary Frame Handler for low‑latency bidirectional communication",
+    "Integrated Gemini AI for on‑the‑fly code suggestion and completion capabilities",
+    "Created a dynamic API router that distinguishes between HTTP and WebSocket traffic",
+    "Designed service controllers to manage session state, edit broadcasting, and AI invocation",
+    "Established TypeScript‑strict typing across the entire codebase for safety and maintainability",
+    "Configured Vitest/Jest testing framework for unit and integration tests",
+    "Implemented input validation and isolation for AI inference to enhance security",
+    "Prepared the inference tier for future persistence layer integration without code churn",
+    "Documented architectural decisions and module boundaries for developer onboarding",
+    "Optimized build pipeline with TypeScript compilation and source‑map generation",
+    "Set up modular code generation utilities for automated diagram synthesis",
+    "Architected a layered, event‑driven system separating presentation, routing, service logic, and AI inference.",
+    "Implemented a WebSocket gateway that upgrades HTTP requests and routes messages to service handlers.",
+    "Designed a modular service layer with clear TypeScript interfaces for session and code editing logic.",
+    "Integrated Gemini AI for real‑time code suggestion and refactoring capabilities.",
+    "Established JWT‑based authentication for secure WebSocket connections.",
+    "Created a TypeScript‑first codebase with strict linting and comprehensive unit tests using Vitest/Jest.",
+    "Configured Next.js for server‑side rendering and client‑side hydration to optimize performance.",
+    "Abstracted AI inference behind a thin wrapper to enable future model swaps or multi‑provider support.",
+    "Implemented message sanitization and validation to protect the inference engine from injection attacks.",
+    "Set up a Vite build pipeline with hot‑module replacement for rapid development cycles.",
+    "Documented a clear module discovery pattern for service discovery and future scalability.",
+    "Provided a sandboxed runtime environment for AI inference to isolate resource usage.",
+    "Ensured type safety across client‑server boundaries with shared TypeScript definitions.",
+    "Prepared the codebase for containerization by adhering to twelve‑factor app principles."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (WebSockets)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n InferenceEngine[\"AI/ML Model Inference Runtime (Gemini AI)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> InferenceEngine\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"Gemini AI\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/Aftercode",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Real‑time collaborative editing via **WebSockets**.",
+    "AI‑powered code suggestions using **Gemini AI**.",
+    "Modular service controllers for clean business logic separation.",
+    "Typed message contracts enforced by `TypeScript`.",
+    "Secure WebSocket handling with origin checks and rate limiting.",
+    "Server‑side rendering with **Next.js** for SEO and fast first paint.",
+    "Comprehensive test suite using **Vitest/Jest**.",
+    "Docker‑based development and CI environment.",
+    "Dynamic architecture diagram generation.",
+    "Extensible architecture allowing future database or AI provider integration.",
+    "Responsive React/Next.js UI with server‑side rendering support",
+    "Persistent WebSocket connections for real‑time collaboration",
+    "AI‑driven code suggestions powered by Gemini AI",
+    "Dynamic routing layer handling both HTTP and WebSocket endpoints",
+    "Modular service controllers for session and edit management",
+    "TypeScript‑enforced type safety across front‑end and back‑end",
+    "Comprehensive test suite using Vitest/Jest",
+    "Extensible inference engine ready for additional AI models",
+    "Prepared architecture for future database integration",
+    "Clear separation of concerns via layered design",
+    "Real‑time collaborative code editing via WebSockets.",
+    "AI‑powered code suggestions powered by Gemini AI.",
+    "Modular service architecture for easy extension.",
+    "Secure JWT authentication for WebSocket connections.",
+    "Server‑side rendering with Next.js for fast initial loads.",
+    "TypeScript‑strict typing across the entire stack.",
+    "Comprehensive unit and integration testing with Vitest/Jest.",
+    "Pluggable AI inference layer supporting future model providers."
+  ],
+  "challenges": [
+    "Balancing low‑latency WebSocket communication with the overhead of AI inference calls.",
+    "Ensuring thread‑safe handling of concurrent editing sessions without a shared database.",
+    "Designing a generic message protocol that can evolve as new features are added.",
+    "Mitigating security risks associated with executing user‑generated prompts in the AI model.",
+    "Maintaining type safety while dynamically loading service modules."
+  ],
+  "learnings": [
+    "Typed `WebSocket` payloads dramatically reduce runtime errors and simplify debugging.",
+    "Separating routing logic from service controllers improves maintainability and testability.",
+    "Integrating external AI services requires careful handling of latency and fallback strategies.",
+    "Dockerizing the development environment ensures consistent builds across CI/CD pipelines.",
+    "Comprehensive unit and integration tests are essential for real‑time systems where bugs are hard to reproduce.",
+    "Layered architectures simplify scaling individual tiers (e.g., adding more WebSocket workers)",
+    "Strict TypeScript typings catch integration errors early in a real‑time system",
+    "AI inference latency can be mitigated by caching frequent suggestions",
+    "Comprehensive input validation is critical when exposing AI services to untrusted data",
+    "Automated diagram synthesis tools aid documentation and stakeholder communication",
+    "Early separation of concerns simplifies scaling individual tiers later.",
+    "WebSocket back‑pressure handling is critical for maintaining responsiveness under load.",
+    "Strict TypeScript contracts prevent runtime mismatches between client and server messages.",
+    "Sanitizing AI prompts reduces the attack surface for injection vulnerabilities.",
+    "Modular AI wrappers enable rapid experimentation with different providers."
+  ],
+  "architectureOverview": "Frontend built with React, Next.js. Backend API powered by WebSockets. AI/ML capabilities powered by Gemini AI.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, Next.js) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Gemini AI) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Service layer delegates task to ML runtime or LLM API worker",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/api/projects",
+      "description": "Fetches list of analyzed repositories and portfolio JSON metadata payloads."
+    },
+    {
+      "method": "POST",
+      "path": "/api/video/script/[slug]",
+      "description": "Synthesizes multi-scene Remotion video script using AI Hub providers."
+    },
+    {
+      "method": "POST",
+      "path": "/api/video/assets/[slug]",
+      "description": "Mines visual assets, SVG icons, flowcharts, and diagrams from Napkin AI, Iconify, and Wikimedia."
+    },
+    {
+      "method": "POST",
+      "path": "/api/video/render/[slug]",
+      "description": "Normalizes canvas assets with FFmpeg and triggers Remotion MP4 video render."
+    },
+    {
+      "method": "GET",
+      "path": "/api/mcp/status",
+      "description": "Queries status of system MCP servers, tool schemas, and pipeline execution health."
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Apps",
+      "path": "apps",
+      "description": "Module component managing apps source logic"
+    },
+    {
+      "name": "App",
+      "path": "apps/web/app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Api",
+      "path": "apps/web/app/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Components",
+      "path": "apps/web/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Packages",
+      "path": "packages",
+      "description": "Module component managing packages source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Server",
+      "path": "src/server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Tests",
+      "path": "tests",
+      "description": "Module component managing tests source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Introduce persistent session storage to enable crash recovery and multi‑device sync.",
+    "Add support for additional AI providers and model versioning.",
+    "Implement rate‑limiting and usage quotas for AI inference to control costs.",
+    "Containerize the application with Docker and provide Helm charts for Kubernetes deployment.",
+    "Expand the API layer with GraphQL for flexible data queries.",
+    "Integrate real‑time presence indicators and collaborative cursors.",
+    "Develop a plugin system allowing third‑party extensions to the service tier.",
+    "Add end‑to‑end encryption for WebSocket payloads to enhance privacy."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "Aftercode - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into Aftercode. Section 1 System Topology: Engineered with TypeScript, JavaScript, combining a decoupled backend powered by WebSockets and client interface built with React, Next.js. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Apps, App, Api, Components. Section 5 Intelligence & Persistence: AI inference accelerated by Gemini AI with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash Aftercode.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "Aftercode",
+        "subheading": "Production-Grade TypeScript, JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of Aftercode, built with TypeScript, JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript",
+          "JavaScript",
+          "React",
+          "Next.js"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "WebSockets API • React, Next.js UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "WebSockets"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Apps • App • Api • Components",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Apps",
+          "App",
+          "Api",
+          "Components"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Gemini AI • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "Gemini AI"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core Aftercode functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "Vitest/Jest"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/Aftercode",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"AftercodeShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'Aftercode',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Aftercode</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript, JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>WebSockets API • React, Next.js UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Apps • App • Api • Components</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Gemini AI • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core Aftercode functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/Aftercode</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "Aftercode",
+    "url": "https://github.com/Sameer-Bagul/Aftercode",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T07:01:17.136Z",
+    "lastAnalyzedAt": "2026-09-22T07:01:17.136Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

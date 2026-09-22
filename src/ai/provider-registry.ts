@@ -48,8 +48,9 @@ export class AiProviderRegistry {
       });
 
       if (selectedProvider) {
-        console.log(` 🎯 [AiProviderRegistry] Using exclusively selected provider '${selectedProvider.name}'.`);
-        return [selectedProvider];
+        console.log(` 🎯 [AiProviderRegistry] Primary selected provider '${selectedProvider.name}' prioritized with automatic fallback active.`);
+        const remaining = available.filter((p) => p !== selectedProvider);
+        return [selectedProvider, ...remaining];
       }
     }
 

@@ -45,7 +45,11 @@ export async function runRagMultiPassSynthesis(
   console.log(` 🎯 [RAG Retriever] Retrived ${topChunks.length} top-ranked Hybrid RAG code chunks for synthesis.`);
 
   if (process.env.ENABLE_AI_LLM_SYNTHESIS !== 'false') {
-    return await executeMultiProviderRagSynthesis(evidence, topChunks);
+    try {
+      return await executeMultiProviderRagSynthesis(evidence, topChunks);
+    } catch (err: any) {
+      console.warn(` ⚠️ [RAG Synthesis] Multi-provider AI synthesis failed (${err.message}). Falling back gracefully to Heuristic RAG Synthesis...`);
+    }
   }
 
   return executeHeuristicRagSynthesis(evidence, topChunks);
