@@ -1,0 +1,778 @@
+{
+  "_id": "fuse-hackathon-autonomous-ai-learning-system-id",
+  "title": "Fuse Hackathon Autonomous AI Learning System",
+  "slug": "fuse-hackathon-autonomous-ai-learning-system",
+  "shortDescription": "MindMatrix — Autonomous Multi-Objective Curriculum Learning Engine > \"The best way to learn is to teach\" - An AI system that teaches itself through automated curriculum learning, v...",
+  "description": "**Fuse‑Hackathon Autonomous AI Learning System** is a **FastAPI‑based** backend that orchestrates an autonomous learning loop for large language models. It follows a clean **Model‑View‑Controller (MVC)** pattern with distinct *controllers*, *services*, and *models*, and leverages **dependency injection**, the **repository pattern**, and **factory pattern** to keep components loosely coupled. The stack combines **Python** (`FastAPI`, `asyncio`, `numpy`, `PyTorch`), **TypeScript/React** on the frontend, and a suite of internal services such as `LearningLoopService`, `MetaLearningService`, `HallucinationService`, and `PersistenceService` to provide end‑to‑end curriculum generation, task scheduling, evaluation, feedback integration, and distributed state management.",
+  "longDescription": "The system is anchored by a **FastAPI** entry point (`server‑ml/app.py`) that wires together controllers like `PromptController`, `FeedbackController`, and `PersistenceController` with their corresponding services. Each controller exposes a rich set of REST endpoints (e.g., `/prompt/handle`, `/learning/start`, `/feedback/submit`, `/persistence/backup`) that are documented in the repository’s README files. *Models* such as `LLM`, `Prompt`, `CurriculumTree`, and `HallucinationMetrics` encapsulate data structures and business rules, while *services* implement the core logic for learning loops, meta‑learning adaptation, hallucination detection, and reward calculation.\n\nData ingestion begins with a user prompt handled by `PromptController`, which validates input, logs the request, and forwards it to `LearningLoopService`. The service interacts with `TaskGenerator` and `CurriculumGenerator` to produce a curriculum, then schedules tasks via `Scheduler`. Throughout execution, `AnalyticsService` and `VisualizationService` collect metrics that are exposed via `/analytics/*` and `/visualize/*` endpoints. Persistence is managed by `PersistenceService` using versioned state objects, supporting backup, restore, and distributed sync operations.\n\nSecurity guardrails are enforced through a middleware chain (request logging, security logging, rate limiting, JWT authentication, and Joi‑style validation) as described in `API_DOCUMENTATION.md`. This ensures that only sanitized, authenticated requests reach the ML backend, and that operational metrics are captured for monitoring. The architecture is designed for **scalability**: services can be horizontally scaled, and the distributed persistence layer allows state replication across multiple nodes.\n\nThe build topology uses a **frontend (React/TypeScript)** that proxies API calls through an Express server to the **Python FastAPI** backend. Development scripts (`pip install -r requirements.txt`, `python app.py`) and containerization hints are implied, enabling rapid iteration and deployment in a cloud or on‑prem environment.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "FastAPI"
+    ],
+    "database": [],
+    "aiMl": [
+      "PyTorch"
+    ],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented a full MVC architecture separating concerns across controllers, services, and models",
+    "Developed `LearningLoopService` to manage autonomous curriculum generation and task scheduling",
+    "Integrated `MetaLearningService` for adaptive strategy selection based on performance metrics",
+    "Created `HallucinationService` with configurable detection thresholds and risk distribution reporting",
+    "Built `PersistenceService` supporting versioned state, backup/restore, and distributed sync",
+    "Designed comprehensive REST API surface covering prompts, learning loop control, analytics, feedback, and persistence",
+    "Added middleware chain for logging, security, rate limiting, and JWT authentication",
+    "Implemented visualization endpoints delivering Chart.js compatible data and progress reports",
+    "Provided extensive documentation in README files outlining endpoints, data flow, and architectural patterns",
+    "Wrote utility modules for configuration loading and structured logging",
+    "Established dependency injection pattern for easy swapping of services and external LLM providers"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (FastAPI)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (server-ml/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n InferenceEngine[\"AI/ML Model Inference Runtime (PyTorch)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> InferenceEngine\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"PyTorch\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /prompt/handle (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/Fuse-Hackathon-Autonomous-AI-Learning-System",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "RESTful FastAPI endpoints for prompt handling, learning loop control, evaluation, scheduling, meta‑learning, external LLM management, analytics, visualization, feedback, and persistence",
+    "Asynchronous learning loop with curriculum generation, task prioritization, and progress tracking",
+    "Meta‑learning adaptation that selects optimal learning strategies in real time",
+    "Hallucination detection service with configurable metrics and risk distribution visualizations",
+    "Distributed persistence layer with versioning, backup/restore, and sync capabilities",
+    "Comprehensive analytics dashboard exposing skill gaps, bottlenecks, predictions, and health metrics",
+    "Feedback loop allowing users to submit corrections, rate responses, and generate error reports",
+    "Visualization service providing Chart.js data and customizable learning progress reports",
+    "Security middleware stack with request logging, JWT authentication, input validation, and rate limiting",
+    "Extensible external LLM integration supporting model switching, cost tracking, and performance comparison"
+  ],
+  "challenges": [
+    "Balancing real‑time responsiveness of the learning loop with heavy ML computation required careful async design and thread management",
+    "Designing a generic curriculum generation framework that can accommodate diverse task types without over‑engineering",
+    "Ensuring data consistency across distributed persistence nodes while maintaining low latency for state reads/writes",
+    "Implementing robust hallucination detection without incurring excessive false positives, requiring fine‑tuned thresholds",
+    "Providing a unified API surface that remains stable despite rapid iteration on underlying ML models and services"
+  ],
+  "learnings": [
+    "Effective use of dependency injection in FastAPI simplifies testing and service swapping",
+    "Asyncio combined with threading can mitigate GIL limitations for CPU‑bound ML tasks",
+    "Versioned persistence combined with distributed sync offers resilience against node failures",
+    "Middleware ordering is critical; placing authentication before heavy validation reduces unnecessary processing",
+    "Clear separation of concerns via MVC improves maintainability, especially in a research‑heavy codebase"
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by FastAPI. AI/ML capabilities powered by PyTorch.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Payload processed through AI/ML pipeline or local inference model"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Service layer delegates task to ML runtime or LLM API worker",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/prompt/handle",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/prompt/metrics",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/evaluate",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/schedule",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/visualize/chartjs",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/visualize/learning_progress",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/visualize/generate_report",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/prompt/process",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/learning/start",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/learning/stop",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/learning/progress",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/learning/config",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/learning/autonomous/start",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/learning/autonomous/stop",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/learning/autonomous/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/prompt/history",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/learning/history",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/rewards/configure",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/rewards/metrics",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/rewards/breakdown",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/rewards/history",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/rewards/weights",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/rewards/weights",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/metrics/interactions",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/evaluate/multi",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/hallucination/check",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/hallucination/metrics",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/hallucination/configure",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/hallucination/trends",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/hallucination/detections",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/hallucination/risk-distribution",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/skills",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/curriculum/adjust",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/progress",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/curriculum/reset",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/gaps",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/recommendations",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/meta/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/meta/performance",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/meta/adapt",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/meta/strategies",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/meta/strategy",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/llm/switch",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/llm/models",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/llm/costs",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/llm/compare",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/llm/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/dashboard",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/skill-gaps",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/bottlenecks",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/predictions",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/insights",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/health",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/save",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/load",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/persistence/versions",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/export",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/import",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/rollback",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/backup",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/restore",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/persistence/distributed/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/distributed/sync",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/persistence/reset",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/feedback/submit",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/feedback/history",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/feedback/correct",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/feedback/preferences",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/feedback/rate",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/feedback/analytics",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/feedback/insights",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/feedback/error-report",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/curriculum/start",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/task",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/curriculum/process",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/curriculum/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/curriculum/stop",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/rl/start",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "POST",
+      "path": "/rl/stop",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/rl/status",
+      "description": "Endpoint defined in server-ml/app.py"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in server-ml/app.py"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Docs",
+      "path": "server-ml/docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Frontend",
+      "path": "frontend",
+      "description": "Module component managing frontend source logic"
+    },
+    {
+      "name": "Src",
+      "path": "frontend/src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "frontend/src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "frontend/src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "frontend/src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "frontend/src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "frontend/src/pages",
+      "description": "Module component managing pages source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server-ml/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server-ml/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Services",
+      "path": "server-ml/services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Tests",
+      "path": "server-ml/tests",
+      "description": "Module component managing tests source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "server-ml/utils",
+      "description": "Module component managing utils source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add container orchestration (Docker/Kubernetes) for automated scaling of the FastAPI and external LLM services",
+    "Implement a GraphQL gateway to complement existing REST endpoints for flexible client queries",
+    "Introduce automated CI/CD pipelines with unit, integration, and performance testing for rapid releases",
+    "Enhance hallucination service with LLM‑based self‑critique and corrective generation",
+    "Expand analytics with real‑time streaming dashboards using WebSocket or Server‑Sent Events"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "Fuse-Hackathon-Autonomous-AI-Learning-System - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into Fuse-Hackathon-Autonomous-AI-Learning-System. Section 1 System Topology: Engineered with JavaScript, TypeScript, Python, combining a decoupled backend powered by FastAPI and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 82 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Docs, Frontend, Src, Components. Section 5 Intelligence & Persistence: AI inference accelerated by PyTorch with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash Fuse-Hackathon-Autonomous-AI-Learning-System.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "Fuse-Hackathon-Autonomous-AI-Learning-System",
+        "subheading": "Production-Grade JavaScript, TypeScript, Python Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of Fuse-Hackathon-Autonomous-AI-Learning-System, built with JavaScript, TypeScript, Python.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "Python",
+          "React"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "FastAPI API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "FastAPI"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "82 REST/WebSocket API Endpoints",
+        "subheading": "POST /prompt/handle | GET /prompt/metrics | POST /evaluate",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "POST",
+          "GET",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Docs • Frontend • Src • Components",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Docs",
+          "Frontend",
+          "Src",
+          "Components"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "PyTorch • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "PyTorch"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core Fuse-Hackathon-Autonomous-AI-Learning-System functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/Fuse-Hackathon-Autonomous-AI-Learning-System",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"FuseHackathonAutonomousAILearningSystemShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'Fuse-Hackathon-Autonomous-AI-Learning-System',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Fuse-Hackathon-Autonomous-AI-Learning-System</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript, Python Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>FastAPI API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>82 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>POST /prompt/handle | GET /prompt/metrics | POST /evaluate</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Docs • Frontend • Src • Components</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>PyTorch • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core Fuse-Hackathon-Autonomous-AI-Learning-System functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/Fuse-Hackathon-Autonomous-AI-Learning-System</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "Fuse-Hackathon-Autonomous-AI-Learning-System",
+    "url": "https://github.com/Sameer-Bagul/Fuse-Hackathon-Autonomous-AI-Learning-System",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T15:51:42.150Z",
+    "lastAnalyzedAt": "2026-09-22T15:51:42.150Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

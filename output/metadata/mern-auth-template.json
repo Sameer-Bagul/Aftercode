@@ -1,0 +1,399 @@
+{
+  "_id": "mern-auth-template-id",
+  "title": "Mern Auth Template",
+  "slug": "mern-auth-template",
+  "shortDescription": "React + Vite This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules. Currently, two official plugins are available: - @vitejs/plugin-rea...",
+  "description": "**MERN Auth Template** is a full‑stack starter kit that provides a secure user authentication flow and a protected dashboard. It follows a **RESTful** architecture with a **Node.js/Express** backend, **MongoDB** for persistence, and a **React** frontend styled with **TailwindCSS**. Core services such as JWT‑based session handling, password hashing with `bcrypt`, email verification via `nodemailer`, and rate‑limited endpoints are wired together to deliver a production‑ready authentication layer.",
+  "longDescription": "**Core System Architecture**\nThe application is split into two independent runtimes: a `backend` folder exposing an Express.js API on `http://localhost:5000/api` and a `frontend` folder serving a React SPA on `http://localhost:3000`. The backend uses **Mongoose** models to interact with MongoDB, while the frontend consumes the API through **Axios** calls wrapped in a Context API for global auth state.\n\n*Data Ingestion & Persistence*\nUser registration triggers a controller that validates input, hashes the password with `bcrypt`, stores the user document, and sends a verification email via **Nodemailer**. Password reset flows generate a one‑time OTP stored temporarily in the user record and emailed to the user. All mutable operations are protected by **rate limiting** and **Helmet** headers to mitigate abuse.\n\n*Execution Flow*\nAuthentication routes (`/register`, `/login`, `/logout`, `/send-verify-otp`, `/verify-account`, `/reset-password`) are defined in `server/routes/authRoutes.js` and guarded by the `userAuth` middleware where needed. After successful login, a JWT is issued and stored in an HTTP‑only cookie, enabling the protected `/profile` and `/data` endpoints to verify the user via the `isAuthenticated` controller.\n\n*Security Guardrails*\nThe stack employs **input sanitization**, **Joi** schema validation (as referenced in project learnings), **rate limiting**, and **Helmet** for HTTP security headers. Tokens are kept in HTTP‑only cookies to prevent XSS, and all password handling uses salted hashing. Email verification and OTP checks add an extra layer of identity assurance.\n\n*Build & Deployment Topology*\nDevelopment scripts run the backend with `npm run dev` (nodemon) and the frontend with `npm start` (Vite). Environment variables are managed via `.env` files in each folder, separating concerns for database URIs, JWT secrets, SMTP credentials, and client URLs. The codebase is linted with **ESLint** to enforce code quality across both sides.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "Express"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented JWT‑based authentication with HTTP‑only cookies",
+    "Integrated Nodemailer for email verification and OTP delivery",
+    "Added rate limiting and Helmet security headers to protect API endpoints",
+    "Created reusable Express middleware (`userAuth`) for protected routes",
+    "Designed Mongoose schemas with validation and indexing for user data",
+    "Built React Context for global auth state management",
+    "Implemented Axios interceptor for automatic token handling",
+    "Developed responsive UI using TailwindCSS and React Router",
+    "Added input sanitization and Joi schema validation on all incoming requests",
+    "Configured environment variable management for both frontend and backend"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /register (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/mern-auth-template",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "User registration with email verification",
+    "Login with JWT token stored in HTTP‑only cookie",
+    "Password reset workflow with OTP verification",
+    "Protected dashboard accessible only to authenticated users",
+    "Rate‑limited API endpoints to prevent brute‑force attacks",
+    "Input validation and sanitization using Joi and custom middleware",
+    "Secure HTTP headers via Helmet",
+    "Rich text editing support with Tiptap (sanitized storage)",
+    "Drag‑and‑drop ordering of items using dnd‑kit",
+    "Responsive design powered by TailwindCSS"
+  ],
+  "challenges": [
+    "Balancing security (rate limiting, Helmet) with developer ergonomics during local testing",
+    "Ensuring OTP race conditions are handled when multiple reset requests occur",
+    "Managing JWT expiration and refresh without exposing tokens to XSS",
+    "Synchronizing drag‑and‑drop UI state with MongoDB sequence indices in real time",
+    "Preventing XSS while storing rich HTML content from Tiptap"
+  ],
+  "learnings": [
+    "Deepened understanding of JWT lifecycle and secure cookie practices",
+    "Mastered email workflow integration with Nodemailer and SMTP configuration",
+    "Improved backend validation using Joi schemas before Mongoose persistence",
+    "Handled complex UI state synchronization for drag‑and‑drop operations",
+    "Applied Helmet and rate limiting effectively to harden Express APIs"
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by Express. Persistence managed by MongoDB.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/register",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/send-verify-otp",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/verify-account",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/is-auth",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/send-reset-otp",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/reset-password",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/data",
+      "description": "Endpoint defined in server/routes/userRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in server/server.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Client",
+      "path": "client",
+      "description": "Module component managing client source logic"
+    },
+    {
+      "name": "Src",
+      "path": "client/src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "client/src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "client/src/pages",
+      "description": "Module component managing pages source logic"
+    },
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Config",
+      "path": "server/config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Middleware",
+      "path": "server/middleware",
+      "description": "Module component managing middleware source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/routes",
+      "description": "Module component managing routes source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add refresh token mechanism to extend session longevity securely",
+    "Implement role‑based access control (RBAC) for admin vs regular users",
+    "Migrate environment configuration to a centralized secrets manager",
+    "Introduce automated integration tests for auth flows using Jest and Supertest",
+    "Containerize the application with Docker and set up CI/CD pipelines for seamless deployment"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "mern-auth-template - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into mern-auth-template. Section 1 System Topology: Engineered with JavaScript, combining a decoupled backend powered by Express and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 10 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Client, Src, Components, Pages. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash mern-auth-template.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "mern-auth-template",
+        "subheading": "Production-Grade JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of mern-auth-template, built with JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Express API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "10 REST/WebSocket API Endpoints",
+        "subheading": "POST /register | POST /login | POST /logout",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "POST",
+          "POST",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Client • Src • Components • Pages",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Client",
+          "Src",
+          "Components",
+          "Pages"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core mern-auth-template functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/mern-auth-template",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"mernauthtemplateShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'mern-auth-template',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>mern-auth-template</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Express API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>10 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>POST /register | POST /login | POST /logout</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Client • Src • Components • Pages</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core mern-auth-template functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/mern-auth-template</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "mern-auth-template",
+    "url": "https://github.com/Sameer-Bagul/mern-auth-template",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T11:55:39.397Z",
+    "lastAnalyzedAt": "2026-09-22T11:55:39.397Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

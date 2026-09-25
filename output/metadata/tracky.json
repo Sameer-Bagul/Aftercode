@@ -1,0 +1,311 @@
+{
+  "_id": "tracky-id",
+  "title": "Tracky",
+  "slug": "tracky",
+  "shortDescription": "Tracky Printables ️ A precision-engineered, printer-ready consistency tracker. Tracky is a beautifully designed, minimalist goal-tracking web application built with Next.js. It foc...",
+  "description": "The **Portfolio CMS Admin Panel** is a desktop‑first content management system that centralizes creation and maintenance of a personal portfolio website. It bridges a `Vite`/`React 18` frontend with an `Express`/`MongoDB` backend, all packaged via `Electron` for native Windows and Linux installations. The stack leverages **TypeScript**, **Tailwind CSS**, **Shadcn UI**, **Tiptap**, and **dnd-kit** on the client side, while the server employs **Node.js**, **JWT**, **Bcrypt**, **Joi**, **Helmet**, and **CORS** to ensure secure, validated API interactions.",
+  "longDescription": "The system follows a **modular monolith** architecture where the frontend and backend are developed in separate repositories but tightly coupled through a well‑defined REST API. The **frontend** is a single‑page application built with `React 18` and `React Router`, using `Tanstack Query` for data fetching and caching. Rich text content is edited via **Tiptap**, sanitized, and persisted to MongoDB through the backend. Drag‑and‑drop ordering of items such as projects and skills is powered by **dnd-kit**, with state synchronization logic that updates sequence indices in the database in real time, handling rapid successive sorts.\n\n*Data ingestion* occurs through Express routes protected by **JWT** authentication and rate‑limited via custom middleware. Incoming payloads are validated against **Joi** schemas before being mapped to **Mongoose** models, guaranteeing data integrity. The backend also implements **Helmet** headers and CORS policies to mitigate common web vulnerabilities. All API responses are typed using **Zod** schemas on the client to enforce contract safety.\n\nThe **build topology** utilizes `Vite` for fast hot‑module replacement during development and `Electron Builder` to produce cross‑platform installers. Linting and formatting are enforced with **ESLint** and **Prettier**, while `nodemon` watches server files for automatic restarts. The application stores configuration and user preferences locally via Electron's IPC mechanisms, ensuring a seamless offline experience that syncs when connectivity is restored.\n\nSecurity guardrails include **bcrypt** password hashing, **JWT** token expiration, and per‑endpoint rate limiting. Database backups are scripted within the backend utilities, allowing administrators to export collections on demand. The overall design emphasizes **accessibility**, **dark‑mode aesthetics**, and **extensibility**, making it a robust foundation for personal branding and content publishing.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Architected and implemented the full‑stack CMS, integrating a Vite/React frontend with an Express/MongoDB backend.",
+    "Integrated Electron to package the dashboard as a cross‑platform desktop application for Windows and Linux.",
+    "Designed and implemented a secure authentication system using JWT, bcrypt hashing, and per‑endpoint rate limiting.",
+    "Implemented rich‑text editing with Tiptap, including sanitization pipelines to prevent XSS before persisting to MongoDB.",
+    "Developed drag‑and‑drop reordering using dnd-kit with state synchronization that updates database sequence indices atomically.",
+    "Created comprehensive Joi validation schemas for all API payloads, enforcing strict data contracts before Mongoose model interaction.",
+    "Configured Helmet and CORS middleware to harden the API against common web vulnerabilities.",
+    "Built a modular UI library using Shadcn UI primitives and Tailwind CSS, achieving a cohesive dark‑mode design system.",
+    "Implemented automated database backup scripts and integrated them with Electron IPC for user‑initiated exports.",
+    "Set up React Query and Zod for typed data fetching and client‑side validation, reducing runtime errors.",
+    "Established ESLint and Prettier configurations to maintain code quality across the monorepo.",
+    "Optimized build performance with Vite's fast bundling and hot‑module replacement for rapid development cycles.",
+    "Implemented real‑time form validation using React Hook Form combined with Zod schemas.",
+    "Added comprehensive logging and error handling middleware for improved observability."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/tracky",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Rich Text Data Persistence with XSS‑safe sanitization via Tiptap.",
+    "Drag‑and‑Drop Reordering of projects, skills, and testimonials using dnd-kit.",
+    "Secure JWT‑based authentication with bcrypt password hashing.",
+    "Rate limiting and Helmet security headers for API protection.",
+    "Cross‑Platform Desktop packaging via Electron and Electron Builder.",
+    "Dark‑Mode exclusive UI built with Shadcn UI and Tailwind CSS.",
+    "GitHub Integration for pulling repository statistics and contribution graphs.",
+    "Pinterest Integration for managing curated inspiration boards.",
+    "Message Inbox for receiving, reading, and archiving contact form submissions.",
+    "Testimonial Curation module for managing client endorsements.",
+    "Achievement Logging for tracking milestones, certifications, and awards.",
+    "Personal Info Hub centralizing social links, bio, and resume.",
+    "Database backup utilities for exporting MongoDB collections.",
+    "Real‑time form validation with React Hook Form and Zod."
+  ],
+  "challenges": [
+    "Balancing Electron's bundle size against native performance, requiring careful asset optimization.",
+    "Ensuring atomic updates during rapid drag‑and‑drop operations to prevent race conditions in sequence indices.",
+    "Sanitizing rich HTML content without stripping legitimate formatting, demanding a robust XSS mitigation strategy.",
+    "Maintaining strict type safety across the full stack while allowing rapid feature iteration.",
+    "Coordinating offline state persistence with eventual synchronization when the app regains connectivity."
+  ],
+  "learnings": [
+    "Deepened expertise in Electron IPC mechanisms and native packaging workflows.",
+    "Mastered integration of headless UI components (Shadcn/Radix) for fully customizable, accessible primitives.",
+    "Improved backend validation strategies using Joi schemas before data reaches Mongoose models.",
+    "Gained experience managing complex global state with React Query and React Hook Form.",
+    "Learned to implement effective API security measures including rate limiting, Helmet, and JWT best practices."
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**tracky** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, Next.js, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`App`, `Components`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, Next.js, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Entrypoint Invocation: Request enters network interface layer via `POST /api/analyze`.",
+    "Schema & Guardrail Verification: Middleware sanitizes payload parameters and checks rate-limiting limits.",
+    "Controller Dispatch: Router delegates validated object to `App` service controller.",
+    "Engine Execution & Storage Operations: Controller executes business logic, queries database models (Persistence), and invokes ML workers.",
+    "Response Serialization: Result model is formatted into standard JSON response frame and delivered with HTTP 200 OK."
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "App",
+      "path": "app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Components",
+      "path": "app/components",
+      "description": "Module component managing components source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add unit and integration test suites with Jest and React Testing Library for both frontend and backend.",
+    "Implement CI/CD pipelines using GitHub Actions to automate builds, tests, and releases.",
+    "Introduce multi‑user support with role‑based access control for collaborative content editing.",
+    "Migrate optional cloud deployment using Docker and Kubernetes for scalable hosting.",
+    "Develop a plugin system to allow third‑party extensions for additional integrations (e.g., LinkedIn, Medium).",
+    "Enhance performance monitoring with telemetry and profiling tools.",
+    "Add offline‑first capabilities with IndexedDB synchronization strategies.",
+    "Refactor backup system to support scheduled automated backups to cloud storage."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "tracky - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into tracky. Section 1 System Topology: Engineered with TypeScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, Next.js, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across App, Components. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash tracky.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "tracky",
+        "subheading": "Production-Grade TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of tracky, built with TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript",
+          "React",
+          "Next.js",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, Next.js, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "App • Components",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "App",
+          "Components"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core tracky functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/tracky",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"trackyShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'tracky',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>tracky</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, Next.js, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>App • Components</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core tracky functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/tracky</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "tracky",
+    "url": "https://github.com/Sameer-Bagul/tracky",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T13:06:31.809Z",
+    "lastAnalyzedAt": "2026-09-22T13:06:31.809Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

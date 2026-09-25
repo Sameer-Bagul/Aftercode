@@ -1,0 +1,326 @@
+{
+  "_id": "hydro-muse-id",
+  "title": "Hydro Muse",
+  "slug": "hydro-muse",
+  "shortDescription": "Welcome to your Lovable project Project info URL: https://lovable.dev/projects/3b02d3b6-57f3-44a6-8d78-b46073adae70 How can I edit this code? There are several ways of editing your...",
+  "description": "**Hydro‑Muse** is a full‑stack MERN authentication platform that provides secure user registration, login, email verification, OTP validation, and password‑reset flows. The architecture follows a classic *client‑server* model with a **React** frontend powered by Context API and **TailwindCSS**, and a **Node.js/Express** backend exposing `POST /api/auth/*` and `GET /api/auth/profile` endpoints. Data persistence is handled by **MongoDB** via **Mongoose**, while security relies on `bcrypt` password hashing, **JWT** tokens stored in HTTP‑only cookies, rate‑limiting middleware, and input sanitization.",
+  "longDescription": "The **frontend** is built with **React 18**, **TypeScript**, and **Vite**, leveraging the Context API for global auth state and **React Router** for navigation. Pages such as `SignIn`, `SignUp`, `ForgotPassword`, and a protected `Dashboard` are wrapped in route guards that check the presence of a valid JWT cookie before rendering. UI components are sourced from **Shadcn UI** and **Radix**, styled with **TailwindCSS**, and enhanced with **React‑Query** for data fetching and caching.\n\nThe **backend** runs on **Node.js** with **Express** and defines a RESTful authentication API under `/api/auth`. Core routes include `POST /api/auth/register`, `POST /api/auth/login`, `POST /api/auth/verify-email`, `POST /api/auth/forgot-password`, `POST /api/auth/reset-password`, `POST /api/auth/verify-otp`, and `GET /api/auth/profile`. Each request passes through middleware layers for **rate limiting**, **Helmet** security headers, **input validation**, and **JWT verification**. Passwords are salted and hashed with `bcrypt`, and email interactions (verification, OTP, password reset) are handled via **Nodemailer** configured with SMTP credentials.\n\nData flow starts with the client submitting JSON payloads to the Express routes. Validation schemas (e.g., using **Joi**) enforce strict typing before Mongoose models persist user records. Upon successful authentication, a signed JWT is issued and set as an HTTP‑only cookie, eliminating XSS exposure. Protected routes decode the token, attach the user context, and allow access to resources like the user profile endpoint. All sensitive operations are rate‑limited to mitigate brute‑force attacks.\n\nThe build topology uses **Vite** for fast frontend bundling and **npm scripts** for backend development (`npm run dev`). Environment variables (`.env`) configure the server port, MongoDB URI, JWT secret, and SMTP settings. Development is container‑agnostic but can be Dockerized for production, with the frontend served statically by the Express server or a dedicated CDN.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented full authentication REST API with registration, login, email verification, OTP, and password reset endpoints",
+    "Integrated `bcrypt` for secure password hashing and salting",
+    "Configured JWT generation, verification, and HTTP‑only cookie handling",
+    "Added rate‑limiting middleware to protect auth routes from brute‑force attacks",
+    "Set up Helmet headers and input sanitization to mitigate common web vulnerabilities",
+    "Developed React Context and custom hooks for auth state management across the SPA",
+    "Created protected route components that redirect unauthenticated users to the sign‑in page",
+    "Integrated Nodemailer with SMTP for email verification, OTP delivery, and password reset notifications",
+    "Wrote comprehensive validation schemas using Joi to enforce request payload integrity",
+    "Implemented React‑Query for efficient data fetching and cache invalidation on auth state changes",
+    "Styled the UI with TailwindCSS and Shadcn UI components for a responsive, accessible design",
+    "Configured Vite build pipeline for fast development and production bundling",
+    "Documented environment variable requirements and setup scripts for both frontend and backend",
+    "Established ESLint and TypeScript configurations to enforce code quality and type safety",
+    "Provided detailed README with installation, environment setup, and run instructions"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/hydro-muse",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Email & password based user registration and login",
+    "JWT based session management with HTTP‑only cookies",
+    "Password reset workflow with secure token generation",
+    "One‑time password (OTP) verification for added security",
+    "Email verification flow using unique token links",
+    "Rate limiting on all authentication endpoints",
+    "Input validation and sanitization using Joi schemas",
+    "Protected React routes that guard dashboard and user‑specific pages",
+    "Responsive UI built with React, TailwindCSS, and Shadcn UI components",
+    "Centralized auth state via React Context and custom hooks"
+  ],
+  "challenges": [
+    "Balancing security and user experience when implementing rate limiting without causing false positives",
+    "Ensuring JWT cookies are both secure and accessible across subdomains during development",
+    "Managing OTP expiration and replay protection without persisting excessive state",
+    "Preventing XSS and CSRF attacks while storing tokens in cookies",
+    "Coordinating environment variable management across frontend and backend to keep secrets out of source control"
+  ],
+  "learnings": [
+    "Deepened understanding of JWT lifecycle management and secure cookie attributes",
+    "Mastered rate‑limiting strategies using Express middleware and Redis (future integration)",
+    "Improved schema validation techniques with Joi to catch malformed requests early",
+    "Gained practical experience integrating Nodemailer for transactional email flows",
+    "Learned to structure a clean separation between frontend routing guards and backend auth middleware"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**hydro-muse** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Src`, `Components`, `Ui`, `Hooks`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Entrypoint Invocation: Request enters network interface layer via `POST /api/analyze`.",
+    "Schema & Guardrail Verification: Middleware sanitizes payload parameters and checks rate-limiting limits.",
+    "Controller Dispatch: Router delegates validated object to `Src` service controller.",
+    "Engine Execution & Storage Operations: Controller executes business logic, queries database models (Persistence), and invokes ML workers.",
+    "Response Serialization: Result model is formatted into standard JSON response frame and delivered with HTTP 200 OK."
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "src/pages",
+      "description": "Module component managing pages source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Migrate rate‑limiting store to Redis for distributed throttling across multiple server instances",
+    "Add refresh token rotation and revocation list to enhance session security",
+    "Implement multi‑factor authentication (MFA) using authenticator apps",
+    "Containerize the application with Docker Compose for streamlined deployment",
+    "Introduce automated end‑to‑end tests with Cypress to validate auth flows"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "hydro-muse - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into hydro-muse. Section 1 System Topology: Engineered with JavaScript, TypeScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Src, Components, Ui, Hooks. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash hydro-muse.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "hydro-muse",
+        "subheading": "Production-Grade JavaScript, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of hydro-muse, built with JavaScript, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Src • Components • Ui • Hooks",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Src",
+          "Components",
+          "Ui",
+          "Hooks"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core hydro-muse functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/hydro-muse",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"hydromuseShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'hydro-muse',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>hydro-muse</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Src • Components • Ui • Hooks</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core hydro-muse functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/hydro-muse</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "hydro-muse",
+    "url": "https://github.com/Sameer-Bagul/hydro-muse",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T11:56:24.359Z",
+    "lastAnalyzedAt": "2026-09-22T11:56:24.359Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

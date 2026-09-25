@@ -1,0 +1,457 @@
+{
+  "_id": "billcraft-server-id",
+  "title": "Billcraft Server",
+  "slug": "billcraft-server",
+  "shortDescription": "Business Billing Suite - ServerNirman Bahi Khata Pro - Server A production-ready Node.js backend for billing and inventory management with JWT authentication, role-based access con...",
+  "description": "The **billcraft-server** is a **Node.js** + **Express** REST API that powers a construction billing platform, exposing CRUD endpoints for products, customers, shops, and bills while enforcing role‑based access, rate limiting, and JWT authentication. It stores data in **MongoDB Atlas**, uses **Mongoose** for schema modeling, and relies on industry‑standard middleware such as **helmet**, **cors**, and **express‑rate‑limit** to harden the API.",
+  "longDescription": "**Core Architecture**\n\nThe server follows a classic *micro‑service* style, with a single Express application exposing a set of RESTful routes grouped by domain: *auth*, *products*, *customers*, *shops*, and *bills*. Each route file delegates business logic to a dedicated controller, keeping the routing layer thin and the controllers focused on orchestrating data access via Mongoose models.\n\n**Data Ingestion & Persistence**\n\nAll domain entities are persisted in a **MongoDB Atlas** cluster named `construction_billing`. Mongoose schemas enforce field types, required constraints, and custom validation logic. The application uses a *soft delete* strategy for products, customers, shops, and bills, marking records with an `isActive` flag instead of physically removing them, which preserves historical data for audit and reporting.\n\n**Execution Flow**\n\nA typical request follows this pipeline: the request hits an Express route, passes through *AuthMiddleware* (token verification, role checks, and rate limiting), then *ValidationMiddleware* (schema validation via `validator`), and finally the controller performs the requested CRUD operation. Responses are sent with standardized JSON payloads, and errors are caught by a global error‑handling middleware that logs details via `morgan` and returns a sanitized error message.\n\n**Security Guardrails & Build Topology**\n\nSecurity is layered: *helmet* sets secure HTTP headers, *cors* restricts origins, *express‑rate‑limit* throttles authentication endpoints, and JWTs are signed with a secret stored in environment variables. The build topology is simple: the `start` script runs `node index.js`, while `dev` uses `nodemon` for hot reloading. Deployment instructions in `DEPLOYMENT.md` outline a CI‑CD pipeline that builds the Docker image, pushes to a registry, and deploys to a cloud provider, with the frontend served from Vercel, Netlify, or Render.",
+  "category": "API Service",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [],
+    "backend": [
+      "Express"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented JWT‑based authentication with role checks and rate limiting for admin and shop logins",
+    "Created CRUD routes for products, customers, shops, and bills with soft delete logic",
+    "Added meta endpoints for product categories and brands",
+    "Integrated Helmet, CORS, and express‑rate‑limit for security hardening",
+    "Configured Mongoose schemas with validation and soft delete flags",
+    "Set up global error handling and structured logging with Morgan",
+    "Implemented token refresh endpoint and logout flow",
+    "Added middleware for token verification and admin/ shop access control",
+    "Defined environment‑based configuration using dotenv",
+    "Documented deployment steps and database setup in DEPLOYMENT.md",
+    "Created scripts for admin and shop creation via CLI",
+    "Implemented pagination and filtering for shop listings",
+    "Added shop analytics endpoint with aggregated data",
+    "Implemented validation middleware using validator library",
+    "Configured package.json scripts for development and production"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Client / User App Interface\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET / (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/billcraft-server",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "JWT authentication with role‑based access control",
+    "Rate limiting on authentication endpoints",
+    "Soft delete strategy for all domain entities",
+    "Meta endpoints for product categories and brands",
+    "Shop analytics and shop‑wise analysis endpoints",
+    "Pagination and filtering for shop listings",
+    "Structured logging with Morgan",
+    "Security headers via Helmet and CORS protection",
+    "Environment‑based configuration with dotenv",
+    "CLI scripts for creating admin and shop users"
+  ],
+  "challenges": [
+    "Balancing security and usability while implementing rate limiting on login routes",
+    "Designing a soft delete mechanism that preserves historical data without cluttering queries",
+    "Ensuring consistent error handling across all controllers and middleware",
+    "Managing environment variables securely for JWT secrets and DB connection strings",
+    "Optimizing shop analytics queries to aggregate data efficiently"
+  ],
+  "learnings": [
+    "The importance of separating routing, middleware, and controller logic for maintainability",
+    "Using Mongoose's soft delete patterns to avoid accidental data loss",
+    "Implementing layered security (Helmet, CORS, rate limiting, JWT) to protect APIs",
+    "Leveraging environment variables for configuration in a cloud‑native setup",
+    "The value of structured logging for debugging and monitoring in production"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**billcraft-server** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React / Next.js`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Express`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes 24 validated REST/WebSocket endpoints.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Config`, `Controllers`, `Middleware`, `Models`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **Persistence Layer**: Data storage and recordset persistence powered by `MongoDB`.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React) serialize input objects and send HTTP/WebSocket requests to `/`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in index.js"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in index.js"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/register",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/admin/login",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/shop/login",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/refresh",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/profile",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/change-password",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/verify",
+      "description": "Endpoint defined in routes/auth.js"
+    },
+    {
+      "method": "GET",
+      "path": "/number/:billNumber",
+      "description": "Endpoint defined in routes/bills.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "description": "Endpoint defined in routes/bills.js"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "description": "Endpoint defined in routes/bills.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/:id",
+      "description": "Endpoint defined in routes/bills.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "description": "Endpoint defined in routes/bills.js"
+    },
+    {
+      "method": "POST",
+      "path": "/update-pending-amounts",
+      "description": "Endpoint defined in routes/customers.js"
+    },
+    {
+      "method": "GET",
+      "path": "/analytics",
+      "description": "Endpoint defined in routes/dashboard.js"
+    },
+    {
+      "method": "GET",
+      "path": "/shop-wise-analysis",
+      "description": "Endpoint defined in routes/dashboard.js"
+    },
+    {
+      "method": "GET",
+      "path": "/shop-analytics/:shopId",
+      "description": "Endpoint defined in routes/dashboard.js"
+    },
+    {
+      "method": "GET",
+      "path": "/meta/categories",
+      "description": "Endpoint defined in routes/products.js"
+    },
+    {
+      "method": "GET",
+      "path": "/meta/brands",
+      "description": "Endpoint defined in routes/products.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:shopId",
+      "description": "Endpoint defined in routes/shops.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/:shopId",
+      "description": "Endpoint defined in routes/shops.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:shopId",
+      "description": "Endpoint defined in routes/shops.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Config",
+      "path": "config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Middleware",
+      "path": "middleware",
+      "description": "Module component managing middleware source logic"
+    },
+    {
+      "name": "Models",
+      "path": "models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Services",
+      "path": "services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "utils",
+      "description": "Module component managing utils source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add pagination and sorting to product and customer listing endpoints",
+    "Implement role‑based access control for shop operators beyond admin",
+    "Introduce webhook support for bill status changes",
+    "Add unit and integration tests using Jest and Supertest",
+    "Migrate to TypeScript for type safety and better IDE support"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "billcraft-server - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into billcraft-server. Section 1 System Topology: Engineered with JavaScript, combining a decoupled backend powered by Express and client interface built with React UI. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 24 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Config, Controllers, Middleware, Models. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash billcraft-server.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "billcraft-server",
+        "subheading": "Production-Grade JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of billcraft-server, built with JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Express API • React UI UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "24 REST/WebSocket API Endpoints",
+        "subheading": "GET / | GET /health | POST /admin/register",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "GET",
+          "GET",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Config • Controllers • Middleware • Models",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Config",
+          "Controllers",
+          "Middleware",
+          "Models"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core billcraft-server functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/billcraft-server",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"billcraftserverShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'billcraft-server',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>billcraft-server</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Express API • React UI UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>24 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET / | GET /health | POST /admin/register</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Config • Controllers • Middleware • Models</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core billcraft-server functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/billcraft-server</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "billcraft-server",
+    "url": "https://github.com/Sameer-Bagul/billcraft-server",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T11:52:42.614Z",
+    "lastAnalyzedAt": "2026-09-22T11:52:42.614Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

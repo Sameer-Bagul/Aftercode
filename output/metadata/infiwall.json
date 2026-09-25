@@ -1,0 +1,417 @@
+{
+  "_id": "infiwall-id",
+  "title": "Infiwall",
+  "slug": "infiwall",
+  "shortDescription": "Canvas Application - Backend Server Node.js/Express/MongoDB backend server with MVC architecture for the collaborative canvas application. Features - RESTful API with Express.js - ...",
+  "description": "**InfiWall** is a collaborative canvas platform that enables multiple users to create, edit, and share visual elements in real‑time. The system follows a classic **MVC** pattern on the backend with **Express** routing, **Mongoose** models, and **JWT**‑based authentication, while the frontend is built with **React**, **TypeScript**, and **TailwindCSS**. All API interactions are encapsulated in a lightweight `apiClient` that abstracts HTTP verbs and error handling, providing a clean contract between the UI and the `server/src` services.",
+  "longDescription": "The backend is organized under `server/src` with distinct layers: **controllers** contain business logic for users, canvases, and elements; **routes** expose RESTful endpoints guarded by the `protect` middleware that validates JWT tokens; **models** define MongoDB schemas for `User`, `Canvas`, and `Element`, each embedding references to enable relational‑like queries. *Data flow* starts at an HTTP request, passes through validation middleware (e.g., `validation.js`), reaches the controller, which interacts with Mongoose to persist or retrieve data, and finally returns a standardized JSON response.\n\nSecurity is enforced at multiple levels. The `auth.js` middleware verifies the `Authorization: Bearer <token>` header, while **Helmet**, **CORS**, and **bcryptjs** protect against common web vulnerabilities and ensure password hashing. Input validation using **express‑validator** prevents malformed payloads, and a global error‑handling middleware normalizes error responses.\n\nThe frontend leverages a modular component library (`src/components/ui`) and a typed API layer (`src/lib/api`). The `apiClient` provides `get`, `post`, `put`, `patch`, and `delete` methods that automatically serialize request bodies and parse responses into a unified `ApiResponse<T>` shape. Services such as `canvasService` consume these methods, translating raw API data into domain models used by React components.\n\nBuild and deployment are streamlined with **Vite** for fast development bundling and **ESLint** for code quality. The project is configured as an ES module (`\"type\": \"module\"`) and uses npm scripts for dev (`vite`), production builds, and linting. The repository is ready for containerization or serverless deployment, given its clear separation of concerns and stateless API design.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "Express"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented JWT authentication middleware (`protect`) to secure all API routes",
+    "Designed RESTful endpoints for user, canvas, and element resources following MVC conventions",
+    "Created Mongoose schemas for User, Canvas, and Element with proper references and timestamps",
+    "Added bulk element update capability via `PATCH /elements/bulk`",
+    "Integrated input validation middleware using `express-validator` for registration and login",
+    "Developed a reusable `apiClient` with standardized error handling for the React frontend",
+    "Wrote TypeScript service layer (`canvasService`) that abstracts API calls and response parsing",
+    "Implemented role‑based access checks for canvas collaborators in controller logic",
+    "Configured security headers with Helmet and enabled CORS with sensible defaults",
+    "Set up ESLint and Prettier for consistent code style across JavaScript and TypeScript files"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /id/collaborators (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/infiwall",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "User registration and login with hashed passwords",
+    "JWT‑protected routes for all CRUD operations",
+    "Canvas creation, retrieval, update, and deletion",
+    "Collaborator management on canvases",
+    "Element CRUD including position, rotation, and custom data",
+    "Bulk element updates to reduce network overhead",
+    "Typed API client with generic response handling",
+    "React UI components styled with TailwindCSS",
+    "Responsive carousel component with keyboard navigation",
+    "Comprehensive error handling middleware"
+  ],
+  "challenges": [
+    "Balancing schema flexibility for diverse element types against MongoDB document size limits",
+    "Ensuring atomicity of bulk updates without native transaction support in a sharded cluster",
+    "Managing JWT token expiration and refresh without a dedicated auth service",
+    "Preventing race conditions when multiple collaborators edit the same canvas simultaneously",
+    "Optimizing query performance for fetching large numbers of elements per canvas"
+  ],
+  "learnings": [
+    "Effective use of Mongoose population to resolve nested references efficiently",
+    "Designing middleware pipelines that cleanly separate authentication, validation, and error handling",
+    "Leveraging TypeScript generics to create a type‑safe API client layer",
+    "Implementing bulk operations with `updateMany` while handling partial failures",
+    "Applying security best practices (Helmet, CORS, bcrypt) in an Express environment"
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by Express. Persistence managed by MongoDB.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/:id/collaborators",
+      "description": "Endpoint defined in server/src/routes/canvasRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "description": "Endpoint defined in server/src/routes/elementRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/canvas/:canvasId",
+      "description": "Endpoint defined in server/src/routes/elementRoutes.js"
+    },
+    {
+      "method": "PATCH",
+      "path": "/bulk",
+      "description": "Endpoint defined in server/src/routes/elementRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/register",
+      "description": "Endpoint defined in server/src/routes/userRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "description": "Endpoint defined in server/src/routes/userRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/profile",
+      "description": "Endpoint defined in server/src/routes/userRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/profile",
+      "description": "Endpoint defined in server/src/routes/userRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in server/src/server.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Config",
+      "path": "server/src/config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server/src/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Middleware",
+      "path": "server/src/middleware",
+      "description": "Module component managing middleware source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server/src/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/src/routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Components",
+      "path": "src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Api",
+      "path": "src/lib/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "src/pages",
+      "description": "Module component managing pages source logic"
+    },
+    {
+      "name": "Types",
+      "path": "src/types",
+      "description": "Module component managing types source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Introduce WebSocket or Server‑Sent Events for real‑time element synchronization across collaborators",
+    "Add refresh token flow to extend JWT session lifetimes securely",
+    "Implement granular permission levels (owner, editor, viewer) for canvases",
+    "Migrate bulk update logic to MongoDB transactions when deploying to a replica set",
+    "Create automated integration tests for the full API stack using Jest and Supertest"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "infiwall - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into infiwall. Section 1 System Topology: Engineered with JavaScript, TypeScript, combining a decoupled backend powered by Express and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 9 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Server, Src, Config, Controllers. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash infiwall.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "infiwall",
+        "subheading": "Production-Grade JavaScript, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of infiwall, built with JavaScript, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Express API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "9 REST/WebSocket API Endpoints",
+        "subheading": "POST /:id/collaborators | POST / | GET /canvas/:canvasId",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "POST",
+          "POST",
+          "GET",
+          "PATCH"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Server • Src • Config • Controllers",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Server",
+          "Src",
+          "Config",
+          "Controllers"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core infiwall functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/infiwall",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"infiwallShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'infiwall',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>infiwall</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Express API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>9 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>POST /:id/collaborators | POST / | GET /canvas/:canvasId</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Server • Src • Config • Controllers</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core infiwall functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/infiwall</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "infiwall",
+    "url": "https://github.com/Sameer-Bagul/infiwall",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T15:52:01.828Z",
+    "lastAnalyzedAt": "2026-09-22T15:52:01.828Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

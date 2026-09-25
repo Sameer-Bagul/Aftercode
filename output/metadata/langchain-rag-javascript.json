@@ -1,0 +1,281 @@
+{
+  "_id": "langchain-rag-javascript-id",
+  "title": "LangChain RAG Javascript",
+  "slug": "langchain-rag-javascript",
+  "shortDescription": "Node.js RAG Masterclass: 15-Step Comprehensive Guide A complete, professional-grade learning path for building Retrieval-Augmented Generation (RAG) applications from scratch using ...",
+  "description": "**LangChain‑RAG‑Javascript** is a Node.js reference implementation that demonstrates a **retrieval‑augmented generation (RAG)** workflow for interrogating large PDF documents. The architecture follows a **modular pipeline** style – loading, chunking, embedding, vector storage, and LLM inference – built on **`langchain`**, **`Ollama`** local models (`llama3.1`, `nomic-embed-text`, `all‑minilm`) and **`ChromaDB`** for persistent vector storage. The codebase showcases how to swap components (e.g., in‑memory vs. external vector stores) while keeping the same high‑level abstractions, making it a solid learning and starter kit for production‑grade AI‑augmented applications.",
+  "longDescription": "The system begins with a **PDF loader** that reads the source document and passes the raw text to a **text splitter** (typically a recursive character splitter) which creates manageable chunks. *Each chunk is then transformed into a dense vector* by the **`OllamaEmbeddings`** wrapper around the `nomic-embed-text` or `all-minilm` models. These vectors are persisted in a **ChromaDB** collection (`embeddings-collection`) via the `Chroma` class from `@langchain/community/vectorstores/chroma`, decoupling storage from the Node.js process and enabling restart‑safe retrieval.\n\nAt query time, the user question is embedded with the same model, the most similar chunks are fetched from ChromaDB, and a **retrieval‑augmented generation chain** (`pdfQaChain`) invokes the `llama3.1` generation model hosted by Ollama. The chain returns a structured answer, optionally in a different language than the source, demonstrating multilingual capability.\n\nSecurity guardrails are implicit: the pipeline never sends raw documents to external APIs; all model inference runs locally via Ollama, reducing data leakage risk. Configuration values such as the ChromaDB URL (`http://localhost:8000`) and collection metadata (`\"hnsw:space\": \"cosine\"`) are hard‑coded for simplicity but can be externalized for production environments.\n\nThe build topology is straightforward: a single Node.js process orchestrates the pipeline, while **two Docker containers** run the **Ollama** service (model server) and **ChromaDB** (vector store). Dependency management is handled by `npm`, and the repository includes step‑by‑step scripts (`step-01.js` … `step-15.js`) that illustrate incremental enhancements, culminating in a self‑correcting RAG loop in chapter 15.",
+  "category": "System",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [],
+    "backend": [],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented a full PDF‑to‑RAG pipeline using LangChain.js and Ollama local models",
+    "Integrated `OllamaEmbeddings` for both `nomic-embed-text` and `all-minilm` embeddings",
+    "Added persistent vector storage with ChromaDB via the `Chroma` class",
+    "Created modular step‑by‑step scripts that illustrate incremental architectural improvements",
+    "Designed a multilingual query example demonstrating cross‑language retrieval",
+    "Abstracted vector store selection behind a `vectorStoreType` flag for easy swapping",
+    "Provided Docker compose snippets for running Ollama and ChromaDB side‑by‑side",
+    "Documented architectural decisions in markdown notes for each chapter",
+    "Implemented a reusable `PdfQA` class that encapsulates ingestion and retrieval logic",
+    "Added collection metadata (`hnsw:space: cosine`) to optimize similarity search",
+    "Ensured all model inference runs locally, reducing external data exposure",
+    "Wrote comprehensive README with runtime, framework, and model requirements",
+    "Created a reusable `pdfQaChain` that ties retriever and LLM into a single chain",
+    "Added example code for German language queries against English documentation",
+    "Provided clear installation and setup instructions for developers"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Client / User App Interface\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/LangChain-RAG-Javascript",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "End‑to‑end RAG pipeline for PDF documents",
+    "Local LLM inference with Ollama (`llama3.1`)",
+    "Two embedding models (`nomic-embed-text`, `all‑minilm`) selectable at runtime",
+    "Persistent vector storage using ChromaDB Docker container",
+    "Modular step‑by‑step scripts for learning and experimentation",
+    "Multilingual query support (e.g., German questions on English docs)",
+    "Configurable collection metadata for cosine similarity indexing",
+    "Simple `npm`‑based dependency management",
+    "Dockerized infrastructure for both LLM server and vector store",
+    "Prompt engineering handled by LangChain’s `RetrievalQAChain`"
+  ],
+  "challenges": [
+    "Balancing chunk size for optimal retrieval versus LLM context window limits",
+    "Choosing between in‑memory vs. persistent vector stores without breaking existing code",
+    "Managing model download size and runtime memory consumption for local Ollama models",
+    "Ensuring cosine similarity metadata aligns with embedding model output dimensions",
+    "Handling language translation edge cases when query and source languages differ"
+  ],
+  "learnings": [
+    "LangChain’s abstraction layers make swapping vector stores trivial when you adhere to its interfaces",
+    "Running LLMs locally with Ollama dramatically reduces latency but requires careful hardware sizing",
+    "Embedding model choice impacts both retrieval quality and storage footprint",
+    "ChromaDB’s collection metadata (`hnsw:space`) can be tuned for different similarity metrics",
+    "Cross‑language retrieval works well when the embedding model is language‑agnostic"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**LangChain-RAG-Javascript** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React / Next.js`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Entrypoint Invocation: Request enters network interface layer via `POST /api/analyze`.",
+    "Schema & Guardrail Verification: Middleware sanitizes payload parameters and checks rate-limiting limits.",
+    "Controller Dispatch: Router delegates validated object to `Controllers` service controller.",
+    "Engine Execution & Storage Operations: Controller executes business logic, queries database models (Persistence), and invokes ML workers.",
+    "Response Serialization: Result model is formatted into standard JSON response frame and delivered with HTTP 200 OK."
+  ],
+  "apiEndpoints": [],
+  "keyModules": [],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add support for streaming responses from Ollama to improve UI interactivity",
+    "Implement hybrid search combining dense embeddings with BM25 lexical scoring",
+    "Introduce a caching layer for frequent query embeddings to reduce compute load",
+    "Provide a CLI tool to automate PDF ingestion, chunking, and vector store population",
+    "Enable configurable retrieval depth (top‑k) and relevance threshold via environment variables",
+    "Integrate authentication and TLS for the ChromaDB endpoint for production security",
+    "Add unit and integration test suites covering each pipeline stage",
+    "Explore fine‑tuning of `llama3.1` on domain‑specific documentation for higher accuracy"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "LangChain-RAG-Javascript - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into LangChain-RAG-Javascript. Section 1 System Topology: Engineered with JavaScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React UI. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across . Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash LangChain-RAG-Javascript.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "LangChain-RAG-Javascript",
+        "subheading": "Production-Grade JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of LangChain-RAG-Javascript, built with JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React UI UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Source Tree",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core LangChain-RAG-Javascript functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/LangChain-RAG-Javascript",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"LangChainRAGJavascriptShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'LangChain-RAG-Javascript',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>LangChain-RAG-Javascript</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React UI UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Source Tree</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core LangChain-RAG-Javascript functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/LangChain-RAG-Javascript</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "LangChain-RAG-Javascript",
+    "url": "https://github.com/Sameer-Bagul/LangChain-RAG-Javascript",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T13:10:30.604Z",
+    "lastAnalyzedAt": "2026-09-22T13:10:30.604Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

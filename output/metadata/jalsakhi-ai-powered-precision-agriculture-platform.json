@@ -1,0 +1,528 @@
+{
+  "_id": "jalsakhi-ai-powered-precision-agriculture-platform-id",
+  "title": "Jalsakhi Ai Powered Precision Agriculture Platform",
+  "slug": "jalsakhi-ai-powered-precision-agriculture-platform",
+  "shortDescription": "Village Water Allocation Optimization API Distributes limited village reservoir water across farms using: - Crop Water Requirement from CropWaterModel (Model 1) - Optional predicte...",
+  "description": "**JalSakhi** is an AI‑powered precision agriculture platform that connects a React Native mobile app, a Node.js/Express backend, and multiple Python FastAPI ML services through a centralized Express gateway. The system orchestrates farmer data, crop‑water prediction, soil‑moisture forecasting, and village‑level water allocation using **MongoDB** for persistence, **JWT** for authentication, and **LangChain** for an AI chatbot. All components are containerizable and designed for cloud deployment on Azure services.",
+  "longDescription": "**Core System Architecture**\nThe platform is split into three top‑level domains: `app/` (React Native Expo app), `server/` (Node.js/Express API with Mongoose ODM), and `ml-services/` (FastAPI models, an Express gateway, and a LangChain chatbot). The mobile client communicates with the backend via REST endpoints under `/api/*`, while the backend proxies ML requests to the gateway which routes to the appropriate FastAPI service on ports 8001‑8004.\n\n*Data Ingestion & Flow*\nFarmers register via `/api/auth/register` (or OTP‑based flow) and manage farm entities through `/api/farms` CRUD routes. When a prediction is required, the mobile app calls `/api/predict/crop-water-requirement`, which forwards the payload to the gateway (`/crop-water/*`). The gateway enforces rate limiting, CORS, and request timeouts before invoking the Crop Water FastAPI service (`POST /predict`). Similar flows exist for soil‑moisture (`/api/forecast/soil-moisture`) and allocation (`/api/farmer/water-allocation`). Results are stored back in MongoDB for audit and later retrieval.\n\n**Security Guardrails**\nAuthentication relies on **JWT** tokens issued after OTP verification (`/api/auth/send-otp`, `/api/auth/verify-otp`). Passwords are hashed with **bcrypt**. The Express server uses **Helmet**, **CORS**, and a custom rate‑limiter (100 req/min per IP) to protect endpoints. Environment variables hold secrets; no credentials are committed. All external traffic is forced over HTTPS in production.\n\n*Build & Deployment Topology*\nDevelopers run services locally (`npm start` for `server` and `gateway`, `uvicorn` for FastAPI models). CI/CD pipelines target **Azure App Service** for the Node.js backend and **Azure Container Instances/Kubernetes** for the Python ML services. The gateway provides a single entry point for external clients, simplifying DNS and TLS management.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React"
+    ],
+    "backend": [
+      "FastAPI",
+      "Express"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [
+      "LangChain"
+    ],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "- Designed and implemented the folder restructuring to separate mobile, backend, and ML services.",
+    "- Developed the Express gateway with rate limiting, CORS, and request timeout logic.",
+    "- Created Mongoose schemas for `User` and `Farm` and integrated JWT + bcrypt authentication.",
+    "- Implemented OTP email flow using Nodemailer and secure token storage.",
+    "- Built FastAPI endpoints for Crop Water Prediction, Soil Moisture Forecast, and Village Allocation.",
+    "- Integrated LangChain and Groq SDK to deliver a contextual AI chatbot.",
+    "- Added comprehensive Swagger/OpenAPI documentation for all REST and FastAPI routes.",
+    "- Configured Helmet and security headers across Node.js services.",
+    "- Set up Dockerfiles and Azure deployment scripts for each service tier.",
+    "- Wrote unit and integration tests for authentication, farm CRUD, and ML proxy routes.",
+    "- Established CI pipelines that lint TypeScript, run Jest tests, and build Docker images.",
+    "- Documented onboarding steps in `QUICK_START.md` and `BACKEND_INTEGRATION.md`."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (FastAPI / Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (app/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n InferenceEngine[\"AI/ML Model Inference Runtime (LangChain)\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> InferenceEngine\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"LangChain\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET /health (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/jalsakhi-ai-powered-precision-agriculture-platform",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "- OTP‑based email verification for secure sign‑up.",
+    "- Role‑based JWT authentication (farmer & admin).",
+    "- CRUD operations for farm entities with geo‑location support.",
+    "- AI‑driven crop water requirement prediction (Random Forest).",
+    "- 7‑day soil moisture forecasting using Prophet and LSTM.",
+    "- Village‑level water allocation optimizer integrating farmer demand.",
+    "- Real‑time AI chatbot powered by LangChain and Llama 3.1.",
+    "- Centralized ML gateway with rate limiting and health checks.",
+    "- Exportable data endpoints for analytics dashboards.",
+    "- Environment‑agnostic configuration via `.env` files."
+  ],
+  "challenges": [
+    "- Balancing latency between mobile requests and Python FastAPI models; introduced async proxying in the gateway.",
+    "- Managing consistent schema versions across MongoDB and FastAPI input validation.",
+    "- Securing inter‑service communication without a full service mesh; used API keys and JWT propagation.",
+    "- Handling large payloads for sensor‑based soil data while respecting the 1 MB body size limit.",
+    "- Coordinating deployment of heterogeneous runtimes (Node.js vs Python) on Azure."
+  ],
+  "learnings": [
+    "- Express middleware ordering is critical for combined JWT, rate‑limit, and CORS enforcement.",
+    "- FastAPI’s `Depends` injection simplifies validation but requires careful type alignment with TypeScript clients.",
+    "- Using Azure Container Instances for short‑lived ML inference services reduces cost versus always‑on VMs.",
+    "- Centralizing all ML calls through a gateway simplifies client code and provides a single point for security policies.",
+    "- Comprehensive OpenAPI specs enable automatic client generation for both mobile and admin dashboards."
+  ],
+  "architectureOverview": "Frontend built with React. Backend API powered by FastAPI, Express. AI/ML capabilities powered by LangChain. Persistence managed by MongoDB.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Payload processed through AI/ML pipeline or local inference model",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Service layer delegates task to ML runtime or LLM API worker",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in ml-services/chatbot/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/chat",
+      "description": "Endpoint defined in ml-services/chatbot/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/model1",
+      "description": "Endpoint defined in ml-services/gateway/server.js"
+    },
+    {
+      "method": "POST",
+      "path": "/model2",
+      "description": "Endpoint defined in ml-services/gateway/server.js"
+    },
+    {
+      "method": "POST",
+      "path": "/model3",
+      "description": "Endpoint defined in ml-services/gateway/server.js"
+    },
+    {
+      "method": "POST",
+      "path": "/predict",
+      "description": "Endpoint defined in ml-services/models/Crop_Water_Model/main.py"
+    },
+    {
+      "method": "GET",
+      "path": "/config",
+      "description": "Endpoint defined in ml-services/models/Crop_Water_Model/main.py"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in ml-services/models/soil_moisture_model/api.py"
+    },
+    {
+      "method": "GET",
+      "path": "/ui",
+      "description": "Endpoint defined in ml-services/models/soil_moisture_model/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/predict/sensor",
+      "description": "Endpoint defined in ml-services/models/soil_moisture_model/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/predict/location",
+      "description": "Endpoint defined in ml-services/models/soil_moisture_model/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/optimize",
+      "description": "Endpoint defined in ml-services/models/village_water_allocation/api.py"
+    },
+    {
+      "method": "POST",
+      "path": "/register",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/send-verify-otp",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/verify-account",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/is-auth",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/send-reset-otp",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/reset-password",
+      "description": "Endpoint defined in server/routes/authRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "PUT",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/irrigation",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:id/irrigation",
+      "description": "Endpoint defined in server/routes/farmRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/crop-water",
+      "description": "Endpoint defined in server/routes/mlRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/soil-moisture",
+      "description": "Endpoint defined in server/routes/mlRoutes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/village-water",
+      "description": "Endpoint defined in server/routes/mlRoutes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/data",
+      "description": "Endpoint defined in server/routes/userRoutes.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "App",
+      "path": "app/app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Components",
+      "path": "app/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "app/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "app/scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Services",
+      "path": "app/services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "app/utils",
+      "description": "Module component managing utils source logic"
+    },
+    {
+      "name": "Docs",
+      "path": "docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Config",
+      "path": "server/config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Middleware",
+      "path": "server/middleware",
+      "description": "Module component managing middleware source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/routes",
+      "description": "Module component managing routes source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "- Migrate the ML gateway to a dedicated API Management service with built‑in throttling and analytics.",
+    "- Containerize each FastAPI model and orchestrate with Kubernetes for auto‑scaling based on request volume.",
+    "- Implement GraphQL layer to reduce over‑fetching for mobile screens.",
+    "- Add real‑time sensor streaming via WebSockets for continuous soil moisture monitoring.",
+    "- Expand chatbot knowledge base with domain‑specific agricultural ontologies and fine‑tuned LLMs.",
+    "- Introduce role‑based access control (RBAC) for admin vs extension officer functionalities.",
+    "- Add automated CI/CD security scans (SAST/DAST) for all services.",
+    "- Provide multi‑region deployment to reduce latency for remote farming areas."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "jalsakhi-ai-powered-precision-agriculture-platform - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into jalsakhi-ai-powered-precision-agriculture-platform. Section 1 System Topology: Engineered with TypeScript, JavaScript, Python, combining a decoupled backend powered by FastAPI, Express and client interface built with React. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 30 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across App, Components, Ui, Scripts. Section 5 Intelligence & Persistence: AI inference accelerated by LangChain with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash jalsakhi-ai-powered-precision-agriculture-platform.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "jalsakhi-ai-powered-precision-agriculture-platform",
+        "subheading": "Production-Grade TypeScript, JavaScript, Python Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of jalsakhi-ai-powered-precision-agriculture-platform, built with TypeScript, JavaScript, Python.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript",
+          "JavaScript",
+          "Python",
+          "React"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "FastAPI, Express API • React UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "FastAPI",
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "30 REST/WebSocket API Endpoints",
+        "subheading": "GET /health | POST /chat | POST /model1",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "GET",
+          "POST",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "App • Components • Ui • Scripts",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "App",
+          "Components",
+          "Ui",
+          "Scripts"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "LangChain • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "LangChain",
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core jalsakhi-ai-powered-precision-agriculture-platform functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/jalsakhi-ai-powered-precision-agriculture-platform",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"jalsakhiaipoweredprecisionagricultureplatformShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'jalsakhi-ai-powered-precision-agriculture-platform',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>jalsakhi-ai-powered-precision-agriculture-platform</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript, JavaScript, Python Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>FastAPI, Express API • React UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>30 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET /health | POST /chat | POST /model1</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>App • Components • Ui • Scripts</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>LangChain • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core jalsakhi-ai-powered-precision-agriculture-platform functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/jalsakhi-ai-powered-precision-agriculture-platform</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "jalsakhi-ai-powered-precision-agriculture-platform",
+    "url": "https://github.com/Sameer-Bagul/jalsakhi-ai-powered-precision-agriculture-platform",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T13:01:01.295Z",
+    "lastAnalyzedAt": "2026-09-22T13:01:01.295Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

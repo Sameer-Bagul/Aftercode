@@ -1,0 +1,369 @@
+{
+  "_id": "sudapedia-instance-id",
+  "title": "Sudapedia Instance",
+  "slug": "sudapedia-instance",
+  "shortDescription": "Sudapedia AI Chatbot — Instance (Development) This is the development instance of the Sudapedia AI Chatbot. The main production project remains untouched at its live domain. All te...",
+  "description": "\"**Sudapedia AI Chatbot** is a conversational AI service that leverages **FastAPI**, **Gemini**, and **MySQL** to provide real‑time answers to employee queries about product data. The backend exposes a RESTful API with bearer‑token authentication, while the frontend chat UI is a lightweight HTML/JS page that persists conversation threads in the browser. The system is containerized with Docker and deployed to Google Cloud Run, using environment variables for secrets and database credentials.**\"",
+  "longDescription": "\"The core architecture follows a **micro‑service** style where the FastAPI application acts as the sole API gateway, routing requests to the Gemini LLM for natural language understanding and to MySQL for structured data retrieval. The API is stateless, with JWT‑style bearer tokens issued on **POST /auth/login** and validated on each protected route. Conversation state is maintained client‑side via a `session_id` stored in `sessionStorage`, and the backend returns a `thread_id` that the client re‑sends to keep the context consistent across requests.\n\nData ingestion is handled by the `extract_all.py` script, which parses PDFs into structured JSON and populates the two MySQL databases (`DB1` for product metadata and `DB2` for SudaHub data). The Gemini client is lazily instantiated to avoid cold‑start latency on Cloud Run, and a retry wrapper with exponential backoff ensures resilience against transient LLM failures.\n\nSecurity guardrails include **CORS** permissive for development but can be tightened in production, **Bearer token** authentication, and environment‑based configuration to keep API keys and database credentials out of source control. All chat logs are persisted in the `chatbot_chat_logs` table, enabling auditability and future analytics.\n\nThe build topology is straightforward: a `Dockerfile` builds a lightweight image, a `Procfile` ensures Cloud Run listens on `0.0.0.0:$PORT`, and the `requirements.txt` pins dependencies such as `fastapi`, `uvicorn`, `google-generativeai`, and `mysql-connector-python`. Continuous deployment can be achieved via Cloud Build triggers that push to Cloud Run on each commit to the `main` branch.\n\nOverall, the system demonstrates a clean separation of concerns: the API layer, the LLM layer, the data layer, and the frontend UI, all orchestrated through simple REST endpoints and a minimal configuration footprint.\"",
+  "category": "API Service",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [],
+    "backend": [
+      "FastAPI"
+    ],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented bearer‑token authentication for all protected endpoints.",
+    "Added lazy initialization for Gemini client to reduce cold‑start latency.",
+    "Created retry wrapper with exponential backoff for LLM calls.",
+    "Designed PDF extraction pipeline (`extract_all.py`) to seed MySQL databases.",
+    "Implemented session thread persistence via `session_id` and `thread_id`.n",
+    "Added comprehensive health‑check endpoint (`/health`).",
+    "Configured CORS middleware to allow cross‑origin requests.",
+    "Wrote Dockerfile and Procfile for Cloud Run deployment.",
+    "Documented API reference and Flutter integration guide.",
+    "Implemented chat log persistence in `chatbot_chat_logs` table.",
+    "Added endpoints for session history retrieval and deletion.",
+    "Implemented thread‑aware chat flow in frontend JavaScript.",
+    "Integrated environment‑based configuration for secrets.",
+    "Added unit tests for authentication and chat endpoints.",
+    "Optimized database connection pooling for MySQL."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Client / User App Interface\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (FastAPI)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET / (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/dcplai/Sudapedia-Instance",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Real‑time conversational AI powered by Gemini.",
+    "Bearer‑token authentication for secure access.",
+    "Session thread persistence across requests.n",
+    "PDF ingestion pipeline to populate product metadata.",
+    "Dual‑database support (DB1 for metadata, DB2 for SudaHub).",
+    "Chat logs stored for audit and analytics.",
+    "Dockerized application for consistent deployment.",
+    "Cloud Run integration with automatic scaling.",
+    "CORS support for mobile and web clients.",
+    "Comprehensive API documentation and Flutter guide.",
+    "Retry logic for LLM calls to improve reliability.",
+    "Thread‑aware chat UI with retry and error handling.",
+    "Environment‑based secret management.",
+    "Endpoints for session history retrieval and deletion.",
+    "Lightweight frontend chat UI in plain HTML/JS."
+  ],
+  "challenges": [
+    "Balancing cold‑start latency with Gemini client initialization.",
+    "Ensuring thread continuity across stateless API calls.",
+    "Managing secrets securely in Cloud Run without exposing them.",
+    "Implementing robust retry logic without causing excessive API usage.",
+    "Designing a simple yet extensible PDF ingestion pipeline.",
+    "Handling large SQL queries generated by Gemini without blocking the event loop.",
+    "Maintaining consistent CORS policies across development and production."
+  ],
+  "learnings": [
+    "Lazy initialization can dramatically reduce cold‑start times in serverless environments.",
+    "Exponential backoff is essential for resilient LLM integrations.",
+    "Storing conversation context client‑side simplifies stateless API design.",
+    "Environment variables are the safest way to handle secrets in containerized deployments.",
+    "A lightweight frontend can provide a rich user experience without heavy frameworks."
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**Sudapedia-Instance** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React / Next.js`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `FastAPI`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes 10 validated REST/WebSocket endpoints.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Docs`, `Tests`, `Utils`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React) serialize input objects and send HTTP/WebSocket requests to `/`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "POST",
+      "path": "/chat",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "GET",
+      "path": "/session/{employee_id}",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/session/{employee_id}",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "DELETE",
+      "path": "/chat/{chat_id}",
+      "description": "Endpoint defined in inspect_employee_chat_pairs.py"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in main.py"
+    },
+    {
+      "method": "GET",
+      "path": "/session/me/current-thread",
+      "description": "Endpoint defined in main.py"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Docs",
+      "path": "Docs",
+      "description": "Module component managing Docs source logic"
+    },
+    {
+      "name": "Tests",
+      "path": "playwright-testing/tests",
+      "description": "Module component managing tests source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "playwright-testing/utils",
+      "description": "Module component managing utils source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add WebSocket support for real‑time streaming responses.",
+    "Implement role‑based access control for different employee groups.",
+    "Introduce caching layer (Redis) for frequently queried product data.",
+    "Add analytics dashboard for chat usage and LLM performance.",
+    "Automate PDF ingestion with scheduled Cloud Functions.",
+    "Integrate multi‑language support and translation.",
+    "Implement graceful shutdown hooks for graceful Cloud Run termination.",
+    "Add unit and integration tests for all endpoints.",
+    "Migrate to a managed MySQL service with automated backups.",
+    "Explore serverless functions for heavy data processing tasks."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "Sudapedia-Instance - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into Sudapedia-Instance. Section 1 System Topology: Engineered with Python, JavaScript, combining a decoupled backend powered by FastAPI and client interface built with React UI. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 10 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Docs, Tests, Utils. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash Sudapedia-Instance.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "Sudapedia-Instance",
+        "subheading": "Production-Grade Python, JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of Sudapedia-Instance, built with Python, JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "Python",
+          "JavaScript"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "FastAPI API • React UI UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "FastAPI"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "10 REST/WebSocket API Endpoints",
+        "subheading": "GET / | POST /auth/login | GET /auth/me",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "GET",
+          "POST",
+          "GET",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Docs • Tests • Utils",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Docs",
+          "Tests",
+          "Utils"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core Sudapedia-Instance functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/Sudapedia-Instance",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"SudapediaInstanceShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'Sudapedia-Instance',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Sudapedia-Instance</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade Python, JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>FastAPI API • React UI UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>10 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET / | POST /auth/login | GET /auth/me</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Docs • Tests • Utils</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core Sudapedia-Instance functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/Sudapedia-Instance</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "Sudapedia-Instance",
+    "url": "https://github.com/dcplai/Sudapedia-Instance",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T12:57:43.409Z",
+    "lastAnalyzedAt": "2026-09-22T12:57:43.409Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

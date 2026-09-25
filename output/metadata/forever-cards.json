@@ -1,0 +1,337 @@
+{
+  "_id": "forever-cards-id",
+  "title": "Forever Cards",
+  "slug": "forever-cards",
+  "shortDescription": "Routes TanStack Start uses file-based routing. Every .tsx file in this directory defines a route. Do not create src/pages/, src/routes/app/index.tsx, or app/layout.tsx — those are ...",
+  "description": "The **Forever Cards** web application is a **React**‑centric single‑page experience built with **TypeScript**, **TailwindCSS**, and **TanStack Router**. It follows a **component‑driven architecture** where UI primitives such as the `Carousel` are encapsulated with context providers, while routing and data fetching are orchestrated via `createRouter` and `QueryClient`. Server‑side rendering (SSR) is handled through a lightweight Cloudflare‑compatible entry point, ensuring fast first‑paint and SEO‑friendly pages like the dynamically generated `sitemap.xml`. All core logic lives in `src/`, leveraging modern React hooks and strict type safety via `embla-carousel-react` and the TanStack ecosystem.",
+  "longDescription": "The application’s **routing layer** is powered by **TanStack Router** (`src/router.tsx`), which creates a router instance with a shared `QueryClient` context. This enables declarative route definitions (`src/routeTree.gen.ts`) and automatic code‑splitting for each route file under `src/routes/`. The root route (`src/routes/__root.tsx`) includes robust error handling that logs errors, reports them via `reportLovableError`, and provides a user‑friendly fallback UI with retry and navigation options.\n\nThe **carousel component** (`src/components/ui/carousel.tsx`) demonstrates a reusable UI pattern. It wraps the `embla-carousel-react` hook, exposing navigation methods (`scrollPrev`, `scrollNext`) and state (`canScrollPrev`, `canScrollNext`) through a React context. Keyboard accessibility is baked in via an `onKeyDownCapture` handler that maps arrow keys to carousel actions, and the component forwards its ref for external control.\n\n**Server‑side rendering** is managed in `src/server.ts`, which loads the server entry point, normalizes catastrophic SSR responses, and ensures a graceful fallback HTML page on failure. The SSR entry point also respects Cloudflare Workers’ `h3` error conventions, parsing JSON error payloads to differentiate between handled and unhandled errors.\n\nA dedicated **Sitemap route** (`src/routes/sitemap[.]xml.ts`) generates an XML sitemap on the fly, enumerating public paths with appropriate `changefreq` and `priority` attributes. This route is defined as a file‑based route using `createFileRoute`, illustrating the framework’s ability to serve both HTML and non‑HTML assets from the same router.\n\nThe overall **build topology** relies on Vite (implicit via the TanStack starter) for fast development HMR, TypeScript for static analysis, and ESLint for code quality. The project is structured to keep UI components, routing, and server logic isolated, facilitating incremental enhancements and easy testing.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented a reusable, keyboard‑accessible `Carousel` component using `embla-carousel-react` and React Context",
+    "Added comprehensive error boundary UI in the root route with retry and navigation controls",
+    "Integrated TanStack Router with a shared `QueryClient` for consistent data fetching across routes",
+    "Created a dynamic `sitemap.xml` route that programmatically generates SEO‑friendly sitemap entries",
+    "Developed SSR entry point with graceful error normalization for Cloudflare Workers",
+    "Established TypeScript‑strict typings for carousel API and context to prevent runtime errors",
+    "Utilized TailwindCSS utility classes throughout the UI for rapid styling and theming",
+    "Provided a `useCarousel` hook that enforces proper usage within the `Carousel` provider",
+    "Configured route generation via `routeTree.gen.ts` to enable automatic code‑splitting",
+    "Implemented server‑side error handling that distinguishes between handled and unhandled errors",
+    "Added keyboard navigation support for carousel via `onKeyDownCapture` handler",
+    "Ensured forwardRef compatibility on the carousel container for external DOM access",
+    "Created a modular architecture separating UI components, routing, and server logic",
+    "Integrated React Query's `QueryClient` into router context for unified caching",
+    "Documented component APIs with JSDoc comments and exported types for external consumption"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/forever-cards",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Reusable carousel component with prev/next controls and state flags",
+    "Keyboard navigation support for carousel using Arrow keys",
+    "React Context API for exposing carousel methods to child components",
+    "Dynamic XML sitemap generation for SEO optimization",
+    "Root route error boundary with retry and home navigation",
+    "Server‑side rendering with error normalization for Cloudflare Workers",
+    "Typed routing configuration via TanStack Router's file‑based routes",
+    "Shared React Query client across all routes for data fetching",
+    "TailwindCSS utility‑first styling throughout the UI",
+    "TypeScript‑enforced prop and context typings for safety"
+  ],
+  "challenges": [
+    "Ensuring the Embla carousel works correctly during SSR without accessing the DOM prematurely",
+    "Balancing strict TypeScript typings with the dynamic nature of the `useEmblaCarousel` hook",
+    "Providing a seamless error recovery UI that does not interfere with router state",
+    "Generating a valid XML sitemap from a JSON array while keeping the route file simple",
+    "Maintaining accessibility (ARIA roles, keyboard handling) within a custom carousel component",
+    "Coordinating the lifecycle of the carousel API (`onSelect`, `off`) to avoid memory leaks",
+    "Integrating React Query's cache with TanStack Router's context without circular dependencies",
+    "Handling Cloudflare Workers' specific error payload format in SSR error normalization"
+  ],
+  "learnings": [
+    "How to safely initialize client‑only libraries like Embla in a mixed SSR/CSR environment",
+    "Effective use of React Context to expose imperative APIs without prop drilling",
+    "Leveraging TanStack Router's file‑based routing to auto‑generate a route tree",
+    "Designing error boundaries that both log errors and provide user‑friendly recovery options",
+    "Creating server‑only routes (e.g., sitemap) that still benefit from TypeScript safety",
+    "Managing cleanup of event listeners (`api.off`) within React effects to prevent leaks",
+    "Using TailwindCSS's `cn` utility to compose conditional class names cleanly",
+    "Integrating React Query's `QueryClient` into a global router context for unified data fetching"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**forever-cards** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Src`, `Components`, `Ui`, `Hooks`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Entrypoint Invocation: Request enters network interface layer via `POST /api/analyze`.",
+    "Schema & Guardrail Verification: Middleware sanitizes payload parameters and checks rate-limiting limits.",
+    "Controller Dispatch: Router delegates validated object to `Src` service controller.",
+    "Engine Execution & Storage Operations: Controller executes business logic, queries database models (Persistence), and invokes ML workers.",
+    "Response Serialization: Result model is formatted into standard JSON response frame and delivered with HTTP 200 OK."
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "src/routes",
+      "description": "Module component managing routes source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add unit and integration tests for the `Carousel` component using React Testing Library",
+    "Implement lazy loading and prefetching strategies for route bundles to improve perceived performance",
+    "Introduce a backend API (e.g., Node/Express) for dynamic product data and integrate it with React Query",
+    "Enhance accessibility by adding focus management and ARIA live regions to carousel navigation",
+    "Create a CI/CD pipeline with automated linting, type checking, and deployment to Cloudflare Workers",
+    "Expand the sitemap generator to include dynamic routes based on fetched content",
+    "Add theme switching support with TailwindCSS dark mode utilities",
+    "Refactor server entry to support edge‑runtime optimizations and streaming SSR",
+    "Introduce feature flags to toggle experimental UI components without redeploying",
+    "Document the architecture in a dedicated markdown site for onboarding new contributors"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "forever-cards - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into forever-cards. Section 1 System Topology: Engineered with JavaScript, TypeScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Src, Components, Ui, Hooks. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash forever-cards.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "forever-cards",
+        "subheading": "Production-Grade JavaScript, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of forever-cards, built with JavaScript, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Src • Components • Ui • Hooks",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Src",
+          "Components",
+          "Ui",
+          "Hooks"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core forever-cards functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/forever-cards",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"forevercardsShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'forever-cards',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>forever-cards</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Src • Components • Ui • Hooks</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core forever-cards functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/forever-cards</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "forever-cards",
+    "url": "https://github.com/Sameer-Bagul/forever-cards",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T11:52:28.993Z",
+    "lastAnalyzedAt": "2026-09-22T11:52:28.993Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

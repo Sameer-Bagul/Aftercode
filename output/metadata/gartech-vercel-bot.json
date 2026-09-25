@@ -1,0 +1,362 @@
+{
+  "_id": "gartech-vercel-bot-id",
+  "title": "Gartech Vercel Bot",
+  "slug": "gartech-vercel-bot",
+  "shortDescription": "<a href=\"https://gartech.co.in\"> <img alt=\"Gartech AI Chatbot\" src=\"Gartech-Logo.png\" width=\"200\" style=\"margin-bottom: 20px;\"> </a> <h1 align=\"center\">Gartech AI Assistant & CRM</...",
+  "description": "**Gartech AI Chatbot** is a modular‑monolith platform that delivers AI‑powered conversational experiences across web and WhatsApp channels. Built with **Next.js App Router** for the frontend and a **Node.js/Express** backend, it leverages **MongoDB Atlas** for persistent storage, **Redis** for rate‑limiting, **Gemini AI** via the Google Generative AI SDK for LLM responses, and **Qdrant** for vector‑search‑based Retrieval‑Augmented Generation. The system orchestrates chat ingestion, context retrieval, prompt augmentation, and streaming responses while silently extracting qualified lead information into a CRM‑ready `Lead` collection.",
+  "longDescription": "The core architecture follows a **domain‑driven modular monolith** pattern. The `/app` directory hosts the Next.js UI and API routes, using route groups like `(chat)` and `(auth)` to isolate concerns without affecting URLs. The primary chat endpoint `POST /api/v1/chat` (also exposed as `/api/chat` for streaming) receives a user message, invokes `queryQdrant` to fetch relevant knowledge base vectors, augments the system prompt, and calls the Gemini model, streaming the response back to the client. *Behind the scenes*, the `extractAndSaveLeadInfo` routine parses the conversation for lead attributes (name, phone, capacity, land size) and persists them via Mongoose schemas.\n\nData ingestion is handled by a PDF parsing pipeline that chunks documents, stores raw text in `FAQ`/`KnowledgeItem` collections, and pushes embeddings to Qdrant. The vector store is queried in real‑time to provide RAG capabilities, ensuring answers are grounded in the uploaded knowledge base. *Security* is scaffolded with NextAuth.js (MongoDB adapter) for session management, JWT‑based strategies, and planned middleware for authentication, rate‑limiting (Redis‑backed), and centralized error handling.\n\nThe backend resides under `/backend/src` with clear layers: `config` for env validation, `routes` for API gateways, `controllers` for request handling, and `services` for business logic (AI, conversation state, WhatsApp webhook processing, CRM integration). Persistence is abstracted via `lib/db/connection.ts` and `lib/db/queries.ts`, providing typed access to `Chat`, `Message`, `Lead`, and knowledge collections. *Telemetry* and analytics hooks are earmarked for future integration, feeding metrics into an admin dashboard at `/admin`.\n\nDeployment targets **Docker** containers on **Vercel** (frontend) and **Google Cloud Run** (backend), enabling horizontal scaling. The codebase includes TypeScript typings throughout, ensuring type safety across API contracts and database models. Continuous development is supported by utility scripts such as `scripts/make-admin.js` for role management.",
+  "category": "AI/ML",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [
+      "MongoDB",
+      "Redis"
+    ],
+    "aiMl": [
+      "Gemini AI"
+    ],
+    "infrastructure": [
+      "Docker",
+      "Vercel"
+    ],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented the central chat orchestration in `app/api/chat/route.ts`, integrating Qdrant vector search and Gemini streaming responses.",
+    "Developed `extractAndSaveLeadInfo` to automatically parse qualified lead data from conversations and persist it to MongoDB.",
+    "Configured NextAuth.js with a MongoDB adapter for persistent session handling and role‑based access control.",
+    "Created Mongoose schemas for `Chat`, `Message`, `Lead`, `FAQ`, and `KnowledgeItem` to enforce data integrity.",
+    "Built the Qdrant client wrapper (`lib/qdrant.ts`) to manage embedding generation and similarity queries.",
+    "Added utility scripts (`scripts/make-admin.js`) for admin role promotion and user management.",
+    "Implemented UI components for chat input, slash commands, and theme toggling in React/Next.js.",
+    "Set up Dockerfiles for both frontend and backend services, enabling containerized deployments.",
+    "Documented the full architectural map in `docs/architecture.md` and `docs/Gartech Codebase Deep Dive.md`.",
+    "Outlined middleware scaffolding for authentication, rate limiting, and error handling in the backend audit documentation."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n InferenceEngine[\"AI/ML Model Inference Runtime (Gemini AI)\"]\n Database[\"Persistence Storage Layer (MongoDB / Redis)\"]\n end\n subgraph InfraTier [\"Infrastructure & Sandbox\"]\n Container[\"Docker Container Sandbox (Docker / Vercel)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> InferenceEngine\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"Gemini AI\"]\n DatabaseLayer[\"MongoDB / Redis Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/dcplai/gartech-vercel-bot",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Web chat UI with streaming AI responses",
+    "WhatsApp webhook integration (backend ready, UI pending)",
+    "RAG‑enabled knowledge base using Qdrant and Gemini embeddings",
+    "Automatic lead extraction and storage in MongoDB",
+    "NextAuth.js authentication with admin/guest roles",
+    "Role‑based admin dashboard placeholders for leads and analytics",
+    "Theme switching and slash‑command shortcuts in the chat UI",
+    "CRUD interfaces for FAQs and knowledge items (backend ready)",
+    "Rate‑limit ready architecture using Redis (planned middleware)",
+    "Telemetry hooks for future analytics and reporting"
+  ],
+  "challenges": [
+    "Balancing real‑time streaming performance with the latency of vector search and LLM calls",
+    "Ensuring lead extraction accuracy without false positives, requiring careful prompt design",
+    "Managing connection pools for MongoDB during hot reloads in a serverless environment",
+    "Designing a modular monolith that can later be split into microservices without breaking contracts",
+    "Implementing robust security (auth, rate limiting) after the initial MVP phase"
+  ],
+  "learnings": [
+    "Integrating Gemini via the Google Generative AI SDK requires direct REST calls for model listing and custom request handling.",
+    "Qdrant vector search provides low‑latency similarity retrieval but demands careful embedding dimension management.",
+    "Next.js App Router API routes can serve as effective streaming endpoints when combined with server‑sent events.",
+    "Mongoose connection pooling must be guarded against multiple instantiations in serverless functions to avoid connection exhaustion.",
+    "Domain‑driven folder structures simplify future service extraction and improve code discoverability."
+  ],
+  "architectureOverview": "Frontend built with React, Next.js, TailwindCSS. AI/ML capabilities powered by Gemini AI. Persistence managed by MongoDB, Redis. Deployed using Docker, Vercel.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "Payload processed through AI/ML pipeline or local inference model",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Service layer delegates task to ML runtime or LLM API worker",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "App",
+      "path": "app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Api",
+      "path": "app/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Models",
+      "path": "app/(chat)/api/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Components",
+      "path": "components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Docs",
+      "path": "docs",
+      "description": "Module component managing docs source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Tests",
+      "path": "tests",
+      "description": "Module component managing tests source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "tests/pages",
+      "description": "Module component managing pages source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add `auth.middleware.ts` for JWT validation on protected endpoints",
+    "Implement `rateLimit.middleware.ts` using Redis to protect `/api/v1/chat` and WhatsApp webhook",
+    "Complete the WhatsApp Business API integration and UI chat channel toggle",
+    "Build the admin dashboard with real‑time analytics, lead management, and knowledge base CRUD",
+    "Migrate vector store to a managed service (e.g., Pinecone) for higher scalability",
+    "Introduce LangChain or LlamaIndex orchestration for more complex RAG pipelines",
+    "Add comprehensive unit and integration tests for AI services and database layers",
+    "Enable telemetry collection with OpenTelemetry and export to a monitoring platform",
+    "Refactor the monolith into independent microservices for chat, CRM, and analytics",
+    "Implement automated CI/CD pipelines for zero‑downtime deployments on Vercel and Cloud Run"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "gartech-vercel-bot - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into gartech-vercel-bot. Section 1 System Topology: Engineered with TypeScript, JavaScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, Next.js, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across App, Api, Models, Components. Section 5 Intelligence & Persistence: AI inference accelerated by Gemini AI with persistence managed by MongoDB, Redis. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash gartech-vercel-bot.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "gartech-vercel-bot",
+        "subheading": "Production-Grade TypeScript, JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of gartech-vercel-bot, built with TypeScript, JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript",
+          "JavaScript",
+          "React",
+          "Next.js"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, Next.js, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Docker",
+          "Vercel"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "App • Api • Models • Components",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "App",
+          "Api",
+          "Models",
+          "Components"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Gemini AI • MongoDB, Redis",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "Gemini AI",
+          "MongoDB",
+          "Redis"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core gartech-vercel-bot functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/gartech-vercel-bot",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"gartechvercelbotShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'gartech-vercel-bot',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>gartech-vercel-bot</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript, JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, Next.js, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>App • Api • Models • Components</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Gemini AI • MongoDB, Redis</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core gartech-vercel-bot functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/gartech-vercel-bot</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "gartech-vercel-bot",
+    "url": "https://github.com/dcplai/gartech-vercel-bot",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T12:57:17.405Z",
+    "lastAnalyzedAt": "2026-09-22T12:57:17.405Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

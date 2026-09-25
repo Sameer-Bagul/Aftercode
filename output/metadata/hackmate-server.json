@@ -1,0 +1,565 @@
+{
+  "_id": "hackmate-server-id",
+  "title": "Hackmate Server",
+  "slug": "hackmate-server",
+  "shortDescription": "HackMate Server Backend API server for HackMate - A terminal-based social network for developers and hackers. Tech Stack - Framework: Fastify (Node.js) - Database: MongoDB (with Mo...",
+  "description": "**HackMate Server** is a `Fastify`‑based backend that powers a terminal‑centric social network for developers. It follows a **Clean Architecture** layout separating API (controllers & routes), core business services, and infrastructure (MongoDB, Redis, Socket.IO). The stack combines **TypeScript**, `Zod` for schema validation, **JWT** + **Argon2** for authentication, **MongoDB** with Mongoose ODM, and **Redis** (Upstash) for session caching and rate‑limiting, delivering real‑time chat via **Socket.IO** and secure HTTP endpoints under the `/api` prefix.",
+  "longDescription": "The system is organized into three concentric layers. The **API layer** (`src/api/controllers` and `src/api/routes`) handles HTTP request routing, delegating to **core services** (`core/services/*.service.ts`) that encapsulate business rules such as authentication, matching, profile management, chat handling, network interactions, project lifecycle, group coordination, and notification processing. *All services are pure TypeScript classes* injected into controllers, enabling isolated unit testing.\n\nThe **infrastructure layer** (`infrastructure/*`) provides adapters for external resources: MongoDB models (`infrastructure/database/models`), Redis client configuration, and a dedicated Socket.IO service (`infrastructure/socket/socket.service.ts`). This layer abstracts persistence and real‑time messaging, allowing the core to remain agnostic of implementation details.\n\n**Data flow** follows a clear path: *client → Fastify → route → controller → service → repository/model → database*. Validation occurs early using `Zod` schemas defined in `shared/validators`, guaranteeing type safety before business logic execution. Errors are funneled through a global error handler that normalizes validation errors, MongoDB duplicate key conflicts, JWT failures, and unexpected exceptions into consistent HTTP responses.\n\nSecurity guardrails include **Helmet** for HTTP header hardening, **CORS** configuration, **rate limiting** via `express-rate-limit` (adapted for Fastify), and JWT verification middleware applied to all non‑auth routes. Passwords are hashed with **Argon2**, and OTP email verification leverages a centralized `EmailService`.\n\nThe build topology uses a standard TypeScript compilation pipeline (`npm run build`) producing JavaScript output consumed by `src/start.ts`. Development mode (`npm run dev`) employs hot‑reload, while production runs the compiled bundle with environment‑driven configuration. Health checks (`GET /health`) and a root status endpoint provide operational visibility.",
+  "category": "API Service",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [],
+    "backend": [
+      "WebSockets"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Refactored monolithic codebase into feature‑based modules following Clean Architecture",
+    "Extracted all Mongoose models into `infrastructure/database/models`",
+    "Moved Zod validation schemas to `shared/validators` for centralized reuse",
+    "Implemented a global error handling middleware standardizing API error responses",
+    "Created a reusable `EmailService` handling OTP, welcome, and generic emails",
+    "Introduced Socket.IO service in the infrastructure layer for real‑time messaging",
+    "Added security plugins: JWT verification, CORS, Helmet, and rate limiting",
+    "Separated route registration into a central `apiRoutes` with `/api` prefix",
+    "Migrated authentication to Argon2 hashing and JWT token issuance",
+    "Provided TypeScript type exports for all interfaces and DTOs",
+    "Enabled hot‑reload development mode and streamlined production build pipeline"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Client / User App Interface\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (WebSockets)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/core/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET /users (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/hackmate-server",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Secure JWT + Argon2 authentication with email OTP verification",
+    "User profile management with skills, bio, and social links",
+    "Real‑time direct and group chat powered by Socket.IO",
+    "Friend/network system with follow, request, accept, reject, and block actions",
+    "Project posting, application workflow, and applicant management",
+    "Group creation, joining, invitation handling, and moderation",
+    "Notification system with read/unread tracking and push via WebSocket",
+    "Comprehensive admin panel for user, message, group, project, and activity management",
+    "Rate limiting, CORS, and Helmet security hardening",
+    "Centralized Zod schema validation ensuring type‑safe request payloads"
+  ],
+  "challenges": [
+    "Balancing RESTful API design with real‑time Socket.IO events required careful event naming and idempotency handling",
+    "Managing MongoDB schema evolution without migrations introduced complexity in versioned data models",
+    "Ensuring JWT token revocation for logout scenarios while maintaining statelessness",
+    "Configuring rate limiting that protects against abuse without degrading legitimate traffic",
+    "Scaling Socket.IO connections in a serverless or containerized environment demands external session stores and load‑balancer sticky sessions"
+  ],
+  "learnings": [
+    "Clean Architecture dramatically improves testability and code discoverability in a TypeScript monorepo",
+    "Zod integrates seamlessly with Fastify, providing compile‑time type inference and runtime validation",
+    "Centralizing error handling reduces duplicated try/catch blocks and yields consistent client responses",
+    "Separating infrastructure concerns (DB, cache, sockets) enables easier swapping of implementations",
+    "Manual dependency injection, while simple, encourages explicit wiring and clearer module boundaries"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**hackmate-server** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React / Next.js`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `WebSockets`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes 42 validated REST/WebSocket endpoints.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Scripts`, `Src`, `Api`, `Controllers`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **Persistence Layer**: Data storage and recordset persistence powered by `MongoDB`.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React) serialize input objects and send HTTP/WebSocket requests to `/users`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/users",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/users/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/users/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "PUT",
+      "path": "/users/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/stats",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/messages",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/messages/user/:userId",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/messages/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/groups",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/groups/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/groups/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/projects",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/projects/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/projects/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/friend-requests",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/friend-requests/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/notifications",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/notifications/:id",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/activity",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/search",
+      "description": "Endpoint defined in src/api/routes/admin.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/history/:userId",
+      "description": "Endpoint defined in src/api/routes/chat.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/history/group/:groupId",
+      "description": "Endpoint defined in src/api/routes/chat.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/conversations",
+      "description": "Endpoint defined in src/api/routes/chat.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/join",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/accept",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/reject",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/kick",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/leave",
+      "description": "Endpoint defined in src/api/routes/group.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/request",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/requests",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/accept",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/reject",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/friends",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/block",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/friend/:userId",
+      "description": "Endpoint defined in src/api/routes/network.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/read",
+      "description": "Endpoint defined in src/api/routes/notification.routes.ts"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/apply",
+      "description": "Endpoint defined in src/api/routes/project.routes.ts"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "description": "Endpoint defined in src/api/routes/project.routes.ts"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in src/app.ts"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Scripts",
+      "path": "scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Api",
+      "path": "src/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "src/api/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "src/api/routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Config",
+      "path": "src/config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Core",
+      "path": "src/core",
+      "description": "Module component managing core source logic"
+    },
+    {
+      "name": "Services",
+      "path": "src/core/services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Models",
+      "path": "src/infrastructure/database/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Types",
+      "path": "src/types",
+      "description": "Module component managing types source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "src/shared/utils",
+      "description": "Module component managing utils source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add OpenAPI/Swagger documentation generation for all `/api` endpoints",
+    "Implement comprehensive unit and integration test suites with CI pipeline integration",
+    "Containerize the application with Docker Compose and prepare Helm charts for Kubernetes deployment",
+    "Introduce GraphQL layer for flexible client queries alongside existing REST API",
+    "Implement Redis‑backed session store for scalable Socket.IO across multiple instances",
+    "Add rate‑limit analytics and adaptive throttling based on user behavior",
+    "Integrate structured logging and distributed tracing (e.g., OpenTelemetry) for observability",
+    "Provide role‑based access control (RBAC) beyond admin vs. user distinctions"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "hackmate-server - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into hackmate-server. Section 1 System Topology: Engineered with TypeScript, combining a decoupled backend powered by WebSockets and client interface built with React UI. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 42 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Scripts, Src, Api, Controllers. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash hackmate-server.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "hackmate-server",
+        "subheading": "Production-Grade TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of hackmate-server, built with TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "WebSockets API • React UI UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "WebSockets"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "42 REST/WebSocket API Endpoints",
+        "subheading": "GET /users | GET /users/:id | DELETE /users/:id",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "GET",
+          "GET",
+          "DELETE",
+          "PUT"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Scripts • Src • Api • Controllers",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Scripts",
+          "Src",
+          "Api",
+          "Controllers"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core hackmate-server functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/hackmate-server",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"hackmateserverShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'hackmate-server',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>hackmate-server</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>WebSockets API • React UI UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>42 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET /users | GET /users/:id | DELETE /users/:id</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Scripts • Src • Api • Controllers</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core hackmate-server functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/hackmate-server</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "hackmate-server",
+    "url": "https://github.com/Sameer-Bagul/hackmate-server",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T16:03:13.801Z",
+    "lastAnalyzedAt": "2026-09-22T16:03:13.801Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

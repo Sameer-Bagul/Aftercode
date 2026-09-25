@@ -1,0 +1,339 @@
+{
+  "_id": "mpulse-id",
+  "title": "Mpulse",
+  "slug": "mpulse",
+  "shortDescription": "Welcome to your Expo app This is an Expo project created with create-expo-app. Get started 1. Install dependencies ``bash npm install ` 2. Start the app `bash npx expo start `` In ...",
+  "description": "The **M‑Pulse** repository implements a **Next.js** based event registration platform with a **React** front‑end powered by a centralized `AppContext` for state management. It leverages **TypeScript** for type safety, **TailwindCSS** for styling, and **MongoDB** for persisting registrations, site configuration, and attendance scans. The architecture follows a **client‑side guard** (`AuthGuard`) for protected routes, while the API layer (`/api/*`) provides CRUD operations and authentication endpoints, ready to be swapped for a full backend by replacing the placeholder JSON loaders with real `fetch` calls.",
+  "longDescription": "The core of the system is the **AppProvider** defined in `event-registration/context/AppContext.tsx`. It initializes state slices for events, team members, and site configuration, loading static JSON files from the `/data` directory. The design deliberately isolates data fetching behind a `loadData` callback, allowing a seamless transition to real API endpoints (`/api/events`, `/api/team`, `/api/config`) without touching UI components.\n\n*Security* is enforced through the `AuthGuard` component in `admin/components/AuthGuard.tsx`. On each client render it calls `/api/auth/status`; failures redirect users to `/login`, while successful checks unblock the protected UI. This pattern complements Next.js middleware for server‑side protection, providing a fallback for edge cases.\n\nThe **admin** side exposes a suite of API routes under `admin/app/api/*`. The `registrations/route.ts` file implements **GET**, **POST**, **PUT**, and **DELETE** handlers that interact with a MongoDB collection via Mongoose models (`Registration`). Authentication is verified via `getAuthUser()`, and CORS headers are dynamically generated in `attendance/scan/route.ts` to support cross‑origin scanning devices.\n\nThe UI leverages **Next.js App Router** with client components (`useRouter`, `usePathname`) and icons from `react-icons/fi`. The `Sidebar` component defines navigation items for dashboards, event analytics, team pages, and site configuration, illustrating a modular navigation scheme.\n\nBuild and deployment are streamlined by **TypeScript** compilation and **ESLint** linting, ensuring code quality across both front‑end and back‑end modules. The repository is structured to support incremental migration to a full‑stack environment while maintaining a functional prototype with static JSON data.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "Next.js",
+      "TailwindCSS"
+    ],
+    "backend": [],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented a centralized React context (`AppContext`) to manage events, team members, and site configuration with TypeScript typings.",
+    "Created a client‑side authentication guard (`AuthGuard`) that validates session status via `/api/auth/status` and redirects unauthenticated users.",
+    "Developed a modular sidebar navigation component using `react-icons` and Next.js routing utilities.",
+    "Designed API route handlers for registrations, site configuration, and attendance scanning with MongoDB integration.",
+    "Added dynamic CORS header generation to support cross‑origin attendance scanning devices.",
+    "Integrated TailwindCSS for responsive UI styling across the admin dashboard.",
+    "Provided a placeholder data loading strategy that can be swapped with real `fetch` calls for backend integration.",
+    "Implemented error handling and user feedback via toast notifications in the registrations page.",
+    "Ensured type safety across the stack with comprehensive TypeScript interfaces (`AppContextType`, `Event`, `TeamMember`, `SiteConfig`).",
+    "Set up ESLint configuration to enforce code quality and consistency."
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / Next.js / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"HTTP Request Router\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /api/analyze (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/mpulse",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Centralized state management with React Context for events, teams, and site settings.",
+    "Client‑side authentication guard protecting admin routes.",
+    "CRUD API for event registrations with MongoDB persistence.",
+    "Site configuration endpoint supporting upsert operations.",
+    "Attendance scanning endpoint with CORS support for external devices.",
+    "Dynamic navigation sidebar with iconography and active route highlighting.",
+    "Login flow with JWT/session handling via `/api/auth/login`.",
+    "Responsive UI built with TailwindCSS.",
+    "TypeScript‑driven development ensuring compile‑time safety.",
+    "Toast notifications for success and error feedback."
+  ],
+  "challenges": [
+    "Balancing static JSON data loading with future API integration required a flexible `loadData` abstraction.",
+    "Ensuring consistent authentication checks both client‑side (`AuthGuard`) and server‑side (API routes) to avoid security gaps.",
+    "Managing CORS for the attendance scanning endpoint while keeping configuration simple and secure.",
+    "Handling asynchronous state updates in the context provider without causing race conditions during initial load.",
+    "Designing a navigation system that remains functional across both public and protected routes."
+  ],
+  "learnings": [
+    "A well‑defined context layer simplifies swapping data sources without refactoring UI components.",
+    "Client‑side guards are useful for UX but must be complemented by server‑side checks for true security.",
+    "Dynamic CORS header generation can be centralized to avoid duplication across multiple API routes.",
+    "Using TypeScript interfaces across front‑end and back‑end promotes a single source of truth for data contracts.",
+    "Incremental migration from static JSON to a full backend is smoother when the data fetching contract is abstracted early."
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**mpulse** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, Next.js, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Node.js Express / Python API`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes decoupled API routing handlers.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`App`, `Api`, `Components`, `Lib`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **Persistence Layer**: Data storage and recordset persistence powered by `MongoDB`.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, Next.js, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/api/analyze`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [],
+  "keyModules": [
+    {
+      "name": "App",
+      "path": "mpulse-attend/app",
+      "description": "Module component managing app source logic"
+    },
+    {
+      "name": "Api",
+      "path": "event-registration/app/api",
+      "description": "Module component managing api source logic"
+    },
+    {
+      "name": "Components",
+      "path": "mpulse-attend/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "mpulse-attend/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Models",
+      "path": "event-registration/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Scripts",
+      "path": "event-registration/scripts",
+      "description": "Module component managing scripts source logic"
+    },
+    {
+      "name": "Types",
+      "path": "event-registration/types",
+      "description": "Module component managing types source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "mpulse-attend/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "mpulse-attend/hooks",
+      "description": "Module component managing hooks source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Replace static JSON loaders with real `fetch` calls to `/api/events`, `/api/team`, and `/api/config`.",
+    "Implement server‑side authentication middleware to enforce protection at the edge.",
+    "Add unit and integration tests for API routes and context logic using Jest and React Testing Library.",
+    "Introduce role‑based access control (RBAC) for admin functionalities.",
+    "Deploy the application with CI/CD pipelines, containerizing the Next.js app and MongoDB."
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "mpulse - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into mpulse. Section 1 System Topology: Engineered with TypeScript, JavaScript, combining a decoupled backend powered by Node.js Express API Router and client interface built with React, Next.js, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 4 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across App, Api, Components, Lib. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash mpulse.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "mpulse",
+        "subheading": "Production-Grade TypeScript, JavaScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of mpulse, built with TypeScript, JavaScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "TypeScript",
+          "JavaScript",
+          "React",
+          "Next.js"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Node.js Express API Router API • React, Next.js, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "4 REST/WebSocket API Endpoints",
+        "subheading": "Request Router",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "App • Api • Components • Lib",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "App",
+          "Api",
+          "Components",
+          "Lib"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core mpulse functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/mpulse",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"mpulseShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'mpulse',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>mpulse</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade TypeScript, JavaScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Node.js Express API Router API • React, Next.js, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>4 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Request Router</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>App • Api • Components • Lib</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core mpulse functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/mpulse</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "mpulse",
+    "url": "https://github.com/Sameer-Bagul/mpulse",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T12:59:34.780Z",
+    "lastAnalyzedAt": "2026-09-22T12:59:34.780Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

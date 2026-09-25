@@ -1,0 +1,421 @@
+{
+  "_id": "roleplay-bot-id",
+  "title": "Roleplay Bot",
+  "slug": "roleplay-bot",
+  "shortDescription": "RolePlay Studio - Backend Server Express.js backend with MVC architecture for RolePlay Studio, powered by Dolphin Mistral via Ollama. Prerequisites 1. Install Ollama: Download from...",
+  "description": "**RolePlay Studio** is a full‑stack, desktop‑first role‑playing chat application that combines a **React + Vite** frontend with an **Express** backend powered by **MongoDB**. The system exposes a clean **REST** API for authentication, session management, and AI‑driven chat interactions, while the frontend leverages `TailwindCSS`, `shadcn/ui`, and `Tiptap` for a rich, accessible UI. All server‑side logic is encapsulated in `code` modules such as `server/routes/*.js`, `controllers`, and middleware, providing a modular, layered architecture suitable for both local Electron packaging and cloud deployment.",
+  "longDescription": "**Core Architecture**\nThe application follows a classic *three‑tier* architecture: a **presentation layer** built with React 18, TypeScript, and TailwindCSS; a **service layer** implemented in Express that handles routing, authentication (`JWT`), and AI request forwarding; and a **data layer** using MongoDB with Mongoose models. The entry point `server/server.js` wires middleware (`cors`, `express.json`, request logger) and mounts the `/api/auth` and `/api` routers, exposing endpoints documented in the repository.\n\n**Data Flow & Persistence**\nUser registration and login flow through `auth.routes.js`, invoking `auth.controller` methods that validate input (via Joi schemas as noted in the project details) and persist user records. Authenticated requests carry a `Bearer` token processed by `auth.middleware`, which guards protected routes like `/api/auth/me`, `/api/auth/sessions`, and `/api/chat`. Chat sessions are stored as documents containing configuration objects (gender, role, scene, level) and message arrays, enabling later retrieval and replay.\n\n**AI Integration**\nThe `/api/chat` endpoint forwards the user’s message payload to an Ollama model (`dolphin‑mistral` by default) over HTTP. Health checks (`/api/health`) verify both server uptime and Ollama connectivity, providing quick diagnostics for developers. Error handling middleware captures uncaught exceptions and returns sanitized JSON error objects, while the root endpoint enumerates available routes for discoverability.\n\n**Security & DevOps Guardrails**\nSecurity is enforced through **JWT** authentication, rate‑limiting placeholders, and Helmet headers (as recommended in the project notes). Environment variables (`.env`) store secrets like `JWT_SECRET`, `OLLAMA_URL`, and DB credentials, keeping them out of source control. The setup documentation outlines MongoDB Atlas IP whitelisting and port conflict resolution, ensuring smooth local development and production readiness.\n\n**Build & Deployment**\nFrontend assets are built with Vite (`npm run build`) and can be deployed to static hosts (Vercel, Netlify). The backend can be containerized or run directly via `npm run dev`. For desktop distribution, Electron wraps the web stack, leveraging IPC for native features while reusing the same codebase.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "Express"
+    ],
+    "database": [
+      "MongoDB"
+    ],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented JWT‑based authentication flow with registration, login, and token verification middleware",
+    "Designed and exposed RESTful endpoints for user profile, session CRUD, and AI chat interaction",
+    "Integrated Ollama model invocation with health‑check endpoint to monitor AI service availability",
+    "Added request logging middleware for observability of incoming API calls",
+    "Created comprehensive error‑handling middleware returning consistent JSON error structures",
+    "Configured CORS and security headers (Helmet) to harden the API surface",
+    "Developed MongoDB connection logic with automatic reconnection and error handling",
+    "Documented setup procedures for local development, including Ollama startup and port conflict resolution",
+    "Provided detailed API reference in markdown tables within project documentation",
+    "Implemented rate‑limiting placeholders and outlined IP whitelist strategy for production",
+    "Ensured rich‑text sanitization for Tiptap content before persisting to MongoDB",
+    "Set up Vite build pipeline and deployment scripts for Vercel/Netlify",
+    "Integrated TailwindCSS and shadcn/ui for a cohesive, dark‑mode UI theme",
+    "Established React Context for auth state management and automatic token refresh",
+    "Wrote comprehensive README sections covering troubleshooting, environment variables, and deployment steps"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (src/services)\"]\n end\n subgraph DataEngineTier [\"Inference Engine & Data Storage\"]\n Database[\"Persistence Storage Layer (MongoDB)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> Database\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n DatabaseLayer[\"MongoDB Persistence\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: POST /register (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/roleplay-bot",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "User registration and secure login with password hashing",
+    "JWT protected routes for accessing user profile and chat sessions",
+    "Save, retrieve, and delete chat sessions with custom configuration (gender, role, scene, intensity)",
+    "Real‑time AI chat powered by Ollama's `dolphin‑mistral` model",
+    "Health‑check endpoint that validates server and Ollama connectivity",
+    "Rich‑text editor powered by Tiptap with server‑side XSS sanitization",
+    "Drag‑and‑drop ordering of sessions using dnd‑kit with state synchronization",
+    "Responsive dark‑mode UI built with TailwindCSS and shadcn/ui components",
+    "Cross‑platform desktop packaging via Electron while reusing web code",
+    "Environment‑driven configuration for MongoDB Atlas, Ollama URL, and JWT secret",
+    "Comprehensive logging of requests and errors for debugging",
+    "Modular Express router architecture separating auth and chat concerns",
+    "TypeScript typings throughout the frontend for compile‑time safety",
+    "Automated scripts for building and deploying frontend to Vercel/Netlify"
+  ],
+  "challenges": [
+    "Balancing real‑time UI responsiveness with database write consistency during rapid drag‑and‑drop reordering",
+    "Ensuring XSS‑free storage of complex HTML generated by Tiptap without stripping legitimate formatting",
+    "Managing JWT expiration and token refresh in a single‑page application without degrading user experience",
+    "Handling Ollama service failures gracefully while providing meaningful error messages to the frontend",
+    "Coordinating port usage and environment variable overrides to avoid conflicts during concurrent backend and frontend development"
+  ],
+  "learnings": [
+    "Deepened understanding of Electron IPC patterns for bridging native and web layers",
+    "Mastered secure JWT implementation and middleware integration in Express",
+    "Optimized state management for drag‑and‑drop interactions using dnd‑kit and optimistic UI updates",
+    "Implemented robust input validation pipelines using Joi before Mongoose persistence",
+    "Gained experience configuring and troubleshooting Ollama models in a local development environment"
+  ],
+  "architectureOverview": "Frontend built with React, TailwindCSS. Backend API powered by Express. Persistence managed by MongoDB.",
+  "userFlow": [
+    "User accesses application user interface via browser",
+    "User triggers action invoking HTTP/WebSocket API endpoints",
+    "Data persisted or retrieved from database storage layer"
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Database ORM/client executes storage query",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "POST",
+      "path": "/register",
+      "description": "Endpoint defined in server/routes/auth.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/login",
+      "description": "Endpoint defined in server/routes/auth.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "description": "Endpoint defined in server/routes/auth.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/sessions",
+      "description": "Endpoint defined in server/routes/auth.routes.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/sessions/:sessionId",
+      "description": "Endpoint defined in server/routes/auth.routes.js"
+    },
+    {
+      "method": "POST",
+      "path": "/chat",
+      "description": "Endpoint defined in server/routes/chat.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in server/routes/chat.routes.js"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in server/server.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Config",
+      "path": "server/config",
+      "description": "Module component managing config source logic"
+    },
+    {
+      "name": "Controllers",
+      "path": "server/controllers",
+      "description": "Module component managing controllers source logic"
+    },
+    {
+      "name": "Middleware",
+      "path": "server/middleware",
+      "description": "Module component managing middleware source logic"
+    },
+    {
+      "name": "Models",
+      "path": "server/models",
+      "description": "Module component managing models source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Src",
+      "path": "src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "src/pages",
+      "description": "Module component managing pages source logic"
+    },
+    {
+      "name": "Types",
+      "path": "src/types",
+      "description": "Module component managing types source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Add refresh‑token mechanism and token revocation list for enhanced auth security",
+    "Implement server‑side pagination and indexing for large session collections",
+    "Introduce WebSocket support for streaming AI responses to improve perceived latency",
+    "Containerize the entire stack with Docker Compose for reproducible deployments",
+    "Integrate automated CI/CD pipelines with testing, linting, and security scanning",
+    "Expand role‑play configurations with user‑generated templates and sharing capabilities",
+    "Add multi‑language support for UI and AI prompts",
+    "Implement comprehensive rate‑limiting and brute‑force protection on auth endpoints",
+    "Provide a GraphQL gateway alongside REST for flexible client queries",
+    "Enable offline mode in Electron with local IndexedDB caching of sessions"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "roleplay-bot - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into roleplay-bot. Section 1 System Topology: Engineered with JavaScript, TypeScript, combining a decoupled backend powered by Express and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 8 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Server, Config, Controllers, Middleware. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by MongoDB. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash roleplay-bot.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "roleplay-bot",
+        "subheading": "Production-Grade JavaScript, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of roleplay-bot, built with JavaScript, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Express API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "8 REST/WebSocket API Endpoints",
+        "subheading": "POST /register | POST /login | GET /me",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "POST",
+          "POST",
+          "GET",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Server • Config • Controllers • Middleware",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Server",
+          "Config",
+          "Controllers",
+          "Middleware"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • MongoDB",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": [
+          "MongoDB"
+        ]
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core roleplay-bot functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/roleplay-bot",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"roleplaybotShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'roleplay-bot',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>roleplay-bot</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Express API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>8 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>POST /register | POST /login | GET /me</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Server • Config • Controllers • Middleware</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • MongoDB</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core roleplay-bot functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/roleplay-bot</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "roleplay-bot",
+    "url": "https://github.com/Sameer-Bagul/roleplay-bot",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T16:27:10.191Z",
+    "lastAnalyzedAt": "2026-09-22T16:27:10.191Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}

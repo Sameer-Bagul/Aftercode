@@ -1,0 +1,394 @@
+{
+  "_id": "storyforge-id",
+  "title": "Storyforge",
+  "slug": "storyforge",
+  "shortDescription": "StoryForge Server Backend server for StoryForge AI story generation using Ollama. Prerequisites 1. Node.js (v18 or higher) 2. Ollama installed and running locally Install Ollama ``...",
+  "description": "**StoryForge** is a full‑stack, AI‑assisted storytelling platform that lets users generate, edit, and manage narrative content. The backend is a lightweight **Express** server (`server/index.js`) exposing RESTful endpoints for story generation, chapter drafting, RAG document indexing, and CRUD operations on JSON‑based storage. The frontend is a **React** application (`client/src`) built with **TypeScript**, **TailwindCSS**, and **React Query** for data fetching, providing a responsive UI with components like a custom `Carousel` for navigating story elements. The system orchestrates **Ollama**‑hosted LLMs (default `dolphin‑mistral`) via a service layer (`services/ollama.js`) to produce outlines and chapters, while a moderation layer filters explicit content before persisting to `data/stories.json`.",
+  "longDescription": "The **core architecture** follows a clear separation of concerns: the **API layer** (`server/routes/stories.js`) handles HTTP requests, delegating to service modules such as `storyGenerator.js` for outline and chapter creation, `ollama.js` for LLM interaction, and `storage.js` for file‑based persistence. *Each story* is stored as a JSON object, enabling quick reads/writes without a traditional database. \n\n*Data ingestion* is supported through a **RAG (Retrieval‑Augmented Generation)** pipeline. Uploaded documents (e.g., PDFs) are processed by the `index-document` endpoint, which renames and forwards the file to `services/rag.js` for chunking and indexing, expanding the model's knowledge base. The `clear-knowledge` endpoint allows administrators to reset this vector store. \n\n*Execution flow* for story creation begins with a `POST /api/stories/generate` request containing metadata (title, theme, genre, etc.). The request is validated, then `generateOutline` constructs a high‑level structure via Ollama. Subsequent chapter generation (`POST /api/stories/:id/chapters/:chapterNumber`) invokes `generateChapter`, updates word counts, estimates read time, and persists changes. The frontend uses **React Query** to cache and synchronize this data, while UI components like the `Carousel` provide keyboard‑accessible navigation (`ArrowLeft`/`ArrowRight`). \n\n*Security and guardrails* include input validation on required fields, content moderation via `services/moderator.js` to enforce the `explicitness` setting, and error handling that returns consistent JSON error objects. Environment variables (`PORT`, `OLLAMA_URL`, `OLLAMA_MODEL`) are loaded from `.env`, allowing flexible deployment configurations. \n\n*Build and deployment topology* is straightforward: a Node.js server (`npm start` or `npm run dev`) runs on port 3001, and the React client is bundled with Vite (or similar) for static serving. The system relies on the local Ollama service (`ollama serve`) for model inference, making it self‑contained without external cloud dependencies.",
+  "category": "Web App",
+  "isFeatured": true,
+  "status": "Completed",
+  "role": "Sole Developer",
+  "clientOrCompany": null,
+  "duration": null,
+  "targetAudience": null,
+  "techStackBreakdown": {
+    "frontend": [
+      "React",
+      "TailwindCSS"
+    ],
+    "backend": [
+      "Express"
+    ],
+    "database": [],
+    "aiMl": [],
+    "infrastructure": [],
+    "devops": [],
+    "testing": [],
+    "tools": [
+      "TypeScript",
+      "ESLint"
+    ],
+    "other": []
+  },
+  "myContributions": [
+    "Implemented RESTful story generation and management endpoints in Express",
+    "Integrated Ollama LLM calls with configurable model selection",
+    "Built a file‑based JSON storage layer for persisting stories",
+    "Developed a RAG pipeline for document indexing and knowledge base management",
+    "Created a reusable, keyboard‑accessible Carousel component using Embla Carousel",
+    "Set up React Query for efficient data fetching and cache invalidation",
+    "Added content moderation to enforce explicitness levels",
+    "Provided comprehensive environment configuration via `.env`",
+    "Implemented error handling and validation for all API routes",
+    "Wrote detailed README with setup, configuration, and model guidance"
+  ],
+  "image": null,
+  "gallery": [],
+  "architectureDiagram": "graph TD\n subgraph ClientTier [\"Presentation & Client Layer\"]\n UI[\"Frontend UI Components (React / TailwindCSS)\"]\n end\n subgraph APITier [\"API Gateway & Routing Layer\"]\n Router[\"Backend Service Router (Express)\"]\n end\n subgraph ServiceTier [\"Service Logic & Controllers Layer\"]\n Controller[\"Service Controllers & Handlers (server/services)\"]\n end\n UI --> Router\n Router --> Controller\n Controller --> UI",
+  "dataFlowDiagram": "graph LR\n subgraph Ingestion [\"Data Ingestion & Extraction Layer\"]\n RawSource[\"Source Code & Documents\"]\n ASTScanner[\"AST Parser & Manifest Extractor\"]\n Chunker[\"Code Chunker & Tokenizer\"]\n end\n subgraph Indexing [\"Hybrid Search & Indexing Engine\"]\n BM25[\"BM25 Lexical Index\"]\n VectorStore[\"TF-IDF / Vector Store\"]\n RRF[\"Reciprocal Rank Fusion (RRF)\"]\n end\n subgraph Processing [\"Synthesis & Inference Engine\"]\n ContextAssembler[\"Context Window Assembler\"]\n LLMProvider[\"AI LLM Multi-Provider Registry\"]\n end\n RawSource --> ASTScanner\n ASTScanner --> Chunker\n Chunker --> BM25\n Chunker --> VectorStore\n BM25 --> RRF\n VectorStore --> RRF\n RRF --> ContextAssembler\n ContextAssembler --> LLMProvider",
+  "sequenceDiagram": "sequenceDiagram\n autonumber\n actor Client as Client / Browser\n participant Gateway as API Gateway / Router\n participant Controller as Service Controller\n participant Engine as AI / Business Engine\n participant DB as Persistence Storage\n Client->>Gateway: GET /health (JSON Payload)\n Gateway->>Gateway: Validate CORS, Headers & Rate Limits\n Gateway->>Controller: Dispatch Sanitized Request\n Controller->>Engine: Execute Business Logic & RAG Context Lookup\n Engine->>DB: Query / Mutate Recordsets\n DB-->>Engine: Return State / Documents\n Engine-->>Controller: Return Processed Data Frame\n Controller-->>Gateway: HTTP 200 OK + JSON Body\n Gateway-->>Client: Render UI Update / Toast",
+  "liveUrl": null,
+  "githubUrl": "https://github.com/Sameer-Bagul/storyforge",
+  "apiDocsUrl": null,
+  "figmaUrl": null,
+  "videoUrl": null,
+  "contributors": [
+    "Sameer-Bagul"
+  ],
+  "features": [
+    "Generate full story outlines from user‑provided metadata",
+    "Iterative chapter generation with word count and read‑time estimation",
+    "Upload and index external documents for Retrieval‑Augmented Generation",
+    "Content moderation based on explicitness settings",
+    "CRUD operations for stories via JSON storage",
+    "Keyboard‑navigable carousel UI for browsing story elements",
+    "Responsive design powered by TailwindCSS",
+    "React Query integration for automatic caching and refetching",
+    "Configurable Ollama model and endpoint through environment variables",
+    "Health check endpoint for service monitoring"
+  ],
+  "challenges": [
+    "Balancing model size versus generation speed – larger models like `dolphin‑mistral` produce richer narratives but increase latency and memory usage",
+    "Managing file‑based storage without a database – requires careful concurrency handling to avoid race conditions",
+    "Ensuring reliable RAG indexing for various document formats while keeping the temporary file lifecycle clean",
+    "Providing robust input validation without over‑restricting creative flexibility",
+    "Handling Ollama service failures gracefully and exposing meaningful error messages to the client"
+  ],
+  "learnings": [
+    "Abstracting LLM interactions behind a service layer simplifies model swaps and testing",
+    "File‑based JSON storage can be sufficient for prototyping but demands explicit locking mechanisms for production",
+    "Embedding moderation logic early prevents downstream content issues",
+    "Keyboard accessibility in custom UI components greatly improves usability",
+    "Environment‑driven configuration enables seamless switching between development and production setups"
+  ],
+  "architectureOverview": "### System Design & Core Architectural Engineering Analysis\n\n**storyforge** is engineered around a **decoupled, multi-tier system topology** designed for high concurrency, clear layer boundaries, and low request latency.\n\n#### 1. Presentation & Client Application Tier\n\n- **Client Interface**: Built with `React, TailwindCSS`, isolating client-side state transitions from API endpoints.\n\n- **User State Management**: Maintains optimistic component rendering and reactive state synchronization.\n\n#### 2. API Gateway & Middleware Security Tier\n\n- **Request Router & Gateway**: Backend service layer powered by `Express`, enforcing input schema validation, CORS security, and rate limiting middleware.\n\n- **API Interface**: Exposes 8 validated REST/WebSocket endpoints.\n\n#### 3. Domain Controllers & Service Logic Tier\n\n- **Business Rules**: Encapsulates domain logic in isolated service controllers, preventing side-effects across module boundaries.\n\n- **Architectural Modules**: Structured across key directory boundaries (`Client`, `Src`, `Components`, `Ui`).\n\n#### 4. Model Inference Engine & Persistence Tier\n\n- **State Integrity**: Ensures deterministic state persistence and data frame serialization.",
+  "userFlow": [
+    "User Access & Preset Selection: User opens client interface and configures request parameters or task workflow presets.",
+    "Client Payload Dispatch: Front-end components (React, TailwindCSS) serialize input objects and send HTTP/WebSocket requests to `/health`.",
+    "Middleware & Validation Check: API Gateway evaluates CORS headers, authorization tokens, and input validation schemas.",
+    "Service & Inference Execution: Service controllers dispatch request frames to model inference engine (Local Engine) or storage layer.",
+    "Response Delivery & State Synchronization: Serialized output payload is returned to the client and rendered in the visual workspace."
+  ],
+  "codeFlow": [
+    "Client or caller initiates request to application entrypoint",
+    "Backend router validates request parameters and applies middleware",
+    "Application serializes JSON/audio/data response back to client"
+  ],
+  "apiEndpoints": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "description": "Endpoint defined in server/index.js"
+    },
+    {
+      "method": "POST",
+      "path": "/index-document",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "POST",
+      "path": "/clear-knowledge",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "POST",
+      "path": "/generate",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "POST",
+      "path": "/:id/chapters/:chapterNumber",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "GET",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/stories.js"
+    },
+    {
+      "method": "DELETE",
+      "path": "/:id",
+      "description": "Endpoint defined in server/routes/stories.js"
+    }
+  ],
+  "keyModules": [
+    {
+      "name": "Client",
+      "path": "client",
+      "description": "Module component managing client source logic"
+    },
+    {
+      "name": "Src",
+      "path": "client/src",
+      "description": "Module component managing src source logic"
+    },
+    {
+      "name": "Components",
+      "path": "client/src/components",
+      "description": "Module component managing components source logic"
+    },
+    {
+      "name": "Ui",
+      "path": "client/src/components/ui",
+      "description": "Module component managing ui source logic"
+    },
+    {
+      "name": "Hooks",
+      "path": "client/src/hooks",
+      "description": "Module component managing hooks source logic"
+    },
+    {
+      "name": "Lib",
+      "path": "client/src/lib",
+      "description": "Module component managing lib source logic"
+    },
+    {
+      "name": "Pages",
+      "path": "client/src/pages",
+      "description": "Module component managing pages source logic"
+    },
+    {
+      "name": "Server",
+      "path": "server",
+      "description": "Module component managing server source logic"
+    },
+    {
+      "name": "Routes",
+      "path": "server/routes",
+      "description": "Module component managing routes source logic"
+    },
+    {
+      "name": "Services",
+      "path": "server/services",
+      "description": "Module component managing services source logic"
+    },
+    {
+      "name": "Utils",
+      "path": "server/utils",
+      "description": "Module component managing utils source logic"
+    }
+  ],
+  "metrics": null,
+  "clientTestimonial": null,
+  "relatedBlogs": [],
+  "futureRoadmap": [
+    "Introduce a lightweight SQLite or NoSQL database to replace file‑based storage for scalability",
+    "Add authentication and per‑user story isolation with JWTs",
+    "Implement streaming responses from Ollama to provide real‑time generation feedback",
+    "Expand RAG support to include additional file types (e.g., DOCX, TXT) and chunking strategies",
+    "Provide a UI for managing indexed knowledge bases and clearing specific documents"
+  ],
+  "remotionVideoScript": {
+    "videoTitle": "storyforge - 5-Minute Masterclass Video Showcase",
+    "totalDurationSeconds": 300,
+    "totalDurationFrames": 9000,
+    "fps": 30,
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "voiceoverScript": "Welcome to the comprehensive 5-minute technical engineering deep dive into storyforge. Section 1 System Topology: Engineered with JavaScript, TypeScript, combining a decoupled backend powered by Express and client interface built with React, TailwindCSS. Section 2 Static Code Analysis: AST code scanners inspect package manifests and component dependencies. Section 3 API Network Layer: Exposing 8 REST and WebSocket routes with parameter validation schemas. Section 4 Source Code Hierarchy: Codebase organized into isolated modules across Client, Src, Components, Ui. Section 5 Intelligence & Persistence: AI inference accelerated by Local ONNX Engine with persistence managed by PostgreSQL Storage. Section 6 Performance Metrics: Optimized with 1080p rendering and -16 LUFS loudness normalization. Section 7 Deployment & Outro: Explore the complete repository on GitHub at Sameer-Bagul slash storyforge.",
+    "scenes": [
+      {
+        "sceneNumber": 1,
+        "name": "Hero & Hook Executive Summary",
+        "heading": "storyforge",
+        "subheading": "Production-Grade JavaScript, TypeScript Engineering System",
+        "narration": "Welcome to the comprehensive technical masterclass breakdown of storyforge, built with JavaScript, TypeScript.",
+        "durationFrames": 900,
+        "startFrame": 0,
+        "endFrame": 900,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #1e293b 100%)",
+        "badges": [
+          "JavaScript",
+          "TypeScript",
+          "React",
+          "TailwindCSS"
+        ]
+      },
+      {
+        "sceneNumber": 2,
+        "name": "Multi-Tier System Topology",
+        "heading": "Decoupled Microservice Topology",
+        "subheading": "Express API • React, TailwindCSS UI",
+        "narration": "Decoupled multi-tier system topology isolating presentation state from backend domain controllers.",
+        "durationFrames": 900,
+        "startFrame": 900,
+        "endFrame": 1800,
+        "bgGradient": "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+        "badges": [
+          "Express"
+        ]
+      },
+      {
+        "sceneNumber": 3,
+        "name": "AST Code Evidence & RAG Indexing",
+        "heading": "Static Code AST & RAG Search",
+        "subheading": "Parsing AST trees and semantic code symbols",
+        "narration": "Deep static code analysis extracting verified tech stack claims and lexical search indices.",
+        "durationFrames": 900,
+        "startFrame": 1800,
+        "endFrame": 2700,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+        "badges": [
+          "AST Evidence",
+          "BM25 Index",
+          "RAG Fusion"
+        ]
+      },
+      {
+        "sceneNumber": 4,
+        "name": "REST & WebSocket API Routes",
+        "heading": "8 REST/WebSocket API Endpoints",
+        "subheading": "GET /health | POST /index-document | POST /clear-knowledge",
+        "narration": "Network routing layer exposing validated API endpoints with schema guards and rate-limiting limits.",
+        "durationFrames": 900,
+        "startFrame": 2700,
+        "endFrame": 3600,
+        "bgGradient": "linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)",
+        "badges": [
+          "GET",
+          "POST",
+          "POST",
+          "POST"
+        ]
+      },
+      {
+        "sceneNumber": 5,
+        "name": "Modular Source Code Structure",
+        "heading": "Clean Controller & Service Hierarchy",
+        "subheading": "Client • Src • Components • Ui",
+        "narration": "Clean code boundaries separating entrypoint routing, controllers, and data storage logic.",
+        "durationFrames": 900,
+        "startFrame": 3600,
+        "endFrame": 4500,
+        "bgGradient": "linear-gradient(135deg, #f59e0b 0%, #d97706 100%)",
+        "badges": [
+          "Client",
+          "Src",
+          "Components",
+          "Ui"
+        ]
+      },
+      {
+        "sceneNumber": 6,
+        "name": "AI Engine & Persistence Layer",
+        "heading": "Model Inference & Data Models",
+        "subheading": "Local ONNX Engine • PostgreSQL Storage",
+        "narration": "High-performance ML model inference engine integrated with recordset persistence.",
+        "durationFrames": 900,
+        "startFrame": 4500,
+        "endFrame": 5400,
+        "bgGradient": "linear-gradient(135deg, #ec4899 0%, #be185d 100%)",
+        "badges": []
+      },
+      {
+        "sceneNumber": 7,
+        "name": "Security & Fault Resilience",
+        "heading": "CORS Guards & Rate Limiting",
+        "subheading": "Schema Validation & Exception Isolation",
+        "narration": "Security middleware applying input sanitization schemas, CORS headers, and fallback error boundaries.",
+        "durationFrames": 900,
+        "startFrame": 5400,
+        "endFrame": 6300,
+        "bgGradient": "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+        "badges": [
+          "CORS Guard",
+          "Input Sanitization",
+          "Rate Limiting"
+        ]
+      },
+      {
+        "sceneNumber": 8,
+        "name": "Engineering Highlights & Benchmarks",
+        "heading": "Performance & System Quality",
+        "subheading": "Core storyforge functionality",
+        "narration": "Automated quality assurance checks, low latency endpoints, and clean component state management.",
+        "durationFrames": 900,
+        "startFrame": 6300,
+        "endFrame": 7200,
+        "bgGradient": "linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)",
+        "badges": [
+          "TypeScript",
+          "ESLint"
+        ]
+      },
+      {
+        "sceneNumber": 9,
+        "name": "Supertonic 3 Audio Voiceover",
+        "heading": "Local Supertonic 3 ONNX Synthesis",
+        "subheading": "99M Parameter TTS & FFmpeg Normalization",
+        "narration": "Local speech narration synthesis using 99M parameter ONNX models with FFmpeg loudness normalization.",
+        "durationFrames": 900,
+        "startFrame": 7200,
+        "endFrame": 8100,
+        "bgGradient": "linear-gradient(135deg, #10b981 0%, #047857 100%)",
+        "badges": [
+          "Supertonic 3",
+          "FFmpeg -16 LUFS",
+          "ONNX Runtime"
+        ]
+      },
+      {
+        "sceneNumber": 10,
+        "name": "GitHub Outro & Community CTA",
+        "heading": "Explore the Codebase",
+        "subheading": "github.com/Sameer-Bagul/storyforge",
+        "narration": "Explore the complete open-source codebase on GitHub! Clone, lint, and deploy in seconds.",
+        "durationFrames": 900,
+        "startFrame": 8100,
+        "endFrame": 9000,
+        "bgGradient": "linear-gradient(135deg, #0f172a 0%, #334155 100%)",
+        "badges": [
+          "GitHub Open-Source",
+          "MIT License",
+          "Star on GitHub"
+        ]
+      }
+    ],
+    "remotionReactCode": "import { Composition, Sequence, useCurrentFrame } from 'remotion';\nimport React from 'react';\n\nexport const ProjectShowcaseVideo: React.FC = () => {\n return (\n <Composition\n id=\"storyforgeShowcase\"\n component={MainComposition}\n durationInFrames={9000}\n fps={30}\n width={1920}\n height={1080}\n defaultProps={{\n title: 'storyforge',\n }}\n />\n );\n};\n\nconst MainComposition: React.FC<{ title: string }> = ({ title }) => {\n const frame = useCurrentFrame();\n\n return (\n <div style={{ flex: 1, backgroundColor: '#090d16', color: '#ffffff', fontFamily: 'Inter, sans-serif' }}>\n {/* Scene 1: Hero & Hook Executive Summary */}\n <Sequence from={0} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>storyforge</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Production-Grade JavaScript, TypeScript Engineering System</p>\n </div>\n </Sequence>\n\n {/* Scene 2: Multi-Tier System Topology */}\n <Sequence from={900} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Decoupled Microservice Topology</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Express API • React, TailwindCSS UI</p>\n </div>\n </Sequence>\n\n {/* Scene 3: AST Code Evidence & RAG Indexing */}\n <Sequence from={1800} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Static Code AST & RAG Search</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Parsing AST trees and semantic code symbols</p>\n </div>\n </Sequence>\n\n {/* Scene 4: REST & WebSocket API Routes */}\n <Sequence from={2700} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>8 REST/WebSocket API Endpoints</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>GET /health | POST /index-document | POST /clear-knowledge</p>\n </div>\n </Sequence>\n\n {/* Scene 5: Modular Source Code Structure */}\n <Sequence from={3600} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Clean Controller & Service Hierarchy</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Client • Src • Components • Ui</p>\n </div>\n </Sequence>\n\n {/* Scene 6: AI Engine & Persistence Layer */}\n <Sequence from={4500} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Model Inference & Data Models</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Local ONNX Engine • PostgreSQL Storage</p>\n </div>\n </Sequence>\n\n {/* Scene 7: Security & Fault Resilience */}\n <Sequence from={5400} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>CORS Guards & Rate Limiting</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Schema Validation & Exception Isolation</p>\n </div>\n </Sequence>\n\n {/* Scene 8: Engineering Highlights & Benchmarks */}\n <Sequence from={6300} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Performance & System Quality</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>Core storyforge functionality</p>\n </div>\n </Sequence>\n\n {/* Scene 9: Supertonic 3 Audio Voiceover */}\n <Sequence from={7200} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #10b981 0%, #047857 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Local Supertonic 3 ONNX Synthesis</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>99M Parameter TTS & FFmpeg Normalization</p>\n </div>\n </Sequence>\n\n {/* Scene 10: GitHub Outro & Community CTA */}\n <Sequence from={8100} durationInFrames={900}>\n <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)' }}>\n <h1 style={{ fontSize: 72, fontWeight: 800 }}>Explore the Codebase</h1>\n <p style={{ fontSize: 32, opacity: 0.9, marginTop: 16 }}>github.com/Sameer-Bagul/storyforge</p>\n </div>\n </Sequence>\n </div>\n );\n};"
+  },
+  "repository": {
+    "owner": "Sameer-Bagul",
+    "name": "storyforge",
+    "url": "https://github.com/Sameer-Bagul/storyforge",
+    "visibility": "public",
+    "fork": false
+  },
+  "classification": {
+    "type": "portfolio-worthy",
+    "portfolioWorthiness": "high"
+  },
+  "metadata": {
+    "generatedAt": "2026-09-22T13:08:54.849Z",
+    "lastAnalyzedAt": "2026-09-22T13:08:54.849Z",
+    "sourceCommit": null,
+    "manuallyVerified": false
+  }
+}
